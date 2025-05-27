@@ -38,6 +38,16 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
     }
   });
 
+  // Create particle positions
+  const particleCount = 50;
+  const positions = new Float32Array(particleCount * 3);
+  
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 4;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 4;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+  }
+
   return (
     <group position={product.position}>
       <Box
@@ -66,20 +76,14 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
         {product.name}
       </Text>
       
-      {/* Particle effect for selected item */}
+      {/* Simplified particle effect for selected item */}
       {isSelected && (
         <points>
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
-              count={50}
-              array={new Float32Array(
-                Array.from({ length: 50 }, () => [
-                  (Math.random() - 0.5) * 4,
-                  (Math.random() - 0.5) * 4,
-                  (Math.random() - 0.5) * 4,
-                ]).flat()
-              )}
+              count={particleCount}
+              array={positions}
               itemSize={3}
             />
           </bufferGeometry>
