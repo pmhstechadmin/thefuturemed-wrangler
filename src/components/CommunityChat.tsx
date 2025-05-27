@@ -23,13 +23,13 @@ interface Community {
 interface CommunityPost {
   id: string;
   content: string;
-  post_type: 'message' | 'achievement' | 'question';
+  post_type: string;
   created_at: string;
   user_id: string;
   profiles?: {
-    first_name: string;
-    last_name: string;
-  };
+    first_name: string | null;
+    last_name: string | null;
+  } | null;
 }
 
 interface CommunityChatProps {
@@ -67,8 +67,12 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
       const { data, error } = await supabase
         .from('community_posts')
         .select(`
-          *,
-          profiles!community_posts_user_id_fkey (
+          id,
+          content,
+          post_type,
+          created_at,
+          user_id,
+          profiles!inner (
             first_name,
             last_name
           )
@@ -76,10 +80,31 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
         .eq('community_id', community.id)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setPosts(data || []);
+      if (error) {
+        console.error('Error fetching posts:', error);
+        // If the join fails, fetch posts without profiles
+        const { data: postsOnly, error: postsError } = await supabase
+          .from('community_posts')
+          .select('id, content, post_type, created_at, user_id')
+          .eq('community_id', community.id)
+          .order('created_at', { ascending: true });
+
+        if (postsError) throw postsError;
+        
+        setPosts((postsOnly || []).map(post => ({
+          ...post,
+          profiles: null
+        })));
+      } else {
+        setPosts(data || []);
+      }
     } catch (error: any) {
       console.error('Error fetching posts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load messages.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -98,20 +123,37 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
         },
         async (payload) => {
           // Fetch the new post with profile data
-          const { data } = await supabase
-            .from('community_posts')
-            .select(`
-              *,
-              profiles!community_posts_user_id_fkey (
-                first_name,
-                last_name
-              )
-            `)
-            .eq('id', payload.new.id)
-            .single();
+          try {
+            const { data } = await supabase
+              .from('community_posts')
+              .select(`
+                id,
+                content,
+                post_type,
+                created_at,
+                user_id,
+                profiles!inner (
+                  first_name,
+                  last_name
+                )
+              `)
+              .eq('id', payload.new.id)
+              .single();
 
-          if (data) {
-            setPosts(prev => [...prev, data]);
+            if (data) {
+              setPosts(prev => [...prev, data]);
+            }
+          } catch (error) {
+            // If profile fetch fails, add post without profile
+            const newPost: CommunityPost = {
+              id: payload.new.id,
+              content: payload.new.content,
+              post_type: payload.new.post_type || 'message',
+              created_at: payload.new.created_at,
+              user_id: payload.new.user_id,
+              profiles: null
+            };
+            setPosts(prev => [...prev, newPost]);
           }
         }
       )
