@@ -5,38 +5,92 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserPlus, Shield, Award, Users, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import AuthModal from "@/components/AuthModal";
+import type { User } from '@supabase/supabase-js';
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Check for existing session
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Session check error:', error);
+        } else {
+          setUser(session?.user || null);
+          console.log('Current session:', session?.user ? 'Authenticated' : 'Not authenticated');
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     
     checkUser();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session?.user ? 'User logged in' : 'User logged out');
       setUser(session?.user || null);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const handleAuthSuccess = () => {
+    console.log('Auth success, closing modal');
     setShowAuthModal(false);
-    // Redirect to products page after successful login
-    window.location.href = '/products';
+    toast({
+      title: "Welcome!",
+      description: "You have successfully signed in.",
+    });
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      console.log('Signing out...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to sign out. Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Signed Out",
+          description: "You have been successfully signed out.",
+        });
+      }
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
   };
+
+  const handleSignInClick = () => {
+    console.log('Sign in button clicked');
+    setShowAuthModal(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -57,7 +111,10 @@ const Index = () => {
               </Link>
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">Welcome back!</span>
+                  <span className="text-sm text-gray-600">Welcome back, {user.email}!</span>
+                  <Link to="/community">
+                    <Button variant="outline">Communities</Button>
+                  </Link>
                   <Button variant="outline" onClick={handleSignOut}>
                     Sign Out
                   </Button>
@@ -67,7 +124,7 @@ const Index = () => {
                   <Link to="/register">
                     <Button variant="outline">Register</Button>
                   </Link>
-                  <Button onClick={() => setShowAuthModal(true)}>Sign In</Button>
+                  <Button onClick={handleSignInClick}>Sign In</Button>
                 </>
               )}
             </div>
@@ -92,12 +149,21 @@ const Index = () => {
                 Explore 3D Products
               </Button>
             </Link>
-            <Link to="/register">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-4">
-                <UserPlus className="mr-2 h-5 w-5" />
-                Start Registration
-              </Button>
-            </Link>
+            {user ? (
+              <Link to="/community">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4">
+                  <Users className="mr-2 h-5 w-5" />
+                  Join Communities
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/register">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4">
+                  <UserPlus className="mr-2 h-5 w-5" />
+                  Start Registration
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -168,11 +234,20 @@ const Index = () => {
                 Explore Products
               </Button>
             </Link>
-            <Link to="/register">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
-                Register Now
-              </Button>
-            </Link>
+            {user ? (
+              <Link to="/community">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
+                  <Users className="mr-2 h-5 w-5" />
+                  Join Communities
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/register">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
+                  Register Now
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </main>

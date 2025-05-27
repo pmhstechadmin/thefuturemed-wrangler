@@ -32,27 +32,24 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         });
         
         if (error) {
-          if (error.message === 'Invalid login credentials') {
-            toast({
-              title: "Login Failed",
-              description: "Invalid email or password. Please check your credentials and try again.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Login Failed",
-              description: error.message,
-              variant: "destructive",
-            });
-          }
+          console.error('Login error:', error);
+          toast({
+            title: "Login Failed",
+            description: error.message || "Invalid email or password. Please check your credentials and try again.",
+            variant: "destructive",
+          });
           return;
         }
 
         if (data.user) {
+          console.log('Login successful:', data.user);
           toast({
             title: "Success",
             description: "Signed in successfully!",
           });
+          // Reset form
+          setEmail('');
+          setPassword('');
           onSuccess();
           onClose();
         }
@@ -63,6 +60,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         });
         
         if (error) {
+          console.error('Signup error:', error);
           if (error.message.includes('User already registered')) {
             toast({
               title: "Account Exists",
@@ -81,12 +79,15 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         }
 
         if (data.user) {
+          console.log('Signup successful:', data.user);
           toast({
             title: "Success",
-            description: "Account created successfully! Please check your email to verify your account.",
+            description: "Account created successfully! You can now sign in.",
           });
-          onSuccess();
-          onClose();
+          // Reset form and switch to login
+          setEmail('');
+          setPassword('');
+          setIsLogin(true);
         }
       }
     } catch (error: any) {
@@ -111,8 +112,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     resetForm();
   };
 
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -136,6 +142,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
               required
+              disabled={loading}
             />
           </div>
           
@@ -149,10 +156,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               placeholder={isLogin ? "Enter your password" : "Create a password (min 6 characters)"}
               required
               minLength={isLogin ? undefined : 6}
+              disabled={loading}
             />
           </div>
           
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !email || !password}>
             {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
           </Button>
           
