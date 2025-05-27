@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,7 @@ interface FormData {
   confirmPassword: string;
   phone: string;
   category: "student" | "professional" | "";
+  medicalSpecialty: string;
   yearOfStudy: string;
   degreeLevel: string;
   institution: string;
@@ -36,6 +36,7 @@ const Register = () => {
     confirmPassword: "",
     phone: "",
     category: "",
+    medicalSpecialty: "",
     yearOfStudy: "",
     degreeLevel: "",
     institution: "",
@@ -65,13 +66,23 @@ const Register = () => {
         return;
       }
     }
-    if (step === 2 && !formData.category) {
-      toast({
-        title: "Category Required",
-        description: "Please select your category.",
-        variant: "destructive",
-      });
-      return;
+    if (step === 2) {
+      if (!formData.category) {
+        toast({
+          title: "Category Required",
+          description: "Please select your category.",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (!formData.medicalSpecialty) {
+        toast({
+          title: "Medical Specialty Required",
+          description: "Please select your medical specialty.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
     setStep(prev => prev + 1);
   };
@@ -126,7 +137,7 @@ const Register = () => {
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Personal Info</span>
-              <span>Category</span>
+              <span>Category & Specialty</span>
               <span>Qualifications</span>
             </div>
           </div>
@@ -135,12 +146,12 @@ const Register = () => {
             <CardHeader>
               <CardTitle>
                 {step === 1 && "Personal Information"}
-                {step === 2 && "Professional Category"}
+                {step === 2 && "Professional Category & Specialty"}
                 {step === 3 && "Additional Details"}
               </CardTitle>
               <CardDescription>
                 {step === 1 && "Enter your basic information to get started"}
-                {step === 2 && "Tell us about your professional status"}
+                {step === 2 && "Tell us about your professional status and medical specialty"}
                 {step === 3 && "Complete your profile with additional qualifications"}
               </CardDescription>
             </CardHeader>
@@ -245,6 +256,29 @@ const Register = () => {
                   </div>
 
                   <div>
+                    <Label htmlFor="medicalSpecialty">Medical Specialty *</Label>
+                    <Select value={formData.medicalSpecialty} onValueChange={(value) => updateFormData("medicalSpecialty", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your medical specialty" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="doctor">Doctor</SelectItem>
+                        <SelectItem value="dentist">Dentist</SelectItem>
+                        <SelectItem value="superspecialist">Superspecialist</SelectItem>
+                        <SelectItem value="nursing">Nursing</SelectItem>
+                        <SelectItem value="allied-health">Allied Health</SelectItem>
+                        <SelectItem value="dietician">Dietician</SelectItem>
+                        <SelectItem value="yoga">Yoga</SelectItem>
+                        <SelectItem value="ayurveda">Ayurveda</SelectItem>
+                        <SelectItem value="homeopathy">Homeopathy</SelectItem>
+                        <SelectItem value="naturopathy">Naturopathy</SelectItem>
+                        <SelectItem value="unani">Unani</SelectItem>
+                        <SelectItem value="fitness-coach">Fitness Coach</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
                     <Label htmlFor="institution">Institution/Hospital *</Label>
                     <Input
                       id="institution"
@@ -315,6 +349,7 @@ const Register = () => {
                       <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
                       <p><strong>Email:</strong> {formData.email}</p>
                       <p><strong>Category:</strong> {formData.category}</p>
+                      <p><strong>Medical Specialty:</strong> {formData.medicalSpecialty}</p>
                       <p><strong>Institution:</strong> {formData.institution}</p>
                       {formData.category === "student" && formData.yearOfStudy && (
                         <p><strong>Year of Study:</strong> {formData.yearOfStudy}</p>
