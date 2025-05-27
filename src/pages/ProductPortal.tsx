@@ -1,11 +1,10 @@
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text, Box, Environment } from '@react-three/drei';
-import { useState, useRef } from 'react';
+import { OrbitControls, Environment } from '@react-three/drei';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Shield, UserPlus } from 'lucide-react';
-import { Mesh } from 'three';
 import ProductBox from '@/components/ProductBox';
 
 const products = [
@@ -84,8 +83,10 @@ const ProductPortal = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-blue-400" />
-              <h1 className="text-2xl font-bold text-white">MedPortal</h1>
+              <Link to="/" className="flex items-center space-x-2">
+                <Shield className="h-8 w-8 text-blue-400" />
+                <h1 className="text-2xl font-bold text-white">MedPortal</h1>
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/register">

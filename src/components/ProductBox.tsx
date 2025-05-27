@@ -62,7 +62,6 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
         color="white"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/helvetiker_regular.typeface.json"
       >
         {product.name}
       </Text>
