@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -83,6 +82,16 @@ const ProductPortal = () => {
       transition: {
         staggerChildren: 0.1
       }
+    }
+  };
+
+  const handleProductAction = (productId: string) => {
+    if (productId === 'community') {
+      // Navigate to community page
+      window.location.href = '/community';
+    } else {
+      // For other products, show the details as before
+      console.log(`Navigating to ${productId}`);
     }
   };
 
@@ -175,6 +184,7 @@ const ProductPortal = () => {
               product={product}
               isSelected={selectedProduct === product.id}
               onSelect={setSelectedProduct}
+              onAction={() => handleProductAction(product.id)}
             />
           ))}
         </motion.div>
@@ -207,8 +217,9 @@ const ProductPortal = () => {
                     <Button 
                       className="text-white"
                       style={{ backgroundColor: product.color }}
+                      onClick={() => handleProductAction(product.id)}
                     >
-                      Learn More
+                      {product.id === 'community' ? 'Join Community' : 'Learn More'}
                     </Button>
                     <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
                       Try Now

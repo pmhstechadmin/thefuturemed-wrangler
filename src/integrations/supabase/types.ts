@@ -9,13 +9,151 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      communities: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_memberships: {
+        Row: {
+          community_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_memberships_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          community_id: string
+          content: string
+          created_at: string
+          id: string
+          post_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          content: string
+          created_at?: string
+          id?: string
+          post_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          category: string | null
+          created_at: string
+          degree_level: string | null
+          email: string | null
+          first_name: string | null
+          id: string
+          institution: string | null
+          last_name: string | null
+          medical_specialty: string | null
+          updated_at: string
+          year_of_study: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          degree_level?: string | null
+          email?: string | null
+          first_name?: string | null
+          id: string
+          institution?: string | null
+          last_name?: string | null
+          medical_specialty?: string | null
+          updated_at?: string
+          year_of_study?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          degree_level?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          institution?: string | null
+          last_name?: string | null
+          medical_specialty?: string | null
+          updated_at?: string
+          year_of_study?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_community_member_count: {
+        Args: { community_uuid: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

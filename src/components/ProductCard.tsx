@@ -16,9 +16,10 @@ interface ProductCardProps {
   product: Product;
   isSelected: boolean;
   onSelect: (id: string | null) => void;
+  onAction?: () => void;
 }
 
-const ProductCard = ({ product, isSelected, onSelect }: ProductCardProps) => {
+const ProductCard = ({ product, isSelected, onSelect, onAction }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -76,8 +77,12 @@ const ProductCard = ({ product, isSelected, onSelect }: ProductCardProps) => {
                 size="sm" 
                 className="w-full text-white"
                 style={{ backgroundColor: product.color }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAction?.();
+                }}
               >
-                Learn More
+                {product.id === 'community' ? 'Join Community' : 'Learn More'}
               </Button>
               <Button variant="outline" size="sm" className="w-full">
                 Try Now
