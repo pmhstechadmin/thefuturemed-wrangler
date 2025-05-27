@@ -2,7 +2,7 @@
 import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Box } from '@react-three/drei';
-import { Mesh } from 'three';
+import { Mesh, BufferGeometry, Float32BufferAttribute } from 'three';
 import * as THREE from 'three';
 
 interface Product {
@@ -38,8 +38,8 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
     }
   });
 
-  // Create particle positions using useMemo to avoid recreation on every render
-  const particlePositions = useMemo(() => {
+  // Create particle geometry using useMemo
+  const particleGeometry = useMemo(() => {
     const particleCount = 50;
     const positions = new Float32Array(particleCount * 3);
     
@@ -49,7 +49,9 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
       positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
     }
     
-    return positions;
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    return geometry;
   }, []);
 
   return (
@@ -82,15 +84,7 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
       
       {/* Simplified particle effect for selected item */}
       {isSelected && (
-        <points>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={particlePositions.length / 3}
-              array={particlePositions}
-              itemSize={3}
-            />
-          </bufferGeometry>
+        <points geometry={particleGeometry}>
           <pointsMaterial size={0.05} color={product.color} />
         </points>
       )}
