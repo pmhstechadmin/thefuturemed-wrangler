@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,9 +24,9 @@ interface Message {
   user_id: string;
   community_id: string;
   content: string;
-  message_type: string;
+  post_type: string;
   file_url?: string;
-  file_name?: string;
+  file_type?: string;
   created_at: string;
   user_profile?: {
     first_name?: string;
@@ -70,13 +71,13 @@ const CommunityChat = () => {
   useEffect(() => {
     if (!communityId || !user) return;
 
-    // Subscribe to new messages
+    // Subscribe to new messages using community_posts table
     const messagesSubscription = supabase
       .channel(`community-${communityId}-messages`)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'community_messages',
+        table: 'community_posts',
         filter: `community_id=eq.${communityId}`
       }, () => {
         loadMessages();
@@ -176,37 +177,101 @@ const CommunityChat = () => {
   };
 
   const loadMessages = async () => {
-    const { data, error } = await supabase
-      .from('community_messages')
-      .select(`
-        *,
-        user_profile:profiles(first_name, last_name)
-      `)
-      .eq('community_id', communityId)
-      .order('created_at', { ascending: true })
-      .limit(100);
+    try {
+      const { data, error } = await supabase
+        .from('community_posts')
+        .select('*')
+        .eq('community_id', communityId)
+        .order('created_at', { ascending: true })
+        .limit(100);
 
-    if (error) {
+      if (error) {
+        console.error('Error loading messages:', error);
+        return;
+      }
+
+      // Get user profiles for all messages
+      const messagesWithProfiles = await Promise.all(
+        (data || []).map(async (post) => {
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .rpc('get_user_profile', { user_uuid: post.user_id });
+
+            return {
+              id: post.id,
+              user_id: post.user_id,
+              community_id: post.community_id,
+              content: post.content,
+              post_type: post.post_type || 'message',
+              file_url: post.file_url,
+              file_type: post.file_type,
+              created_at: post.created_at,
+              user_profile: profileData && profileData.length > 0 ? profileData[0] : undefined
+            };
+          } catch (error) {
+            console.error('Error processing profile for post:', post.id, error);
+            return {
+              id: post.id,
+              user_id: post.user_id,
+              community_id: post.community_id,
+              content: post.content,
+              post_type: post.post_type || 'message',
+              file_url: post.file_url,
+              file_type: post.file_type,
+              created_at: post.created_at,
+              user_profile: undefined
+            };
+          }
+        })
+      );
+
+      setMessages(messagesWithProfiles);
+    } catch (error) {
       console.error('Error loading messages:', error);
-    } else {
-      setMessages(data || []);
     }
   };
 
   const loadMembers = async () => {
-    const { data, error } = await supabase
-      .from('community_memberships')
-      .select(`
-        *,
-        user_profile:profiles(first_name, last_name)
-      `)
-      .eq('community_id', communityId)
-      .order('joined_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('community_memberships')
+        .select('*')
+        .eq('community_id', communityId)
+        .order('joined_at', { ascending: false });
 
-    if (error) {
+      if (error) {
+        console.error('Error loading members:', error);
+        return;
+      }
+
+      // Get user profiles for all members
+      const membersWithProfiles = await Promise.all(
+        (data || []).map(async (membership) => {
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .rpc('get_user_profile', { user_uuid: membership.user_id });
+
+            return {
+              id: membership.id,
+              user_id: membership.user_id,
+              joined_at: membership.joined_at,
+              user_profile: profileData && profileData.length > 0 ? profileData[0] : undefined
+            };
+          } catch (error) {
+            console.error('Error processing profile for member:', membership.id, error);
+            return {
+              id: membership.id,
+              user_id: membership.user_id,
+              joined_at: membership.joined_at,
+              user_profile: undefined
+            };
+          }
+        })
+      );
+
+      setMembers(membersWithProfiles);
+    } catch (error) {
       console.error('Error loading members:', error);
-    } else {
-      setMembers(data || []);
     }
   };
 
@@ -216,12 +281,12 @@ const CommunityChat = () => {
     setSending(true);
     try {
       const { error } = await supabase
-        .from('community_messages')
+        .from('community_posts')
         .insert({
           user_id: user.id,
           community_id: communityId,
           content: newMessage.trim(),
-          message_type: messageType,
+          post_type: messageType,
         });
 
       if (error) {
@@ -362,8 +427,8 @@ const CommunityChat = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium text-sm">{getUserDisplayName(message)}</span>
-                        <Badge className={`text-xs ${getMessageTypeColor(message.message_type)}`}>
-                          {message.message_type}
+                        <Badge className={`text-xs ${getMessageTypeColor(message.post_type)}`}>
+                          {message.post_type}
                         </Badge>
                         <span className="text-xs text-gray-500">{formatTime(message.created_at)}</span>
                       </div>
@@ -376,7 +441,7 @@ const CommunityChat = () => {
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline text-sm"
                           >
-                            📎 {message.file_name || 'Attachment'}
+                            📎 Attachment
                           </a>
                         </div>
                       )}

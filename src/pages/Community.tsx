@@ -74,15 +74,38 @@ const Community = () => {
   };
 
   const loadCommunities = async () => {
-    const { data, error } = await supabase
-      .from('communities')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      const { data: communitiesData, error } = await supabase
+        .from('communities')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (error) {
+      if (error) {
+        console.error('Error loading communities:', error);
+        return;
+      }
+
+      // Get member counts for each community
+      const communitiesWithCounts = await Promise.all(
+        (communitiesData || []).map(async (community) => {
+          const { data: memberData, error: memberError } = await supabase
+            .from('community_memberships')
+            .select('id')
+            .eq('community_id', community.id);
+
+          const memberCount = memberError ? 0 : (memberData?.length || 0);
+
+          return {
+            ...community,
+            member_count: memberCount,
+            max_members: 50 // Default max members
+          };
+        })
+      );
+
+      setCommunities(communitiesWithCounts);
+    } catch (error) {
       console.error('Error loading communities:', error);
-    } else {
-      setCommunities(data || []);
     }
   };
 
@@ -132,6 +155,7 @@ const Community = () => {
           description: "Successfully joined the community!",
         });
         await loadUserMemberships(user.id);
+        await loadCommunities(); // Refresh to update member counts
       }
     } catch (error) {
       console.error('Error joining community:', error);
@@ -166,6 +190,7 @@ const Community = () => {
           description: "Successfully left the community.",
         });
         await loadUserMemberships(user.id);
+        await loadCommunities(); // Refresh to update member counts
       }
     } catch (error) {
       console.error('Error leaving community:', error);
