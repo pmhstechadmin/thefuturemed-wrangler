@@ -199,29 +199,41 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const uploadFile = async (file: File): Promise<{ url: string; type: string } | null> => {
     try {
+      console.log('Starting file upload:', file.name, file.type, file.size);
+      
+      // Create a unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `community-files/${community.id}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      console.log('Uploading to path:', filePath);
+
+      const { data, error: uploadError } = await supabase.storage
         .from('community-files')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
-      const { data } = supabase.storage
+      console.log('Upload successful:', data);
+
+      const { data: urlData } = supabase.storage
         .from('community-files')
         .getPublicUrl(filePath);
 
+      console.log('Public URL:', urlData.publicUrl);
+
       return {
-        url: data.publicUrl,
+        url: urlData.publicUrl,
         type: file.type.startsWith('image/') ? 'image' : 'file'
       };
     } catch (error) {
       console.error('Error uploading file:', error);
       toast({
         title: "Upload Error",
-        description: "Failed to upload file.",
+        description: "Failed to upload file. Please try again.",
         variant: "destructive",
       });
       return null;
@@ -230,18 +242,28 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) return;
-
-    setUploadingFile(true);
-    const uploadResult = await uploadFile(file);
-    
-    if (uploadResult) {
-      await sendMessage(uploadResult.url, uploadResult.type);
+    if (!file || !user) {
+      console.log('No file selected or user not authenticated');
+      return;
     }
+
+    console.log('File selected for upload:', file);
+    setUploadingFile(true);
     
-    setUploadingFile(false);
-    // Reset file input
-    event.target.value = '';
+    try {
+      const uploadResult = await uploadFile(file);
+      
+      if (uploadResult) {
+        console.log('Upload successful, sending message with file:', uploadResult);
+        await sendMessage(uploadResult.url, uploadResult.type);
+      }
+    } catch (error) {
+      console.error('Error in file upload process:', error);
+    } finally {
+      setUploadingFile(false);
+      // Reset file input
+      event.target.value = '';
+    }
   };
 
   const sendMessage = async (fileUrl?: string, fileType?: string) => {
@@ -249,7 +271,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
     setSending(true);
     try {
-      console.log('Sending message:', newMessage, 'Type:', postType);
+      console.log('Sending message:', newMessage, 'Type:', postType, 'File:', fileUrl);
       
       const postData: any = {
         community_id: community.id,
@@ -289,10 +311,12 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   };
 
   const triggerFileUpload = () => {
+    console.log('Triggering file upload');
     fileInputRef.current?.click();
   };
 
   const triggerCameraCapture = () => {
+    console.log('Triggering camera capture');
     cameraInputRef.current?.click();
   };
 
@@ -350,8 +374,10 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
           <img 
             src={post.file_url} 
             alt="Shared image" 
-            className="max-w-xs rounded-lg shadow-sm"
+            className="max-w-xs rounded-lg shadow-sm cursor-pointer"
+            onClick={() => window.open(post.file_url, '_blank')}
             onError={(e) => {
+              console.error('Error loading image:', post.file_url);
               e.currentTarget.style.display = 'none';
             }}
           />
