@@ -70,6 +70,8 @@ export type Database = {
           community_id: string
           content: string
           created_at: string
+          file_type: string | null
+          file_url: string | null
           id: string
           post_type: string | null
           updated_at: string
@@ -79,6 +81,8 @@ export type Database = {
           community_id: string
           content: string
           created_at?: string
+          file_type?: string | null
+          file_url?: string | null
           id?: string
           post_type?: string | null
           updated_at?: string
@@ -88,6 +92,8 @@ export type Database = {
           community_id?: string
           content?: string
           created_at?: string
+          file_type?: string | null
+          file_url?: string | null
           id?: string
           post_type?: string | null
           updated_at?: string

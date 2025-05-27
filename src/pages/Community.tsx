@@ -1,14 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, ArrowLeft, Users, MessageCircle, Plus, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import CommunityChat from '@/components/CommunityChat';
 
 interface Community {
   id: string;
@@ -25,9 +23,9 @@ interface UserMembership {
 
 const Community = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [communities, setCommunities] = useState<Community[]>([]);
   const [userMemberships, setUserMemberships] = useState<UserMembership[]>([]);
-  const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
 
@@ -167,11 +165,6 @@ const Community = () => {
 
       fetchUserMemberships();
       fetchCommunities();
-      
-      // Close chat if currently viewing this community
-      if (selectedCommunity?.id === communityId) {
-        setSelectedCommunity(null);
-      }
     } catch (error: any) {
       toast({
         title: "Error",
@@ -179,6 +172,10 @@ const Community = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const openCommunityChat = (communityId: string) => {
+    navigate(`/community/${communityId}`);
   };
 
   const groupedCommunities = communities.reduce((acc, community) => {
@@ -243,103 +240,88 @@ const Community = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-8">
-          {/* Communities List */}
-          <div className="flex-1">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Medical Communities</h2>
-              <p className="text-gray-600">
-                Join up to 3 specialty communities to connect with peers and share knowledge.
-                You're currently a member of {userMemberships.length}/3 communities.
-              </p>
-            </div>
-
-            {loading ? (
-              <div className="text-center py-8">Loading communities...</div>
-            ) : (
-              <div className="space-y-8">
-                {Object.entries(groupedCommunities).map(([category, categoryCommunitiesList]) => (
-                  <motion.div
-                    key={category}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <h3 className="text-xl font-bold text-gray-800 mb-4">
-                      {categoryTitles[category] || category}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {categoryCommunitiesList.map((community) => (
-                        <Card key={community.id} className="hover:shadow-lg transition-shadow">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                              <CardTitle className="text-lg">{community.name}</CardTitle>
-                              {community.is_member && (
-                                <Badge variant="default" className="bg-green-500">
-                                  <Check className="h-3 w-3 mr-1" />
-                                  Member
-                                </Badge>
-                              )}
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-gray-600 text-sm mb-3">{community.description}</p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center text-sm text-gray-500">
-                                <Users className="h-4 w-4 mr-1" />
-                                {community.member_count} members
-                              </div>
-                              <div className="flex gap-2">
-                                {community.is_member ? (
-                                  <>
-                                    <Button
-                                      size="sm"
-                                      onClick={() => setSelectedCommunity(community)}
-                                      className="bg-blue-600 hover:bg-blue-700"
-                                    >
-                                      <MessageCircle className="h-4 w-4 mr-1" />
-                                      Chat
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => leaveCommunity(community.id)}
-                                    >
-                                      Leave
-                                    </Button>
-                                  </>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => joinCommunity(community.id)}
-                                    disabled={userMemberships.length >= 3}
-                                  >
-                                    <Plus className="h-4 w-4 mr-1" />
-                                    Join
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Community Chat */}
-          {selectedCommunity && (
-            <div className="w-96">
-              <CommunityChat
-                community={selectedCommunity}
-                onClose={() => setSelectedCommunity(null)}
-              />
-            </div>
-          )}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Medical Communities</h2>
+          <p className="text-gray-600">
+            Join up to 3 specialty communities to connect with peers and share knowledge.
+            You're currently a member of {userMemberships.length}/3 communities.
+          </p>
         </div>
+
+        {loading ? (
+          <div className="text-center py-8">Loading communities...</div>
+        ) : (
+          <div className="space-y-8">
+            {Object.entries(groupedCommunities).map(([category, categoryCommunitiesList]) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  {categoryTitles[category] || category}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categoryCommunitiesList.map((community) => (
+                    <Card key={community.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-lg">{community.name}</CardTitle>
+                          {community.is_member && (
+                            <Badge variant="default" className="bg-green-500">
+                              <Check className="h-3 w-3 mr-1" />
+                              Member
+                            </Badge>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-600 text-sm mb-3">{community.description}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Users className="h-4 w-4 mr-1" />
+                            {community.member_count} members
+                          </div>
+                          <div className="flex gap-2">
+                            {community.is_member ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => openCommunityChat(community.id)}
+                                  className="bg-blue-600 hover:bg-blue-700"
+                                >
+                                  <MessageCircle className="h-4 w-4 mr-1" />
+                                  Chat
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => leaveCommunity(community.id)}
+                                >
+                                  Leave
+                                </Button>
+                              </>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => joinCommunity(community.id)}
+                                disabled={userMemberships.length >= 3}
+                              >
+                                <Plus className="h-4 w-4 mr-1" />
+                                Join
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
