@@ -1,13 +1,13 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Send, Trophy, HelpCircle, MessageCircle } from 'lucide-react';
+import { X, Send, Trophy, HelpCircle, MessageCircle, Camera, Upload, Image, Paperclip } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,6 +26,8 @@ interface CommunityPost {
   post_type: string;
   created_at: string;
   user_id: string;
+  file_url?: string;
+  file_type?: string;
   user_profile?: {
     first_name: string | null;
     last_name: string | null;
@@ -43,8 +45,12 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [postType, setPostType] = useState<'message' | 'achievement' | 'question'>('message');
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [user, setUser] = useState<any>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     checkUser();
@@ -158,6 +164,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
               post_type: payload.new.post_type || 'message',
               created_at: payload.new.created_at,
               user_id: payload.new.user_id,
+              file_url: payload.new.file_url,
+              file_type: payload.new.file_type,
               user_profile: profileData && profileData.length > 0 ? profileData[0] : null
             };
 
@@ -171,6 +179,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
               post_type: payload.new.post_type || 'message',
               created_at: payload.new.created_at,
               user_id: payload.new.user_id,
+              file_url: payload.new.file_url,
+              file_type: payload.new.file_type,
               user_profile: null
             };
             setPosts(prev => [...prev, newPost]);
@@ -187,20 +197,75 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     };
   };
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !user) return;
+  const uploadFile = async (file: File): Promise<{ url: string; type: string } | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `community-files/${community.id}/${fileName}`;
 
+      const { error: uploadError } = await supabase.storage
+        .from('community-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('community-files')
+        .getPublicUrl(filePath);
+
+      return {
+        url: data.publicUrl,
+        type: file.type.startsWith('image/') ? 'image' : 'file'
+      };
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload file.",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploadingFile(true);
+    const uploadResult = await uploadFile(file);
+    
+    if (uploadResult) {
+      await sendMessage(uploadResult.url, uploadResult.type);
+    }
+    
+    setUploadingFile(false);
+    // Reset file input
+    event.target.value = '';
+  };
+
+  const sendMessage = async (fileUrl?: string, fileType?: string) => {
+    if ((!newMessage.trim() && !fileUrl) || !user) return;
+
+    setSending(true);
     try {
       console.log('Sending message:', newMessage, 'Type:', postType);
       
+      const postData: any = {
+        community_id: community.id,
+        user_id: user.id,
+        content: newMessage || (fileUrl ? 'Shared a file' : ''),
+        post_type: postType
+      };
+
+      if (fileUrl) {
+        postData.file_url = fileUrl;
+        postData.file_type = fileType;
+      }
+      
       const { error } = await supabase
         .from('community_posts')
-        .insert([{
-          community_id: community.id,
-          user_id: user.id,
-          content: newMessage,
-          post_type: postType
-        }]);
+        .insert([postData]);
 
       if (error) {
         console.error('Error sending message:', error);
@@ -218,7 +283,17 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
         description: "Failed to send message.",
         variant: "destructive",
       });
+    } finally {
+      setSending(false);
     }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const triggerCameraCapture = () => {
+    cameraInputRef.current?.click();
   };
 
   const getPostTypeIcon = (type: string) => {
@@ -264,6 +339,39 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const isOwnMessage = (post: CommunityPost) => {
     return user && post.user_id === user.id;
+  };
+
+  const renderFileContent = (post: CommunityPost) => {
+    if (!post.file_url) return null;
+
+    if (post.file_type === 'image') {
+      return (
+        <div className="mt-2">
+          <img 
+            src={post.file_url} 
+            alt="Shared image" 
+            className="max-w-xs rounded-lg shadow-sm"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="mt-2">
+          <a 
+            href={post.file_url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm"
+          >
+            <Paperclip className="h-4 w-4" />
+            View File
+          </a>
+        </div>
+      );
+    }
   };
 
   return (
@@ -328,6 +436,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                         </span>
                       </div>
                       <p className="text-sm text-gray-700">{post.content}</p>
+                      {renderFileContent(post)}
                     </motion.div>
                   ))}
                 </div>
@@ -362,18 +471,90 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                 </SelectContent>
               </Select>
 
+              {/* File Upload Controls */}
+              <div className="flex gap-2 justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={triggerCameraCapture}
+                  disabled={uploadingFile}
+                  className="flex-1"
+                >
+                  <Camera className="h-4 w-4 mr-1" />
+                  Camera
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={triggerFileUpload}
+                  disabled={uploadingFile}
+                  className="flex-1"
+                >
+                  <Image className="h-4 w-4 mr-1" />
+                  Gallery
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={triggerFileUpload}
+                  disabled={uploadingFile}
+                  className="flex-1"
+                >
+                  <Upload className="h-4 w-4 mr-1" />
+                  File
+                </Button>
+              </div>
+
+              {/* Hidden File Inputs */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,*/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+
+              {/* Message Input */}
               <div className="flex gap-2">
-                <Input
+                <Textarea
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder={`Type your ${postType}...`}
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                  className="flex-1"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                  className="flex-1 min-h-[40px] max-h-[120px] resize-none"
+                  rows={1}
                 />
-                <Button onClick={sendMessage} disabled={!newMessage.trim()}>
-                  <Send className="h-4 w-4" />
+                <Button 
+                  onClick={() => sendMessage()} 
+                  disabled={!newMessage.trim() || sending || uploadingFile}
+                  className="self-end"
+                >
+                  {sending ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
+
+              {uploadingFile && (
+                <div className="text-center text-sm text-gray-500">
+                  Uploading file...
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
