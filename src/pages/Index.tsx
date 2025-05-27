@@ -112,8 +112,8 @@ const Index = () => {
               {user ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-gray-600">Welcome back, {user.email}!</span>
-                  <Link to="/community">
-                    <Button variant="outline">Communities</Button>
+                  <Link to="/products">
+                    <Button variant="outline">Access Products</Button>
                   </Link>
                   <Button variant="outline" onClick={handleSignOut}>
                     Sign Out
@@ -140,27 +140,27 @@ const Index = () => {
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Join our comprehensive platform designed exclusively for medical professionals and students. 
-            Access cutting-edge tools, resources, and products tailored for healthcare excellence.
+            Register once to access all our cutting-edge tools, resources, and products including our vibrant community platform.
           </p>
           <div className="flex gap-4 justify-center">
             <Link to="/products">
               <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4">
                 <Sparkles className="mr-2 h-5 w-5" />
-                Explore 3D Products
+                Explore All Products
               </Button>
             </Link>
             {user ? (
-              <Link to="/community">
+              <Link to="/products">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-4">
                   <Users className="mr-2 h-5 w-5" />
-                  Join Communities
+                  Access Portal
                 </Button>
               </Link>
             ) : (
               <Link to="/register">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-4">
                   <UserPlus className="mr-2 h-5 w-5" />
-                  Start Registration
+                  Register Now
                 </Button>
               </Link>
             )}
@@ -191,14 +191,14 @@ const Index = () => {
               <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-green-600" />
               </div>
-              <CardTitle>For Students</CardTitle>
+              <CardTitle>Community Access</CardTitle>
               <CardDescription>
-                Educational resources tailored to your year of study
+                Connect with medical professionals in specialized communities
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">
-                Comprehensive learning materials and tools that adapt to your current academic level and progression.
+                Join our vibrant community platform to network, share knowledge, and collaborate with peers worldwide.
               </p>
             </CardContent>
           </Card>
@@ -208,14 +208,14 @@ const Index = () => {
               <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                 <Sparkles className="h-6 w-6 text-purple-600" />
               </div>
-              <CardTitle>3D Interactive Platform</CardTitle>
+              <CardTitle>Multiple Products</CardTitle>
               <CardDescription>
-                Immersive 3D experience to explore our medical products
+                One registration gives you access to all our products
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">
-                Navigate through our innovative 3D product showcase and discover the future of medical technology.
+                Navigate through our innovative product suite including community, e-learning, conferences, and more.
               </p>
             </CardContent>
           </Card>
@@ -231,20 +231,20 @@ const Index = () => {
             <Link to="/products">
               <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
                 <Sparkles className="mr-2 h-5 w-5" />
-                Explore Products
+                View All Products
               </Button>
             </Link>
             {user ? (
-              <Link to="/community">
+              <Link to="/products">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
                   <Users className="mr-2 h-5 w-5" />
-                  Join Communities
+                  Access Portal
                 </Button>
               </Link>
             ) : (
               <Link to="/register">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
-                  Register Now
+                  Register for Full Access
                 </Button>
               </Link>
             )}

@@ -1,9 +1,13 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Shield, UserPlus, Layout, Grid3X3 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';
+import type { User } from '@supabase/supabase-js';
 
 const products = [
   {
@@ -74,6 +78,44 @@ const products = [
 const ProductPortal = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    } catch (error) {
+      console.error('Error checking user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -87,11 +129,23 @@ const ProductPortal = () => {
 
   const handleProductAction = (productId: string) => {
     if (productId === 'community') {
-      // Navigate to community page
-      window.location.href = '/community';
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to access the community.",
+          variant: "destructive",
+        });
+        navigate('/');
+        return;
+      }
+      // Navigate to community page for authenticated users
+      navigate('/community');
     } else {
-      // For other products, show the details as before
-      console.log(`Navigating to ${productId}`);
+      // For other products, show coming soon message
+      toast({
+        title: "Coming Soon",
+        description: `${products.find(p => p.id === productId)?.name} will be available soon!`,
+      });
     }
   };
 
@@ -126,15 +180,28 @@ const ProductPortal = () => {
                   <Layout className="h-4 w-4" />
                 </Button>
               </div>
-              <Link to="/register">
-                <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
-                  Register
-                </Button>
-              </Link>
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                <UserPlus className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-white text-sm">Welcome, {user.email}</span>
+                  <Button variant="outline" className="text-white border-white/30 hover:bg-white/10" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
+                      Register
+                    </Button>
+                  </Link>
+                  <Link to="/">
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -161,7 +228,7 @@ const ProductPortal = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Explore our comprehensive suite of medical tools and services. 
-            Click on any product card below to discover each platform feature.
+            {user ? 'Click on any product to access it.' : 'Register once to access all products.'}
           </motion.p>
         </div>
       </div>
@@ -185,6 +252,7 @@ const ProductPortal = () => {
               isSelected={selectedProduct === product.id}
               onSelect={setSelectedProduct}
               onAction={() => handleProductAction(product.id)}
+              isAuthenticated={!!user}
             />
           ))}
         </motion.div>
@@ -219,10 +287,10 @@ const ProductPortal = () => {
                       style={{ backgroundColor: product.color }}
                       onClick={() => handleProductAction(product.id)}
                     >
-                      {product.id === 'community' ? 'Join Community' : 'Learn More'}
+                      {product.id === 'community' ? (user ? 'Access Community' : 'Sign In to Access') : 'Learn More'}
                     </Button>
                     <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
-                      Try Now
+                      {product.id === 'community' && user ? 'Join Now' : 'Try Now'}
                     </Button>
                     <Button 
                       variant="ghost" 
