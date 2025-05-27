@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus, Shield, Award, Users } from "lucide-react";
+import { UserPlus, Shield, Award, Users, Sparkles } from "lucide-react";
 
 const Index = () => {
   return (
@@ -16,6 +16,12 @@ const Index = () => {
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <Link to="/products">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Explore Products
+                </Button>
+              </Link>
               <Link to="/register">
                 <Button variant="outline">Register</Button>
               </Link>
@@ -35,12 +41,20 @@ const Index = () => {
             Join our comprehensive platform designed exclusively for medical professionals and students. 
             Access cutting-edge tools, resources, and products tailored for healthcare excellence.
           </p>
-          <Link to="/register">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4">
-              <UserPlus className="mr-2 h-5 w-5" />
-              Start Your Registration
-            </Button>
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link to="/products">
+              <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4">
+                <Sparkles className="mr-2 h-5 w-5" />
+                Explore 3D Products
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-4">
+                <UserPlus className="mr-2 h-5 w-5" />
+                Start Registration
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Features Grid */}
@@ -82,32 +96,40 @@ const Index = () => {
           <Card className="text-center hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-purple-600" />
+                <Sparkles className="h-6 w-6 text-purple-600" />
               </div>
-              <CardTitle>Secure & Trusted</CardTitle>
+              <CardTitle>3D Interactive Platform</CardTitle>
               <CardDescription>
-                HIPAA-compliant platform with enterprise-grade security
+                Immersive 3D experience to explore our medical products
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600">
-                Your data and professional information are protected with the highest security standards.
+                Navigate through our innovative 3D product showcase and discover the future of medical technology.
               </p>
             </CardContent>
           </Card>
         </div>
 
         {/* CTA Section */}
-        <div className="bg-blue-600 rounded-2xl text-white p-12 text-center">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white p-12 text-center">
           <h3 className="text-3xl font-bold mb-4">Ready to Get Started?</h3>
           <p className="text-xl mb-8 opacity-90">
             Join thousands of medical professionals already using our platform
           </p>
-          <Link to="/register">
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-              Register Now
-            </Button>
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link to="/products">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
+                <Sparkles className="mr-2 h-5 w-5" />
+                Explore Products
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
+                Register Now
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
