@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Shield, ArrowLeft, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormData {
   firstName: string;
@@ -27,7 +29,9 @@ interface FormData {
 
 const Register = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -47,52 +51,206 @@ const Register = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const validateStep1 = () => {
+    if (!formData.firstName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "First name is required.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.lastName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Last name is required.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.email.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Email is required.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Password is required.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    // Password validation
+    if (formData.password.length < 6) {
+      toast({
+        title: "Weak Password",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep2 = () => {
+    if (!formData.category) {
+      toast({
+        title: "Category Required",
+        description: "Please select your category.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.medicalSpecialty) {
+      toast({
+        title: "Medical Specialty Required",
+        description: "Please select your medical specialty.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.institution.trim()) {
+      toast({
+        title: "Institution Required",
+        description: "Please enter your institution or hospital name.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (formData.category === "student" && !formData.yearOfStudy) {
+      toast({
+        title: "Year of Study Required",
+        description: "Please select your current year of study.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (formData.category === "professional" && !formData.degreeLevel) {
+      toast({
+        title: "Degree Level Required",
+        description: "Please select your highest degree level.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleNext = () => {
-    if (step === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
-        toast({
-          title: "Missing Information",
-          description: "Please fill in all required fields.",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (formData.password !== formData.confirmPassword) {
-        toast({
-          title: "Password Mismatch",
-          description: "Passwords do not match.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-    if (step === 2) {
-      if (!formData.category) {
-        toast({
-          title: "Category Required",
-          description: "Please select your category.",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (!formData.medicalSpecialty) {
-        toast({
-          title: "Medical Specialty Required",
-          description: "Please select your medical specialty.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
+    if (step === 1 && !validateStep1()) return;
+    if (step === 2 && !validateStep2()) return;
     setStep(prev => prev + 1);
   };
 
-  const handleSubmit = () => {
-    toast({
-      title: "Registration Successful!",
-      description: "Welcome to MedPortal. Your account has been created.",
-    });
-    console.log("Registration Data:", formData);
+  const handleSubmit = async () => {
+    if (!validateStep2()) return;
+
+    setLoading(true);
+    console.log("Starting registration process...");
+
+    try {
+      // Create the user account in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+          }
+        }
+      });
+
+      if (authError) {
+        console.error("Auth error:", authError);
+        toast({
+          title: "Registration Failed",
+          description: authError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!authData.user) {
+        toast({
+          title: "Registration Failed",
+          description: "Failed to create user account.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("User created successfully:", authData.user.id);
+
+      // Create the user profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: authData.user.id,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          category: formData.category,
+          medical_specialty: formData.medicalSpecialty,
+          institution: formData.institution,
+          year_of_study: formData.category === "student" ? formData.yearOfStudy : null,
+          degree_level: formData.category === "professional" ? formData.degreeLevel : null,
+        });
+
+      if (profileError) {
+        console.error("Profile creation error:", profileError);
+        toast({
+          title: "Profile Creation Failed",
+          description: "Account created but profile setup failed. Please contact support.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Profile created successfully");
+
+      toast({
+        title: "Registration Successful!",
+        description: "Welcome to MedPortal. Please check your email to verify your account.",
+      });
+
+      // Redirect to login or products page
+      setTimeout(() => {
+        navigate('/products');
+      }, 2000);
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast({
+        title: "Registration Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -207,7 +365,7 @@ const Register = () => {
                         type="password"
                         value={formData.password}
                         onChange={(e) => updateFormData("password", e.target.value)}
-                        placeholder="Create a password"
+                        placeholder="Create a password (min 6 characters)"
                       />
                     </div>
                     <div>
@@ -367,15 +525,19 @@ const Register = () => {
                 <Button
                   variant="outline"
                   onClick={() => setStep(prev => prev - 1)}
-                  disabled={step === 1}
+                  disabled={step === 1 || loading}
                 >
                   Previous
                 </Button>
                 {step < 3 ? (
-                  <Button onClick={handleNext}>Next</Button>
+                  <Button onClick={handleNext} disabled={loading}>Next</Button>
                 ) : (
-                  <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-                    Complete Registration
+                  <Button 
+                    onClick={handleSubmit} 
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={loading}
+                  >
+                    {loading ? "Creating Account..." : "Complete Registration"}
                   </Button>
                 )}
               </div>

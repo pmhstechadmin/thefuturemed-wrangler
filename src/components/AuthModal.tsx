@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,35 +26,74 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
         
-        toast({
-          title: "Success",
-          description: "Signed in successfully!",
-        });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        
-        toast({
-          title: "Success",
-          description: "Account created successfully!",
-        });
-      }
+        if (error) {
+          if (error.message === 'Invalid login credentials') {
+            toast({
+              title: "Login Failed",
+              description: "Invalid email or password. Please check your credentials and try again.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Login Failed",
+              description: error.message,
+              variant: "destructive",
+            });
+          }
+          return;
+        }
 
-      onSuccess();
-      onClose();
+        if (data.user) {
+          toast({
+            title: "Success",
+            description: "Signed in successfully!",
+          });
+          onSuccess();
+          onClose();
+        }
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            toast({
+              title: "Account Exists",
+              description: "An account with this email already exists. Please sign in instead.",
+              variant: "destructive",
+            });
+            setIsLogin(true);
+          } else {
+            toast({
+              title: "Sign Up Failed",
+              description: error.message,
+              variant: "destructive",
+            });
+          }
+          return;
+        }
+
+        if (data.user) {
+          toast({
+            title: "Success",
+            description: "Account created successfully! Please check your email to verify your account.",
+          });
+          onSuccess();
+          onClose();
+        }
+      }
     } catch (error: any) {
+      console.error('Auth error:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -62,13 +101,29 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     }
   };
 
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    resetForm();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {isLogin ? 'Sign In' : 'Sign Up'}
+            {isLogin ? 'Sign In' : 'Create Account'}
           </DialogTitle>
+          <DialogDescription>
+            {isLogin 
+              ? 'Enter your credentials to access your account'
+              : 'Create a new account to get started'
+            }
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,6 +134,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
               required
             />
           </div>
@@ -90,19 +146,22 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder={isLogin ? "Enter your password" : "Create a password (min 6 characters)"}
               required
+              minLength={isLogin ? undefined : 6}
             />
           </div>
           
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
+            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
           </Button>
           
           <Button
             type="button"
             variant="ghost"
             className="w-full"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={toggleMode}
+            disabled={loading}
           >
             {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
           </Button>
