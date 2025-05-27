@@ -1,5 +1,5 @@
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Box } from '@react-three/drei';
 import { Mesh } from 'three';
@@ -38,15 +38,19 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
     }
   });
 
-  // Create particle positions
-  const particleCount = 50;
-  const positions = new Float32Array(particleCount * 3);
-  
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 4;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 4;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
-  }
+  // Create particle positions using useMemo to avoid recreation on every render
+  const particlePositions = useMemo(() => {
+    const particleCount = 50;
+    const positions = new Float32Array(particleCount * 3);
+    
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 4;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 4;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+    }
+    
+    return positions;
+  }, []);
 
   return (
     <group position={product.position}>
@@ -82,8 +86,8 @@ const ProductBox = ({ product, isSelected, onSelect }: ProductBoxProps) => {
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
-              count={particleCount}
-              array={positions}
+              count={particlePositions.length / 3}
+              array={particlePositions}
               itemSize={3}
             />
           </bufferGeometry>
