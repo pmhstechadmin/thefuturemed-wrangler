@@ -1,10 +1,43 @@
 
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserPlus, Shield, Award, Users, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import AuthModal from "@/components/AuthModal";
 
 const Index = () => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Check for existing session
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
+    
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    // Redirect to products page after successful login
+    window.location.href = '/products';
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -22,10 +55,21 @@ const Index = () => {
                   Explore Products
                 </Button>
               </Link>
-              <Link to="/register">
-                <Button variant="outline">Register</Button>
-              </Link>
-              <Button>Sign In</Button>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-600">Welcome back!</span>
+                  <Button variant="outline" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button variant="outline">Register</Button>
+                  </Link>
+                  <Button onClick={() => setShowAuthModal(true)}>Sign In</Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -132,6 +176,13 @@ const Index = () => {
           </div>
         </div>
       </main>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   );
 };
