@@ -201,29 +201,77 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     try {
       console.log('Starting file upload:', file.name, file.type, file.size);
       
-      // Create a unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `community-files/${community.id}/${fileName}`;
+      // Validate file size (50MB limit)
+      if (file.size > 52428800) {
+        toast({
+          title: "File Too Large",
+          description: "File size must be less than 50MB.",
+          variant: "destructive",
+        });
+        return null;
+      }
 
-      console.log('Uploading to path:', filePath);
+      // Create a unique filename with user ID for better organization
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'unknown';
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2);
+      const fileName = `${user.id}/${timestamp}-${randomId}.${fileExt}`;
 
+      console.log('Uploading to path:', fileName);
+
+      // Upload file to storage bucket
       const { data, error: uploadError } = await supabase.storage
         .from('community-files')
-        .upload(filePath, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
       if (uploadError) {
         console.error('Upload error:', uploadError);
-        throw uploadError;
+        
+        // More specific error messages
+        if (uploadError.message.includes('Duplicate')) {
+          toast({
+            title: "Upload Error",
+            description: "File with this name already exists. Please try again.",
+            variant: "destructive",
+          });
+        } else if (uploadError.message.includes('size')) {
+          toast({
+            title: "Upload Error", 
+            description: "File is too large. Maximum size is 50MB.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Upload Error",
+            description: `Failed to upload file: ${uploadError.message}`,
+            variant: "destructive",
+          });
+        }
+        return null;
       }
 
       console.log('Upload successful:', data);
 
+      // Get public URL for the uploaded file
       const { data: urlData } = supabase.storage
         .from('community-files')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
-      console.log('Public URL:', urlData.publicUrl);
+      console.log('Public URL generated:', urlData.publicUrl);
+
+      // Verify the URL is accessible
+      if (!urlData.publicUrl) {
+        console.error('Failed to generate public URL');
+        toast({
+          title: "Upload Error",
+          description: "Failed to generate file URL. Please try again.",
+          variant: "destructive",
+        });
+        return null;
+      }
 
       return {
         url: urlData.publicUrl,
@@ -233,7 +281,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
       console.error('Error uploading file:', error);
       toast({
         title: "Upload Error",
-        description: "Failed to upload file. Please try again.",
+        description: "An unexpected error occurred while uploading. Please try again.",
         variant: "destructive",
       });
       return null;
@@ -242,12 +290,28 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) {
-      console.log('No file selected or user not authenticated');
+    if (!file) {
+      console.log('No file selected');
       return;
     }
 
-    console.log('File selected for upload:', file);
+    if (!user) {
+      console.log('User not authenticated');
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to upload files.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log('File selected for upload:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified
+    });
+
     setUploadingFile(true);
     
     try {
@@ -255,28 +319,46 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
       
       if (uploadResult) {
         console.log('Upload successful, sending message with file:', uploadResult);
-        await sendMessage(uploadResult.url, uploadResult.type);
+        
+        // Create a message content based on file type
+        const fileMessage = file.type.startsWith('image/') 
+          ? `Shared an image: ${file.name}`
+          : `Shared a file: ${file.name}`;
+        
+        await sendMessage(uploadResult.url, uploadResult.type, fileMessage);
+        
+        toast({
+          title: "Upload Successful",
+          description: "File uploaded and shared successfully!",
+        });
       }
     } catch (error) {
       console.error('Error in file upload process:', error);
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload file. Please check your connection and try again.",
+        variant: "destructive",
+      });
     } finally {
       setUploadingFile(false);
       // Reset file input
-      event.target.value = '';
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
-  const sendMessage = async (fileUrl?: string, fileType?: string) => {
+  const sendMessage = async (fileUrl?: string, fileType?: string, fileMessage?: string) => {
     if ((!newMessage.trim() && !fileUrl) || !user) return;
 
     setSending(true);
     try {
-      console.log('Sending message:', newMessage, 'Type:', postType, 'File:', fileUrl);
+      console.log('Sending message:', newMessage || fileMessage, 'Type:', postType, 'File:', fileUrl);
       
       const postData: any = {
         community_id: community.id,
         user_id: user.id,
-        content: newMessage || (fileUrl ? 'Shared a file' : ''),
+        content: newMessage || fileMessage || 'Shared a file',
         post_type: postType
       };
 
@@ -302,7 +384,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
       console.error('Error sending message:', error);
       toast({
         title: "Error",
-        description: "Failed to send message.",
+        description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -311,13 +393,18 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   };
 
   const triggerFileUpload = () => {
-    console.log('Triggering file upload');
-    fileInputRef.current?.click();
+    console.log('Triggering file upload (gallery)');
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = "image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar";
+      fileInputRef.current.click();
+    }
   };
 
   const triggerCameraCapture = () => {
     console.log('Triggering camera capture');
-    cameraInputRef.current?.click();
+    if (cameraInputRef.current) {
+      cameraInputRef.current.click();
+    }
   };
 
   const getPostTypeIcon = (type: string) => {
@@ -368,17 +455,30 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   const renderFileContent = (post: CommunityPost) => {
     if (!post.file_url) return null;
 
+    console.log('Rendering file content for:', post.file_url, 'Type:', post.file_type);
+
     if (post.file_type === 'image') {
       return (
         <div className="mt-2">
           <img 
             src={post.file_url} 
             alt="Shared image" 
-            className="max-w-xs rounded-lg shadow-sm cursor-pointer"
+            className="max-w-xs rounded-lg shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => window.open(post.file_url, '_blank')}
             onError={(e) => {
               console.error('Error loading image:', post.file_url);
-              e.currentTarget.style.display = 'none';
+              const target = e.currentTarget;
+              target.style.display = 'none';
+              // Show a fallback link
+              const fallback = document.createElement('a');
+              fallback.href = post.file_url;
+              fallback.target = '_blank';
+              fallback.textContent = 'View Image';
+              fallback.className = 'text-blue-600 hover:text-blue-800 text-sm';
+              target.parentNode?.appendChild(fallback);
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', post.file_url);
             }}
           />
         </div>
@@ -390,10 +490,10 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
             href={post.file_url} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm p-2 bg-gray-50 rounded border hover:bg-gray-100 transition-colors"
           >
             <Paperclip className="h-4 w-4" />
-            View File
+            <span>Open File</span>
           </a>
         </div>
       );
@@ -503,7 +603,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                   variant="outline"
                   size="sm"
                   onClick={triggerCameraCapture}
-                  disabled={uploadingFile}
+                  disabled={uploadingFile || sending}
                   className="flex-1"
                 >
                   <Camera className="h-4 w-4 mr-1" />
@@ -513,7 +613,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                   variant="outline"
                   size="sm"
                   onClick={triggerFileUpload}
-                  disabled={uploadingFile}
+                  disabled={uploadingFile || sending}
                   className="flex-1"
                 >
                   <Image className="h-4 w-4 mr-1" />
@@ -523,7 +623,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                   variant="outline"
                   size="sm"
                   onClick={triggerFileUpload}
-                  disabled={uploadingFile}
+                  disabled={uploadingFile || sending}
                   className="flex-1"
                 >
                   <Upload className="h-4 w-4 mr-1" />
@@ -535,17 +635,19 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*,*/*"
+                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar"
                 onChange={handleFileUpload}
                 className="hidden"
+                multiple={false}
               />
               <input
                 ref={cameraInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 capture="environment"
                 onChange={handleFileUpload}
                 className="hidden"
+                multiple={false}
               />
 
               {/* Message Input */}
@@ -562,6 +664,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                   }}
                   className="flex-1 min-h-[40px] max-h-[120px] resize-none"
                   rows={1}
+                  disabled={uploadingFile}
                 />
                 <Button 
                   onClick={() => sendMessage()} 
@@ -577,7 +680,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
               </div>
 
               {uploadingFile && (
-                <div className="text-center text-sm text-gray-500">
+                <div className="text-center text-sm text-blue-600 animate-pulse">
+                  <Upload className="h-4 w-4 animate-spin inline mr-2" />
                   Uploading file...
                 </div>
               )}
