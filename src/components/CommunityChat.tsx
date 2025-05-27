@@ -26,7 +26,7 @@ interface CommunityPost {
   post_type: string;
   created_at: string;
   user_id: string;
-  profiles?: {
+  user_profile?: {
     first_name: string | null;
     last_name: string | null;
   } | null;
@@ -57,6 +57,16 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     }
   }, [user, community.id]);
 
+  useEffect(() => {
+    // Auto-scroll to bottom when new messages arrive
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  }, [posts]);
+
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
@@ -64,26 +74,49 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const fetchPosts = async () => {
     try {
-      // First try to fetch posts with profiles
+      console.log('Fetching posts for community:', community.id);
+      
       const { data, error } = await supabase
         .from('community_posts')
-        .select(`
-          id,
-          content,
-          post_type,
-          created_at,
-          user_id
-        `)
+        .select('*')
         .eq('community_id', community.id)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching posts:', error);
+        throw error;
+      }
 
-      // Map the posts and set profiles to null for now
-      const postsWithProfiles = (data || []).map(post => ({
-        ...post,
-        profiles: null
-      }));
+      console.log('Posts fetched:', data);
+
+      // Fetch user profiles for all posts
+      const postsWithProfiles = await Promise.all(
+        (data || []).map(async (post) => {
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .rpc('get_user_profile', { user_uuid: post.user_id });
+
+            if (profileError) {
+              console.error('Error fetching profile for user:', post.user_id, profileError);
+              return {
+                ...post,
+                user_profile: null
+              };
+            }
+
+            return {
+              ...post,
+              user_profile: profileData && profileData.length > 0 ? profileData[0] : null
+            };
+          } catch (error) {
+            console.error('Error processing profile for post:', post.id, error);
+            return {
+              ...post,
+              user_profile: null
+            };
+          }
+        })
+      );
 
       setPosts(postsWithProfiles);
     } catch (error: any) {
@@ -99,6 +132,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   };
 
   const subscribeToNewPosts = () => {
+    console.log('Setting up subscription for community:', community.id);
+    
     const subscription = supabase
       .channel(`community_${community.id}`)
       .on(
@@ -109,21 +144,45 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
           table: 'community_posts',
           filter: `community_id=eq.${community.id}`
         },
-        (payload) => {
-          const newPost: CommunityPost = {
-            id: payload.new.id,
-            content: payload.new.content,
-            post_type: payload.new.post_type || 'message',
-            created_at: payload.new.created_at,
-            user_id: payload.new.user_id,
-            profiles: null
-          };
-          setPosts(prev => [...prev, newPost]);
+        async (payload) => {
+          console.log('New post received:', payload.new);
+          
+          try {
+            // Fetch user profile for the new post
+            const { data: profileData, error: profileError } = await supabase
+              .rpc('get_user_profile', { user_uuid: payload.new.user_id });
+
+            const newPost: CommunityPost = {
+              id: payload.new.id,
+              content: payload.new.content,
+              post_type: payload.new.post_type || 'message',
+              created_at: payload.new.created_at,
+              user_id: payload.new.user_id,
+              user_profile: profileData && profileData.length > 0 ? profileData[0] : null
+            };
+
+            setPosts(prev => [...prev, newPost]);
+          } catch (error) {
+            console.error('Error processing new post:', error);
+            // Add the post without profile data as fallback
+            const newPost: CommunityPost = {
+              id: payload.new.id,
+              content: payload.new.content,
+              post_type: payload.new.post_type || 'message',
+              created_at: payload.new.created_at,
+              user_id: payload.new.user_id,
+              user_profile: null
+            };
+            setPosts(prev => [...prev, newPost]);
+          }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Subscription status:', status);
+      });
 
     return () => {
+      console.log('Removing subscription');
       supabase.removeChannel(subscription);
     };
   };
@@ -132,6 +191,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     if (!newMessage.trim() || !user) return;
 
     try {
+      console.log('Sending message:', newMessage, 'Type:', postType);
+      
       const { error } = await supabase
         .from('community_posts')
         .insert([{
@@ -141,11 +202,17 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
           post_type: postType
         }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error sending message:', error);
+        throw error;
+      }
 
       setNewMessage('');
       setPostType('message');
+      
+      console.log('Message sent successfully');
     } catch (error: any) {
+      console.error('Error sending message:', error);
       toast({
         title: "Error",
         description: "Failed to send message.",
@@ -188,6 +255,17 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     }
   };
 
+  const getUserDisplayName = (post: CommunityPost) => {
+    if (post.user_profile?.first_name || post.user_profile?.last_name) {
+      return `${post.user_profile.first_name || ''} ${post.user_profile.last_name || ''}`.trim();
+    }
+    return 'Anonymous User';
+  };
+
+  const isOwnMessage = (post: CommunityPost) => {
+    return user && post.user_id === user.id;
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -212,7 +290,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
           <CardContent className="flex-1 flex flex-col p-0">
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
               {loading ? (
                 <div className="text-center py-4 text-gray-500">Loading messages...</div>
               ) : posts.length === 0 ? (
@@ -227,12 +305,18 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                       key={post.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white rounded-lg p-3 shadow-sm border"
+                      className={`rounded-lg p-3 shadow-sm border ${
+                        isOwnMessage(post) 
+                          ? 'bg-blue-50 border-blue-200 ml-8' 
+                          : 'bg-white border-gray-200 mr-8'
+                      }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-sm">
-                            {post.profiles?.first_name || 'Anonymous'} {post.profiles?.last_name || ''}
+                          <span className={`font-medium text-sm ${
+                            isOwnMessage(post) ? 'text-blue-700' : 'text-gray-700'
+                          }`}>
+                            {isOwnMessage(post) ? 'You' : getUserDisplayName(post)}
                           </span>
                           <Badge className={`text-xs ${getPostTypeColor(post.post_type)}`}>
                             {getPostTypeIcon(post.post_type)}

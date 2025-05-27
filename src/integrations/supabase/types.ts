@@ -154,6 +154,13 @@ export type Database = {
         Args: { community_uuid: string }
         Returns: number
       }
+      get_user_profile: {
+        Args: { user_uuid: string }
+        Returns: {
+          first_name: string
+          last_name: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
