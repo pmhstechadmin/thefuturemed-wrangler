@@ -1,11 +1,10 @@
 
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, UserPlus } from 'lucide-react';
-import ProductBox from '@/components/ProductBox';
+import { Shield, UserPlus, Layout, Grid3X3 } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
 
 const products = [
   {
@@ -75,11 +74,22 @@ const products = [
 
 const ProductPortal = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-10 bg-black/20 backdrop-blur-sm border-b border-white/10">
+      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -89,6 +99,24 @@ const ProductPortal = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="text-white border-white/30"
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="text-white border-white/30"
+                >
+                  <Layout className="h-4 w-4" />
+                </Button>
+              </div>
               <Link to="/register">
                 <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
                   Register
@@ -104,77 +132,105 @@ const ProductPortal = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="relative pt-20 pb-8">
+      <div className="relative pt-12 pb-8">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-6xl font-bold text-white mb-6">
+          <motion.h2 
+            className="text-6xl font-bold text-white mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             Medical Platform
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
               of the Future
             </span>
-          </h2>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          </motion.h2>
+          <motion.p 
+            className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             Explore our comprehensive suite of medical tools and services. 
-            Interact with our 3D product showcase below to discover each platform feature.
-          </p>
+            Click on any product card below to discover each platform feature.
+          </motion.p>
         </div>
       </div>
 
-      {/* 3D Product Showcase */}
-      <div className="relative h-screen">
-        <Canvas camera={{ position: [0, 0, 10], fov: 60 }}>
-          <ambientLight intensity={0.4} />
-          <pointLight position={[10, 10, 10]} intensity={1} />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4ECDC4" />
-          
-          <Environment preset="night" />
-          
+      {/* Product Showcase */}
+      <div className="container mx-auto px-4 pb-16">
+        <motion.div
+          className={`${
+            viewMode === 'grid' 
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
+              : 'flex flex-col space-y-4 max-w-2xl mx-auto'
+          }`}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {products.map((product) => (
-            <ProductBox
+            <ProductCard
               key={product.id}
               product={product}
               isSelected={selectedProduct === product.id}
               onSelect={setSelectedProduct}
             />
           ))}
-          
-          <OrbitControls 
-            enableZoom={true} 
-            enablePan={true}
-            enableRotate={true}
-            autoRotate={true}
-            autoRotateSpeed={0.5}
-            maxDistance={20}
-            minDistance={5}
-          />
-        </Canvas>
+        </motion.div>
 
-        {/* Product Info Overlay */}
+        {/* Selected Product Details */}
         {selectedProduct && (
-          <div className="absolute bottom-8 left-8 right-8 bg-black/80 backdrop-blur-sm rounded-lg p-6 text-white">
+          <motion.div
+            className="mt-12 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             {(() => {
               const product = products.find(p => p.id === selectedProduct);
               return product ? (
-                <div>
-                  <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
-                  <p className="text-gray-300 mb-4">{product.description}</p>
+                <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 text-white border border-white/10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div 
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold"
+                      style={{ backgroundColor: product.color }}
+                    >
+                      {product.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold">{product.name}</h3>
+                      <p className="text-gray-300">{product.description}</p>
+                    </div>
+                  </div>
                   <div className="flex gap-4">
-                    <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Button 
+                      className="text-white"
+                      style={{ backgroundColor: product.color }}
+                    >
                       Learn More
                     </Button>
                     <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
                       Try Now
                     </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-300 hover:text-white"
+                      onClick={() => setSelectedProduct(null)}
+                    >
+                      Close
+                    </Button>
                   </div>
                 </div>
               ) : null;
             })()}
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* Instructions */}
-      <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4 text-white text-sm">
-        <p>🖱️ Click and drag to rotate • 🔍 Scroll to zoom • 📱 Click boxes to explore</p>
+      <div className="fixed bottom-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4 text-white text-sm">
+        <p>🖱️ Click cards to explore • 📱 Switch between grid and list view</p>
       </div>
     </div>
   );
