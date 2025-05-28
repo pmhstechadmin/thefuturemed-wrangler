@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, Users, Clock, User } from 'lucide-react';
+import { CalendarDays, Users, Clock, User, UserPlus, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,7 @@ interface Seminar {
   host_id: string;
 }
 
-const ESeminar = () => {
+const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [seminars, setSeminars] = useState<Seminar[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,11 +70,7 @@ const ESeminar = () => {
   };
 
   const handleHostSeminar = () => {
-    console.log('Host seminar button clicked');
-    console.log('Current user:', user);
-    
     if (!user) {
-      console.log('No user found, showing authentication warning');
       toast({
         title: "Authentication Required",
         description: "Please sign in to host a seminar.",
@@ -81,14 +78,11 @@ const ESeminar = () => {
       });
       return;
     }
-    
-    console.log('Navigating to host-seminar page');
     navigate('/host-seminar');
   };
 
-  const handleTryNow = () => {
-    console.log('Try Now button clicked');
-    navigate('/calendar');
+  const handleRegister = () => {
+    navigate('/register');
   };
 
   const handleSeminarClick = (seminar: Seminar) => {
@@ -104,7 +98,6 @@ const ESeminar = () => {
         description: "Please allow popups for this site to view seminar details.",
         variant: "destructive",
       });
-      // Fallback: navigate in the same window
       navigate(`/seminar/${seminar.id}`);
     }
   };
@@ -121,8 +114,18 @@ const ESeminar = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">E-Seminar Platform</h1>
-          <p className="text-xl text-gray-600 mb-6">Host or join medical seminars worldwide</p>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/e-seminar')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to E-Seminar
+            </Button>
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Seminar Calendar</h1>
+          <p className="text-xl text-gray-600 mb-6">Browse and join medical seminars</p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -132,14 +135,16 @@ const ESeminar = () => {
               <Users className="mr-2 h-5 w-5" />
               Host a Seminar
             </Button>
-            <Button 
-              variant="outline" 
-              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg"
-              onClick={handleTryNow}
-            >
-              <CalendarDays className="mr-2 h-5 w-5" />
-              Browse Seminars
-            </Button>
+            {!user && (
+              <Button 
+                onClick={handleRegister}
+                variant="outline" 
+                className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg"
+              >
+                <UserPlus className="mr-2 h-5 w-5" />
+                Register
+              </Button>
+            )}
           </div>
         </div>
 
@@ -227,4 +232,4 @@ const ESeminar = () => {
   );
 };
 
-export default ESeminar;
+export default CalendarPage;
