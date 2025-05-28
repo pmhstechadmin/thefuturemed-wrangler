@@ -138,8 +138,10 @@ const ProductPortal = () => {
         navigate('/');
         return;
       }
-      // Navigate to community page for authenticated users
       navigate('/community');
+    } else if (productId === 'e-seminar') {
+      // Open E-Seminar in new window
+      window.open('/e-seminar', '_blank');
     } else {
       // For other products, show coming soon message
       toast({

@@ -151,6 +151,109 @@ export type Database = {
         }
         Relationships: []
       }
+      seminar_registrations: {
+        Row: {
+          id: string
+          payment_status: string | null
+          registered_at: string
+          seminar_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          payment_status?: string | null
+          registered_at?: string
+          seminar_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          payment_status?: string | null
+          registered_at?: string
+          seminar_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seminar_registrations_seminar_id_fkey"
+            columns: ["seminar_id"]
+            isOneToOne: false
+            referencedRelation: "seminars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seminars: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          host_id: string
+          host_name: string
+          id: string
+          time: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          host_id: string
+          host_name: string
+          id?: string
+          time: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          host_id?: string
+          host_name?: string
+          id?: string
+          time?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      speakers: {
+        Row: {
+          created_at: string
+          department: string
+          id: string
+          name: string
+          qualification: string
+          seminar_id: string
+        }
+        Insert: {
+          created_at?: string
+          department: string
+          id?: string
+          name: string
+          qualification: string
+          seminar_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string
+          id?: string
+          name?: string
+          qualification?: string
+          seminar_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speakers_seminar_id_fkey"
+            columns: ["seminar_id"]
+            isOneToOne: false
+            referencedRelation: "seminars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

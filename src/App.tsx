@@ -9,6 +9,9 @@ import Register from "./pages/Register";
 import ProductPortal from "./pages/ProductPortal";
 import Community from "./pages/Community";
 import CommunityChat from "./pages/CommunityChat";
+import ESeminar from "./pages/ESeminar";
+import HostSeminar from "./pages/HostSeminar";
+import SeminarDetails from "./pages/SeminarDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +27,9 @@ const App = () => (
           <Route path="/products" element={<ProductPortal />} />
           <Route path="/community" element={<Community />} />
           <Route path="/community/:communityId" element={<CommunityChat />} />
+          <Route path="/e-seminar" element={<ESeminar />} />
+          <Route path="/host-seminar" element={<HostSeminar />} />
+          <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
           <Route path="/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
