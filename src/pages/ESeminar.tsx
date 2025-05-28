@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -69,7 +70,11 @@ const ESeminar = () => {
   };
 
   const handleHostSeminar = () => {
+    console.log('Host seminar button clicked');
+    console.log('Current user:', user);
+    
     if (!user) {
+      console.log('No user found, showing authentication warning');
       toast({
         title: "Authentication Required",
         description: "Please sign in to host a seminar.",
@@ -77,6 +82,8 @@ const ESeminar = () => {
       });
       return;
     }
+    
+    console.log('Navigating to host-seminar page');
     navigate('/host-seminar');
   };
 
