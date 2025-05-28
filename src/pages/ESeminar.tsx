@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -87,6 +86,16 @@ const ESeminar = () => {
     navigate('/host-seminar');
   };
 
+  const handleTryNow = () => {
+    console.log('Try Now button clicked');
+    // Navigate to the same E-Seminar page to explore seminars
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast({
+      title: "Welcome to E-Seminar!",
+      description: "Browse seminars by selecting a date from the calendar below.",
+    });
+  };
+
   const handleSeminarClick = (seminar: Seminar) => {
     console.log('Seminar clicked:', seminar.id);
     const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
@@ -131,6 +140,7 @@ const ESeminar = () => {
             <Button 
               variant="outline" 
               className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg"
+              onClick={handleTryNow}
             >
               <CalendarDays className="mr-2 h-5 w-5" />
               Browse Seminars
