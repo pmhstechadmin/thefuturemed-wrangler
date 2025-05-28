@@ -8,7 +8,7 @@ import { CalendarDays, Users, Clock, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import type { User } from '@supabase/supabase-js';
+import type { User as AuthUser } from '@supabase/supabase-js';
 
 interface Seminar {
   id: string;
@@ -24,7 +24,7 @@ const ESeminar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [seminars, setSeminars] = useState<Seminar[]>([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
