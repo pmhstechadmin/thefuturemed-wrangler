@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -82,7 +81,21 @@ const ESeminar = () => {
   };
 
   const handleSeminarClick = (seminar: Seminar) => {
-    window.open(`/seminar/${seminar.id}`, '_blank');
+    console.log('Seminar clicked:', seminar.id);
+    const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
+    console.log('Opening URL:', seminarUrl);
+    
+    const newWindow = window.open(seminarUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    
+    if (!newWindow) {
+      toast({
+        title: "Popup Blocked",
+        description: "Please allow popups for this site to view seminar details.",
+        variant: "destructive",
+      });
+      // Fallback: navigate in the same window
+      navigate(`/seminar/${seminar.id}`);
+    }
   };
 
   const formatTime = (time: string) => {
@@ -167,12 +180,14 @@ const ESeminar = () => {
                   {seminars.map((seminar) => (
                     <Card 
                       key={seminar.id} 
-                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-300"
                       onClick={() => handleSeminarClick(seminar)}
                     >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-semibold text-lg">{seminar.topic}</h3>
+                          <h3 className="font-semibold text-lg text-blue-700 hover:text-blue-800">
+                            {seminar.topic}
+                          </h3>
                           <Badge variant="secondary">
                             {formatTime(seminar.time)}
                           </Badge>
@@ -184,6 +199,9 @@ const ESeminar = () => {
                         {seminar.description && (
                           <p className="text-gray-600 text-sm">{seminar.description}</p>
                         )}
+                        <div className="mt-2 text-xs text-blue-600">
+                          Click to view details and register
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
