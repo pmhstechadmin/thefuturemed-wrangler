@@ -1,12 +1,11 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Upload, FileText, Video } from "lucide-react";
+import { Plus, Trash2, Upload, FileText, Video, X } from "lucide-react";
 import { CourseData, ModuleData, ContentData, MCQQuestion } from "../CreateCourseWizard";
 import { MCQEditor } from "./MCQEditor";
 
@@ -20,16 +19,31 @@ interface ModulesStepProps {
 export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: ModulesStepProps) => {
   const [activeModule, setActiveModule] = useState(0);
 
-  // Initialize modules if not already done
-  if (courseData.modules.length === 0) {
-    const modules: ModuleData[] = Array.from({ length: courseData.number_of_modules }, (_, i) => ({
-      title: `Module ${i + 1}`,
-      description: "",
-      content: [],
-      mcq_questions: [],
-    }));
-    updateCourseData({ modules });
-  }
+  // Initialize modules when component mounts or when number_of_modules changes
+  useEffect(() => {
+    if (courseData.modules.length !== courseData.number_of_modules) {
+      const modules: ModuleData[] = Array.from({ length: courseData.number_of_modules }, (_, i) => {
+        // Keep existing module data if it exists
+        const existingModule = courseData.modules[i];
+        return existingModule || {
+          title: `Module ${i + 1}`,
+          description: "",
+          content: [],
+          mcq_questions: [],
+        };
+      });
+      updateCourseData({ modules });
+    }
+  }, [courseData.number_of_modules, courseData.modules.length, updateCourseData]);
+
+  const updateNumberOfModules = (newCount: number) => {
+    if (newCount < 1) return;
+    updateCourseData({ number_of_modules: newCount });
+    // Reset active module if it's beyond the new count
+    if (activeModule >= newCount) {
+      setActiveModule(0);
+    }
+  };
 
   const updateModule = (index: number, updates: Partial<ModuleData>) => {
     const newModules = [...courseData.modules];
@@ -67,29 +81,117 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
     updateContent(moduleIndex, contentIndex, { file });
   };
 
-  const isValid = courseData.modules.every(module => 
-    module.title && module.description && module.content.length > 0
+  const addNewModule = () => {
+    updateNumberOfModules(courseData.number_of_modules + 1);
+    setActiveModule(courseData.number_of_modules); // Switch to the new module
+  };
+
+  const removeModule = (moduleIndex: number) => {
+    if (courseData.number_of_modules <= 1) return; // Don't allow removing the last module
+    
+    const newModules = courseData.modules.filter((_, i) => i !== moduleIndex);
+    updateCourseData({ 
+      modules: newModules,
+      number_of_modules: courseData.number_of_modules - 1 
+    });
+    
+    // Adjust active module if necessary
+    if (activeModule >= newModules.length) {
+      setActiveModule(Math.max(0, newModules.length - 1));
+    } else if (activeModule > moduleIndex) {
+      setActiveModule(activeModule - 1);
+    }
+  };
+
+  const isValid = courseData.modules.length > 0 && courseData.modules.every(module => 
+    module.title.trim() && module.description.trim() && module.content.length > 0
   );
+
+  const currentModule = courseData.modules[activeModule];
 
   return (
     <div className="space-y-6">
+      {/* Module Count Controls */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Course Structure</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="module_count">Number of Modules:</Label>
+            <div className="flex items-center space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => updateNumberOfModules(courseData.number_of_modules - 1)}
+                disabled={courseData.number_of_modules <= 1}
+              >
+                -
+              </Button>
+              <Input
+                id="module_count"
+                type="number"
+                min="1"
+                max="20"
+                value={courseData.number_of_modules}
+                onChange={(e) => updateNumberOfModules(parseInt(e.target.value) || 1)}
+                className="w-20 text-center"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => updateNumberOfModules(courseData.number_of_modules + 1)}
+                disabled={courseData.number_of_modules >= 20}
+              >
+                +
+              </Button>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addNewModule}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Module
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Module Navigation */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {courseData.modules.map((module, index) => (
-          <Button
-            key={index}
-            variant={activeModule === index ? "default" : "outline"}
-            onClick={() => setActiveModule(index)}
-            className="h-auto p-4 justify-start"
-          >
-            <div className="text-left">
-              <div className="font-medium">Module {index + 1}</div>
-              <div className="text-xs opacity-75">{module.title || "Untitled"}</div>
-            </div>
-          </Button>
+          <div key={index} className="relative">
+            <Button
+              variant={activeModule === index ? "default" : "outline"}
+              onClick={() => setActiveModule(index)}
+              className="h-auto p-4 justify-start w-full"
+            >
+              <div className="text-left">
+                <div className="font-medium">Module {index + 1}</div>
+                <div className="text-xs opacity-75">{module.title || "Untitled"}</div>
+              </div>
+            </Button>
+            {courseData.modules.length > 1 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeModule(index)}
+                className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-red-500 hover:bg-red-600 text-white rounded-full"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
         ))}
       </div>
 
-      {courseData.modules[activeModule] && (
+      {/* Module Configuration */}
+      {currentModule && (
         <Card>
           <CardHeader>
             <CardTitle>Module {activeModule + 1} Configuration</CardTitle>
@@ -99,7 +201,7 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
               <Label htmlFor="module_title">Module Title</Label>
               <Input
                 id="module_title"
-                value={courseData.modules[activeModule].title}
+                value={currentModule.title}
                 onChange={(e) => updateModule(activeModule, { title: e.target.value })}
                 placeholder="Enter module title"
               />
@@ -109,7 +211,7 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
               <Label htmlFor="module_description">Module Description</Label>
               <Textarea
                 id="module_description"
-                value={courseData.modules[activeModule].description}
+                value={currentModule.description}
                 onChange={(e) => updateModule(activeModule, { description: e.target.value })}
                 placeholder="Describe what this module covers"
                 rows={3}
@@ -118,8 +220,8 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
 
             <Tabs defaultValue="content" className="w-full">
               <TabsList>
-                <TabsTrigger value="content">Content</TabsTrigger>
-                <TabsTrigger value="mcq">MCQ Questions</TabsTrigger>
+                <TabsTrigger value="content">Content ({currentModule.content.length})</TabsTrigger>
+                <TabsTrigger value="mcq">MCQ Questions ({currentModule.mcq_questions.length})</TabsTrigger>
               </TabsList>
 
               <TabsContent value="content" className="space-y-4">
@@ -154,7 +256,7 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
                 </div>
 
                 <div className="space-y-4">
-                  {courseData.modules[activeModule].content.map((content, contentIndex) => (
+                  {currentModule.content.map((content, contentIndex) => (
                     <Card key={contentIndex}>
                       <CardContent className="pt-4">
                         <div className="space-y-3">
@@ -210,12 +312,18 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
                       </CardContent>
                     </Card>
                   ))}
+                  
+                  {currentModule.content.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No content added yet. Click on the buttons above to add content.</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
 
               <TabsContent value="mcq">
                 <MCQEditor
-                  questions={courseData.modules[activeModule].mcq_questions}
+                  questions={currentModule.mcq_questions}
                   onChange={(questions) => updateModule(activeModule, { mcq_questions: questions })}
                 />
               </TabsContent>
@@ -224,13 +332,26 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
         </Card>
       )}
 
+      {/* Navigation Buttons */}
       <div className="flex justify-between">
         <Button type="button" variant="outline" onClick={onPrev}>
           Previous
         </Button>
-        <Button type="button" onClick={onNext} disabled={!isValid}>
-          Next: Legal Agreement
-        </Button>
+        <div className="flex space-x-2">
+          {activeModule < courseData.modules.length - 1 ? (
+            <Button 
+              type="button" 
+              onClick={() => setActiveModule(activeModule + 1)}
+              disabled={!currentModule?.title || !currentModule?.description || currentModule?.content.length === 0}
+            >
+              Next Module
+            </Button>
+          ) : (
+            <Button type="button" onClick={onNext} disabled={!isValid}>
+              Next: Legal Agreement
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

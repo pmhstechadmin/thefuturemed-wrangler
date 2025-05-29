@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Clock, FileText, Users, Award } from "lucide-react";
+import { CheckCircle, Clock, FileText, Users, Award, Loader2 } from "lucide-react";
 import { CourseData } from "../CreateCourseWizard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +17,7 @@ interface ReviewSubmitStepProps {
 
 export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: ReviewSubmitStepProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async () => {
@@ -31,8 +32,12 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           description: "You must be logged in to create a course.",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
+
+      console.log('Creating course for user:', user.id);
+      console.log('Course data:', courseData);
 
       // Insert course
       const { data: course, error: courseError } = await supabase
@@ -55,11 +60,18 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
         .select()
         .single();
 
-      if (courseError) throw courseError;
+      if (courseError) {
+        console.error('Course creation error:', courseError);
+        throw courseError;
+      }
+
+      console.log('Course created successfully:', course.id);
 
       // Insert modules and their content
       for (let i = 0; i < courseData.modules.length; i++) {
         const module = courseData.modules[i];
+        
+        console.log(`Creating module ${i + 1}:`, module.title);
         
         const { data: moduleData, error: moduleError } = await supabase
           .from('course_modules')
@@ -72,10 +84,14 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           .select()
           .single();
 
-        if (moduleError) throw moduleError;
+        if (moduleError) {
+          console.error('Module creation error:', moduleError);
+          throw moduleError;
+        }
 
         // Insert module content
         for (const content of module.content) {
+          console.log('Creating content:', content.title);
           const { error: contentError } = await supabase
             .from('module_content')
             .insert({
@@ -86,11 +102,15 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
               // Note: File uploads would need additional handling with Supabase Storage
             });
 
-          if (contentError) throw contentError;
+          if (contentError) {
+            console.error('Content creation error:', contentError);
+            throw contentError;
+          }
         }
 
         // Insert MCQ questions
         for (const question of module.mcq_questions) {
+          console.log('Creating MCQ question:', question.question_text);
           const { error: questionError } = await supabase
             .from('mcq_questions')
             .insert({
@@ -104,17 +124,23 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
               explanation: question.explanation
             });
 
-          if (questionError) throw questionError;
+          if (questionError) {
+            console.error('Question creation error:', questionError);
+            throw questionError;
+          }
         }
       }
 
+      setIsSubmitted(true);
       toast({
-        title: "Course Created Successfully!",
-        description: "Your course has been saved as a draft. You can publish it later from your courses page.",
+        title: "🎉 Course Created Successfully!",
+        description: `"${courseData.title}" has been saved as a draft. You can publish it later from your courses page.`,
       });
 
-      // Reset form or redirect
-      window.location.reload();
+      // Auto-refresh after 3 seconds to show the new course in the list
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
 
     } catch (error) {
       console.error('Error creating course:', error);
@@ -130,6 +156,32 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
 
   const totalContent = courseData.modules.reduce((acc, module) => acc + module.content.length, 0);
   const totalQuestions = courseData.modules.reduce((acc, module) => acc + module.mcq_questions.length, 0);
+
+  if (isSubmitted) {
+    return (
+      <div className="text-center space-y-6">
+        <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+          <CheckCircle className="h-12 w-12 text-green-600" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-green-800 mb-2">Course Successfully Created! 🎉</h2>
+          <p className="text-lg text-gray-600 mb-4">
+            Your course "{courseData.title}" has been saved as a draft.
+          </p>
+          <p className="text-sm text-gray-500">
+            You will be redirected shortly to view your courses...
+          </p>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg">
+          <p className="text-sm text-green-700">
+            ✅ {courseData.modules.length} modules created<br/>
+            ✅ {totalContent} content items added<br/>
+            ✅ {totalQuestions} MCQ questions included
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -263,7 +315,7 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
       </Card>
 
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onPrev}>
+        <Button type="button" variant="outline" onClick={onPrev} disabled={isSubmitting}>
           Previous
         </Button>
         <Button 
@@ -272,7 +324,14 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           disabled={isSubmitting}
           className="bg-green-600 hover:bg-green-700"
         >
-          {isSubmitting ? "Creating Course..." : "Create Course"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating Course...
+            </>
+          ) : (
+            "Submit & Create Course"
+          )}
         </Button>
       </div>
     </div>
