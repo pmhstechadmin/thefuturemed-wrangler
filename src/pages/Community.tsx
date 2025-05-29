@@ -1,4 +1,7 @@
 
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import CommunityHeader from '@/components/CommunityHeader';
 import CommunityCard from '@/components/CommunityCard';
 import CommunityEmptyState from '@/components/CommunityEmptyState';
@@ -7,6 +10,7 @@ import CommunityAdsCarousel from '@/components/CommunityAdsCarousel';
 import { useCommunityData } from '@/hooks/useCommunityData';
 
 const Community = () => {
+  const navigate = useNavigate();
   const {
     communities,
     memberships,
@@ -24,7 +28,20 @@ const Community = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="container mx-auto px-4 py-8">
-        <CommunityHeader membershipCount={memberships.length} />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex-1">
+            <CommunityHeader membershipCount={memberships.length} />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="hover:bg-gray-100"
+            title="Go to home page"
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Home
+          </Button>
+        </div>
         
         <CommunityAdsCarousel />
 

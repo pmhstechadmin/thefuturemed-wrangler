@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight, Search } from "lucide-react";
+import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight, Search, Home } from "lucide-react";
 import { CreateCourseWizard } from "@/components/elearning/CreateCourseWizard";
 import { MyCourses } from "@/components/elearning/MyCourses";
 import { PublishedCourses } from "@/components/elearning/PublishedCourses";
@@ -67,33 +68,44 @@ const ELearning = () => {
                 <h1 className="text-2xl font-bold text-gray-900">MedPortal E-Learning</h1>
               </Link>
             </div>
-            <nav className="flex space-x-4">
+            <div className="flex items-center space-x-4">
               <Button
-                variant={activeTab === "browse" ? "default" : "outline"}
-                onClick={() => setActiveTab("browse")}
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="hover:bg-gray-100"
+                title="Go to home page"
               >
-                Browse Courses
+                <Home className="mr-2 h-4 w-4" />
+                Home
               </Button>
-              <Button
-                variant={activeTab === "enrolled" ? "default" : "outline"}
-                onClick={() => setActiveTab("enrolled")}
-              >
-                My Enrolled Courses
-              </Button>
-              <Button
-                variant={activeTab === "create" ? "default" : "outline"}
-                onClick={() => setActiveTab("create")}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Create Course
-              </Button>
-              <Button
-                variant={activeTab === "my-courses" ? "default" : "outline"}
-                onClick={() => setActiveTab("my-courses")}
-              >
-                My Courses
-              </Button>
-            </nav>
+              <nav className="flex space-x-4">
+                <Button
+                  variant={activeTab === "browse" ? "default" : "outline"}
+                  onClick={() => setActiveTab("browse")}
+                >
+                  Browse Courses
+                </Button>
+                <Button
+                  variant={activeTab === "enrolled" ? "default" : "outline"}
+                  onClick={() => setActiveTab("enrolled")}
+                >
+                  My Enrolled Courses
+                </Button>
+                <Button
+                  variant={activeTab === "create" ? "default" : "outline"}
+                  onClick={() => setActiveTab("create")}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Course
+                </Button>
+                <Button
+                  variant={activeTab === "my-courses" ? "default" : "outline"}
+                  onClick={() => setActiveTab("my-courses")}
+                >
+                  My Courses
+                </Button>
+              </nav>
+            </div>
           </div>
         </div>
       </header>

@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, User, Clock, CalendarDays, Users, CheckCircle } from 'lucide-react';
+import { ArrowLeft, User, Clock, CalendarDays, Users, CheckCircle, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import type { User as AuthUser } from '@supabase/supabase-js';
@@ -195,7 +194,13 @@ const SeminarDetails = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Seminar Not Found</h1>
           <p className="text-gray-600 mb-4">The seminar you're looking for doesn't exist.</p>
-          <Button onClick={() => window.close()}>Close Window</Button>
+          <div className="flex gap-2 justify-center">
+            <Button onClick={() => window.close()}>Close Window</Button>
+            <Button variant="outline" onClick={() => navigate('/')}>
+              <Home className="mr-2 h-4 w-4" />
+              Go Home
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -205,19 +210,30 @@ const SeminarDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => window.close()}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Close
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Seminar Details</h1>
+              <p className="text-gray-600">Complete information about this seminar</p>
+            </div>
+          </div>
           <Button
             variant="outline"
-            onClick={() => window.close()}
-            className="flex items-center gap-2"
+            onClick={() => navigate('/')}
+            className="hover:bg-gray-100"
+            title="Go to home page"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Close
+            <Home className="mr-2 h-4 w-4" />
+            Home
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Seminar Details</h1>
-            <p className="text-gray-600">Complete information about this seminar</p>
-          </div>
         </div>
 
         {/* Seminar Information */}

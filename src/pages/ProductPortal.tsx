@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, UserPlus, Layout, Grid3X3, User } from 'lucide-react';
+import { Shield, UserPlus, Layout, Grid3X3, User, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';

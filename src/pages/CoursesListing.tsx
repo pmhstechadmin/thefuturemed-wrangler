@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Users, Award, Star, ArrowLeft, Filter } from "lucide-react";
+import { BookOpen, Clock, Users, Award, Star, ArrowLeft, Filter, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseSearchBar } from "@/components/elearning/CourseSearchBar";
 import {
@@ -186,20 +185,31 @@ export const CoursesListing = () => {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              
+              <Link to="/e-learning" className="flex items-center space-x-2">
+                <BookOpen className="h-8 w-8 text-blue-600" />
+                <h1 className="text-2xl font-bold text-gray-900">All Courses</h1>
+              </Link>
+            </div>
             <Button
               variant="outline"
-              size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="hover:bg-gray-100"
+              title="Go to home page"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <Home className="mr-2 h-4 w-4" />
+              Home
             </Button>
-            
-            <Link to="/e-learning" className="flex items-center space-x-2">
-              <BookOpen className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">All Courses</h1>
-            </Link>
           </div>
         </div>
       </header>
