@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import PhoneNumberInput from './PhoneNumberInput';
+import CountrySelect from './CountrySelect';
+import DateOfBirthInput from './DateOfBirthInput';
 
 interface Profile {
   id: string;
@@ -49,6 +52,24 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate age if date of birth is provided
+    if (formData.date_of_birth) {
+      const birthDate = new Date(formData.date_of_birth);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (age < 18 || (age === 18 && monthDiff < 0) || (age === 18 && monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        toast({
+          title: "Age Restriction",
+          description: "You must be at least 18 years old to register.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -120,23 +141,17 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
               />
             </div>
 
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
+            <div className="md:col-span-2">
+              <PhoneNumberInput
                 value={formData.phone || ''}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="Enter your phone number"
+                onChange={(value) => handleInputChange('phone', value)}
               />
             </div>
 
-            <div>
-              <Label htmlFor="date_of_birth">Date of Birth</Label>
-              <Input
-                id="date_of_birth"
-                type="date"
+            <div className="md:col-span-2">
+              <DateOfBirthInput
                 value={formData.date_of_birth || ''}
-                onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
+                onChange={(value) => handleInputChange('date_of_birth', value)}
               />
             </div>
 
@@ -149,7 +164,7 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                 <SelectTrigger>
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
@@ -168,13 +183,10 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
               />
             </div>
 
-            <div>
-              <Label htmlFor="country">Country</Label>
-              <Input
-                id="country"
+            <div className="md:col-span-2">
+              <CountrySelect
                 value={formData.country || ''}
-                onChange={(e) => handleInputChange('country', e.target.value)}
-                placeholder="Enter your country"
+                onChange={(value) => handleInputChange('country', value)}
               />
             </div>
 
@@ -187,7 +199,7 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="doctor">Doctor</SelectItem>
                   <SelectItem value="dentist">Dentist</SelectItem>
                   <SelectItem value="nursing">Nursing</SelectItem>
@@ -234,7 +246,7 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                 <SelectTrigger>
                   <SelectValue placeholder="Select degree level" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="bachelor">Bachelor's</SelectItem>
                   <SelectItem value="master">Master's</SelectItem>
                   <SelectItem value="doctorate">Doctorate</SelectItem>
