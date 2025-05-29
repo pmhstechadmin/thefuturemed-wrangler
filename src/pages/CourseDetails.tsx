@@ -1,11 +1,12 @@
-
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BookOpen, Clock, Users, Award, Star, Play, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { EnrollmentButton } from "@/components/elearning/EnrollmentButton";
+import { useToast } from "@/hooks/use-toast";
 
 interface Course {
   id: string;
@@ -31,16 +32,46 @@ interface Profile {
 const CourseDetails = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const [course, setCourse] = useState<Course | null>(null);
   const [creatorProfile, setCreatorProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [checkingEnrollment, setCheckingEnrollment] = useState(false);
 
   useEffect(() => {
     if (courseId) {
       fetchCourseDetails();
+      checkEnrollmentStatus();
     }
   }, [courseId]);
+
+  useEffect(() => {
+    // Check for payment status in URL params
+    const paymentStatus = searchParams.get('payment');
+    if (paymentStatus === 'success') {
+      handlePaymentSuccess();
+    } else if (paymentStatus === 'canceled') {
+      toast({
+        title: "Payment Canceled",
+        description: "Your enrollment was canceled. You can try again anytime.",
+        variant: "destructive",
+      });
+    }
+  }, [searchParams]);
+
+  const handlePaymentSuccess = async () => {
+    toast({
+      title: "Payment Successful!",
+      description: "Checking your enrollment status...",
+    });
+    
+    // Wait a moment for the webhook to process
+    setTimeout(() => {
+      checkEnrollmentStatus();
+    }, 2000);
+  };
 
   const fetchCourseDetails = async () => {
     try {
@@ -71,10 +102,36 @@ const CourseDetails = () => {
     }
   };
 
-  const handleEnrollment = () => {
-    // TODO: Implement enrollment logic with payment if needed
-    console.log('Enrolling in course:', courseId);
-    setIsEnrolled(true);
+  const checkEnrollmentStatus = async () => {
+    try {
+      setCheckingEnrollment(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data, error } = await supabase
+        .from('course_enrollments')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('course_id', courseId)
+        .eq('payment_status', 'paid')
+        .single();
+
+      if (!error && data) {
+        setIsEnrolled(true);
+        if (searchParams.get('payment') === 'success') {
+          toast({
+            title: "Enrollment Complete!",
+            description: "Welcome to the course! A confirmation email has been sent to you.",
+          });
+          // Clear the payment param from URL
+          navigate(`/course/${courseId}`, { replace: true });
+        }
+      }
+    } catch (error) {
+      console.error('Error checking enrollment status:', error);
+    } finally {
+      setCheckingEnrollment(false);
+    }
   };
 
   if (isLoading) {
@@ -191,21 +248,32 @@ const CourseDetails = () => {
 
           {/* Enrollment Sidebar */}
           <div className="space-y-6">
-            <Card>
+            <Card className={isEnrolled ? "border-green-200 bg-green-50" : ""}>
               <CardContent className="p-6">
-                <div className="text-center mb-6">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">Free</div>
-                  <p className="text-sm text-gray-600">Full access to all content</p>
-                </div>
+                {isEnrolled ? (
+                  <div className="text-center mb-6">
+                    <Badge className="mb-4 bg-green-100 text-green-800">Enrolled</Badge>
+                    <div className="text-2xl font-bold text-green-600 mb-2">Access Granted</div>
+                    <p className="text-sm text-gray-600">You have full access to this course</p>
+                  </div>
+                ) : (
+                  <div className="text-center mb-6">
+                    <div className="text-3xl font-bold text-blue-600 mb-2">$49.99</div>
+                    <p className="text-sm text-gray-600">One-time payment • Full access</p>
+                  </div>
+                )}
 
-                <Button 
-                  className="w-full mb-4" 
-                  size="lg"
-                  onClick={handleEnrollment}
-                  disabled={isEnrolled}
-                >
-                  {isEnrolled ? 'Enrolled' : 'Enroll Now'}
-                </Button>
+                {checkingEnrollment ? (
+                  <Button className="w-full mb-4" size="lg" disabled>
+                    Checking enrollment...
+                  </Button>
+                ) : (
+                  <EnrollmentButton 
+                    courseId={courseId!}
+                    isEnrolled={isEnrolled}
+                    onEnrollmentChange={checkEnrollmentStatus}
+                  />
+                )}
 
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">

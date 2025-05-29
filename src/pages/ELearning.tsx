@@ -7,9 +7,10 @@ import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight } from 
 import { CreateCourseWizard } from "@/components/elearning/CreateCourseWizard";
 import { MyCourses } from "@/components/elearning/MyCourses";
 import { PublishedCourses } from "@/components/elearning/PublishedCourses";
+import { MyEnrolledCourses } from "@/components/elearning/MyEnrolledCourses";
 
 const ELearning = () => {
-  const [activeTab, setActiveTab] = useState<"browse" | "create" | "my-courses">("browse");
+  const [activeTab, setActiveTab] = useState<"browse" | "create" | "my-courses" | "enrolled">("browse");
   const navigate = useNavigate();
 
   const handleBackNavigation = () => {
@@ -60,6 +61,12 @@ const ELearning = () => {
                 onClick={() => setActiveTab("browse")}
               >
                 Browse Courses
+              </Button>
+              <Button
+                variant={activeTab === "enrolled" ? "default" : "outline"}
+                onClick={() => setActiveTab("enrolled")}
+              >
+                My Enrolled Courses
               </Button>
               <Button
                 variant={activeTab === "create" ? "default" : "outline"}
@@ -130,6 +137,7 @@ const ELearning = () => {
           </div>
         )}
 
+        {activeTab === "enrolled" && <MyEnrolledCourses />}
         {activeTab === "create" && <CreateCourseWizard />}
         {activeTab === "my-courses" && <MyCourses />}
       </main>
