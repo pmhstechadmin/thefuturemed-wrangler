@@ -14,6 +14,7 @@ import ELearning from "./pages/ELearning";
 import CalendarPage from "./pages/CalendarPage";
 import HostSeminar from "./pages/HostSeminar";
 import SeminarDetails from "./pages/SeminarDetails";
+import Profile from "./pages/Profile";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import DataUsagePolicy from "./pages/DataUsagePolicy";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/host-seminar" element={<HostSeminar />} />
           <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/data-usage-policy" element={<DataUsagePolicy />} />

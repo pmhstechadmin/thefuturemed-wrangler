@@ -294,41 +294,62 @@ export type Database = {
       }
       profiles: {
         Row: {
+          bio: string | null
           category: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          date_of_birth: string | null
           degree_level: string | null
           email: string | null
           first_name: string | null
+          gender: string | null
           id: string
           institution: string | null
           last_name: string | null
           medical_specialty: string | null
+          phone: string | null
+          profile_image_url: string | null
           updated_at: string
           year_of_study: string | null
         }
         Insert: {
+          bio?: string | null
           category?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           degree_level?: string | null
           email?: string | null
           first_name?: string | null
+          gender?: string | null
           id: string
           institution?: string | null
           last_name?: string | null
           medical_specialty?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
           updated_at?: string
           year_of_study?: string | null
         }
         Update: {
+          bio?: string | null
           category?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           degree_level?: string | null
           email?: string | null
           first_name?: string | null
+          gender?: string | null
           id?: string
           institution?: string | null
           last_name?: string | null
           medical_specialty?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
           updated_at?: string
           year_of_study?: string | null
         }
@@ -436,6 +457,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_activities: {
+        Row: {
+          activity_description: string | null
+          activity_type: string
+          created_at: string
+          id: string
+          points_earned: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_description?: string | null
+          activity_type: string
+          created_at?: string
+          id?: string
+          points_earned?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_description?: string | null
+          activity_type?: string
+          created_at?: string
+          id?: string
+          points_earned?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_earnings: {
+        Row: {
+          amount: number
+          currency: string | null
+          description: string | null
+          earned_at: string
+          earning_type: string
+          id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          currency?: string | null
+          description?: string | null
+          earned_at?: string
+          earning_type: string
+          id?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          currency?: string | null
+          description?: string | null
+          earned_at?: string
+          earning_type?: string
+          id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

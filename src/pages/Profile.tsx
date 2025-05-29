@@ -1,0 +1,452 @@
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Shield, Edit, User, Activity, DollarSign, BookOpen, Users, Calendar, TrendingUp, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import EditProfileModal from '@/components/profile/EditProfileModal';
+import type { User } from '@supabase/supabase-js';
+
+interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone: string | null;
+  bio: string | null;
+  profile_image_url: string | null;
+  date_of_birth: string | null;
+  gender: string | null;
+  city: string | null;
+  country: string | null;
+  medical_specialty: string | null;
+  category: string | null;
+  institution: string | null;
+  degree_level: string | null;
+  year_of_study: string | null;
+}
+
+interface Activity {
+  id: string;
+  activity_type: string;
+  activity_description: string | null;
+  points_earned: number | null;
+  created_at: string;
+}
+
+interface Earning {
+  id: string;
+  earning_type: string;
+  amount: number;
+  currency: string | null;
+  description: string | null;
+  status: string | null;
+  earned_at: string;
+}
+
+const Profile = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [earnings, setEarnings] = useState<Earning[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        navigate('/');
+        return;
+      }
+      setUser(session.user);
+      await fetchProfileData(session.user.id);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      navigate('/');
+    }
+  };
+
+  const fetchProfileData = async (userId: string) => {
+    try {
+      setLoading(true);
+      
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        throw profileError;
+      }
+
+      // If no profile exists, create one
+      if (!profileData) {
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: user?.email || null
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        setProfile(newProfile);
+      } else {
+        setProfile(profileData);
+      }
+
+      // Fetch activities
+      const { data: activitiesData, error: activitiesError } = await supabase
+        .from('user_activities')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (activitiesError) throw activitiesError;
+      setActivities(activitiesData || []);
+
+      // Fetch earnings
+      const { data: earningsData, error: earningsError } = await supabase
+        .from('user_earnings')
+        .select('*')
+        .eq('user_id', userId)
+        .order('earned_at', { ascending: false });
+
+      if (earningsError) throw earningsError;
+      setEarnings(earningsData || []);
+
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load profile data. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setProfile(updatedProfile);
+    setShowEditModal(false);
+    toast({
+      title: "Success",
+      description: "Profile updated successfully!",
+    });
+  };
+
+  const totalEarnings = earnings.reduce((sum, earning) => sum + Number(earning.amount), 0);
+  const totalPoints = activities.reduce((sum, activity) => sum + (activity.points_earned || 0), 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-blue-100">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/products')}
+                className="hover:bg-blue-50"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Products
+              </Button>
+              <div className="flex items-center space-x-2">
+                <Shield className="h-8 w-8 text-blue-600" />
+                <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+              </div>
+            </div>
+            <Button 
+              onClick={() => setShowEditModal(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Profile Header */}
+        <Card className="mb-8">
+          <CardContent className="pt-6">
+            <div className="flex items-start space-x-6">
+              <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                {profile?.first_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
+              </div>
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  {profile?.first_name && profile?.last_name 
+                    ? `${profile.first_name} ${profile.last_name}`
+                    : profile?.email || 'User'}
+                </h2>
+                <p className="text-gray-600 mb-2">{profile?.email}</p>
+                {profile?.bio && <p className="text-gray-700">{profile.bio}</p>}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {profile?.medical_specialty && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      {profile.medical_specialty}
+                    </Badge>
+                  )}
+                  {profile?.category && (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {profile.category}
+                    </Badge>
+                  )}
+                  {profile?.institution && (
+                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                      {profile.institution}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-blue-600">{totalPoints}</div>
+                  <div className="text-sm text-blue-700">Total Points</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <DollarSign className="h-8 w-8 text-green-600" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">${totalEarnings.toFixed(2)}</div>
+                  <div className="text-sm text-gray-600">Total Earnings</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <Activity className="h-8 w-8 text-blue-600" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{activities.length}</div>
+                  <div className="text-sm text-gray-600">Activities</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <BookOpen className="h-8 w-8 text-purple-600" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {activities.filter(a => a.activity_type.includes('course')).length}
+                  </div>
+                  <div className="text-sm text-gray-600">Courses</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2">
+                <Calendar className="h-8 w-8 text-orange-600" />
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {activities.filter(a => a.activity_type.includes('seminar')).length}
+                  </div>
+                  <div className="text-sm text-gray-600">Seminars</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Tabs Section */}
+        <Tabs defaultValue="details" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="details">Personal Details</TabsTrigger>
+            <TabsTrigger value="activities">Platform Activity</TabsTrigger>
+            <TabsTrigger value="earnings">Earnings</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="details">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <User className="h-5 w-5" />
+                  <span>Personal Information</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Email</label>
+                    <p className="text-gray-900">{profile?.email || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Phone</label>
+                    <p className="text-gray-900">{profile?.phone || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Date of Birth</label>
+                    <p className="text-gray-900">{profile?.date_of_birth || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Gender</label>
+                    <p className="text-gray-900">{profile?.gender || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">City</label>
+                    <p className="text-gray-900">{profile?.city || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Country</label>
+                    <p className="text-gray-900">{profile?.country || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Degree Level</label>
+                    <p className="text-gray-900">{profile?.degree_level || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Year of Study</label>
+                    <p className="text-gray-900">{profile?.year_of_study || 'Not provided'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="activities">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="h-5 w-5" />
+                  <span>Recent Activities</span>
+                </CardTitle>
+                <CardDescription>Your recent platform activities and earned points</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {activities.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No activities yet. Start exploring the platform!</p>
+                ) : (
+                  <div className="space-y-4">
+                    {activities.map((activity) => (
+                      <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <h4 className="font-medium text-gray-900 capitalize">
+                            {activity.activity_type.replace('_', ' ')}
+                          </h4>
+                          {activity.activity_description && (
+                            <p className="text-sm text-gray-600">{activity.activity_description}</p>
+                          )}
+                          <p className="text-xs text-gray-500">
+                            {new Date(activity.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {activity.points_earned && (
+                          <Badge className="bg-blue-100 text-blue-800">
+                            +{activity.points_earned} points
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="earnings">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <DollarSign className="h-5 w-5" />
+                  <span>Earnings History</span>
+                </CardTitle>
+                <CardDescription>Your income from platform activities</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {earnings.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">No earnings yet. Start creating content or hosting seminars!</p>
+                ) : (
+                  <div className="space-y-4">
+                    {earnings.map((earning) => (
+                      <div key={earning.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <h4 className="font-medium text-gray-900 capitalize">
+                            {earning.earning_type.replace('_', ' ')}
+                          </h4>
+                          {earning.description && (
+                            <p className="text-sm text-gray-600">{earning.description}</p>
+                          )}
+                          <p className="text-xs text-gray-500">
+                            {new Date(earning.earned_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">
+                            ${Number(earning.amount).toFixed(2)} {earning.currency}
+                          </p>
+                          <Badge 
+                            variant={earning.status === 'completed' ? 'default' : 'secondary'}
+                            className={earning.status === 'completed' ? 'bg-green-100 text-green-800' : ''}
+                          >
+                            {earning.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && profile && (
+        <EditProfileModal
+          profile={profile}
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={handleProfileUpdate}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Profile;

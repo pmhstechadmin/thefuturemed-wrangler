@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, UserPlus, Layout, Grid3X3 } from 'lucide-react';
+import { Shield, UserPlus, Layout, Grid3X3, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';
-import type { User } from '@supabase/supabase-js';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 const products = [
   {
@@ -78,7 +77,7 @@ const products = [
 const ProductPortal = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -197,6 +196,14 @@ const ProductPortal = () => {
               {user ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
+                  <Button 
+                    variant="outline" 
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm" 
+                    onClick={() => navigate('/profile')}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Button>
                   <Button 
                     variant="outline" 
                     className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm" 
