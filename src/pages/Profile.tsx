@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -72,14 +71,14 @@ const Profile = () => {
         return;
       }
       setUser(session.user);
-      await fetchProfileData(session.user.id);
+      await fetchProfileData(session.user.id, session.user.email, session.user.phone);
     } catch (error) {
       console.error('Auth check error:', error);
       navigate('/');
     }
   };
 
-  const fetchProfileData = async (userId: string) => {
+  const fetchProfileData = async (userId: string, userEmail?: string, userPhone?: string) => {
     try {
       setLoading(true);
       
@@ -94,13 +93,14 @@ const Profile = () => {
         throw profileError;
       }
 
-      // If no profile exists, create one
+      // If no profile exists, create one with email and phone from auth
       if (!profileData) {
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert({
             id: userId,
-            email: user?.email || null
+            email: userEmail || null,
+            phone: userPhone || null
           })
           .select()
           .single();
@@ -108,7 +108,35 @@ const Profile = () => {
         if (createError) throw createError;
         setProfile(newProfile);
       } else {
-        setProfile(profileData);
+        // Update profile with email and phone from auth if not already set
+        const updates: Partial<Profile> = {};
+        
+        if (!profileData.email && userEmail) {
+          updates.email = userEmail;
+        }
+        
+        if (!profileData.phone && userPhone) {
+          updates.phone = userPhone;
+        }
+
+        // If we have updates to make, update the profile
+        if (Object.keys(updates).length > 0) {
+          const { data: updatedProfile, error: updateError } = await supabase
+            .from('profiles')
+            .update(updates)
+            .eq('id', userId)
+            .select()
+            .single();
+
+          if (updateError) {
+            console.error('Error updating profile with auth data:', updateError);
+            setProfile(profileData); // Use existing profile if update fails
+          } else {
+            setProfile(updatedProfile);
+          }
+        } else {
+          setProfile(profileData);
+        }
       }
 
       // Fetch activities
