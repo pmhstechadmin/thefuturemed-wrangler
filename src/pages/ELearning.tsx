@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight } from "lucide-react";
+import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight, Search } from "lucide-react";
 import { CreateCourseWizard } from "@/components/elearning/CreateCourseWizard";
 import { MyCourses } from "@/components/elearning/MyCourses";
 import { PublishedCourses } from "@/components/elearning/PublishedCourses";
@@ -91,7 +91,10 @@ const ELearning = () => {
           <div className="space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card>
+              <Card 
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => navigate('/courses')}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
                   <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -99,6 +102,18 @@ const ELearning = () => {
                 <CardContent>
                   <div className="text-2xl font-bold">156</div>
                   <p className="text-xs text-muted-foreground">+12% from last month</p>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="mt-2 p-0 h-auto text-blue-600 hover:text-blue-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/courses');
+                    }}
+                  >
+                    <Search className="h-3 w-3 mr-1" />
+                    View All Courses
+                  </Button>
                 </CardContent>
               </Card>
               <Card>

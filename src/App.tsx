@@ -14,6 +14,7 @@ import HostSeminar from "./pages/HostSeminar";
 import CalendarPage from "./pages/CalendarPage";
 import ProductPortal from "./pages/ProductPortal";
 import ELearning from "./pages/ELearning";
+import CoursesListing from "./pages/CoursesListing";
 import CourseDetails from "./pages/CourseDetails";
 import { CourseAccessPage } from "./components/elearning/CourseAccessPage";
 import Register from "./pages/Register";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/product-portal" element={<ProductPortal />} />
           <Route path="/e-learning" element={<ELearning />} />
+          <Route path="/courses" element={<CoursesListing />} />
           <Route path="/course/:courseId" element={<CourseDetails />} />
           <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
           <Route path="/register" element={<Register />} />
