@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Plus, Users, Award, TrendingUp, ArrowLeft, ArrowRight, Search } from "lucide-react";
@@ -12,13 +11,26 @@ import { MyEnrolledCourses } from "@/components/elearning/MyEnrolledCourses";
 const ELearning = () => {
   const [activeTab, setActiveTab] = useState<"browse" | "create" | "my-courses" | "enrolled">("browse");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleBackNavigation = () => {
-    navigate(-1); // Go back to previous page
+    // Check if there's history to go back to
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // If no history, navigate to home page
+      navigate('/');
+    }
   };
 
   const handleForwardNavigation = () => {
-    navigate(1); // Go forward to next page
+    // Check if there's history to go forward to
+    try {
+      navigate(1);
+    } catch (error) {
+      // If forward navigation fails, stay on current page
+      console.log('No forward history available');
+    }
   };
 
   return (
