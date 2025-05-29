@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Shield, ArrowLeft, CheckCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Shield, ArrowLeft, CheckCircle, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,6 +25,9 @@ interface FormData {
   degreeLevel: string;
   institution: string;
   additionalQualifications: string;
+  agreedToTerms: boolean;
+  agreedToPrivacy: boolean;
+  agreedToDataUsage: boolean;
 }
 
 const Register = () => {
@@ -45,9 +48,12 @@ const Register = () => {
     degreeLevel: "",
     institution: "",
     additionalQualifications: "",
+    agreedToTerms: false,
+    agreedToPrivacy: false,
+    agreedToDataUsage: false,
   });
 
-  const updateFormData = (field: keyof FormData, value: string) => {
+  const updateFormData = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -158,6 +164,34 @@ const Register = () => {
     return true;
   };
 
+  const validateStep3 = () => {
+    if (!formData.agreedToTerms) {
+      toast({
+        title: "Terms of Service Required",
+        description: "Please agree to the Terms of Service to continue.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.agreedToPrivacy) {
+      toast({
+        title: "Privacy Policy Required",
+        description: "Please agree to the Privacy Policy to continue.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.agreedToDataUsage) {
+      toast({
+        title: "Data Usage Policy Required",
+        description: "Please agree to the Data Usage Policy to continue.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleNext = () => {
     if (step === 1 && !validateStep1()) return;
     if (step === 2 && !validateStep2()) return;
@@ -165,7 +199,7 @@ const Register = () => {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep2()) return;
+    if (!validateStep3()) return;
 
     setLoading(true);
     console.log("Starting registration process...");
@@ -296,7 +330,7 @@ const Register = () => {
             <div className="flex justify-between text-sm text-gray-600">
               <span>Personal Info</span>
               <span>Category & Specialty</span>
-              <span>Qualifications</span>
+              <span>Legal Agreements</span>
             </div>
           </div>
 
@@ -305,12 +339,12 @@ const Register = () => {
               <CardTitle>
                 {step === 1 && "Personal Information"}
                 {step === 2 && "Professional Category & Specialty"}
-                {step === 3 && "Additional Details"}
+                {step === 3 && "Legal Agreements & Terms"}
               </CardTitle>
               <CardDescription>
                 {step === 1 && "Enter your basic information to get started"}
                 {step === 2 && "Tell us about your professional status and medical specialty"}
-                {step === 3 && "Complete your profile with additional qualifications"}
+                {step === 3 && "Review and agree to our policies and terms"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -487,9 +521,9 @@ const Register = () => {
                 </div>
               )}
 
-              {/* Step 3: Additional Qualifications */}
+              {/* Step 3: Legal Agreements */}
               {step === 3 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
                     <Label htmlFor="additionalQualifications">Additional Qualifications</Label>
                     <Textarea
@@ -517,6 +551,82 @@ const Register = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* Legal Agreements */}
+                  <div className="border-t pt-6">
+                    <h4 className="font-semibold text-gray-900 mb-4">Legal Agreements Required</h4>
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="terms"
+                          checked={formData.agreedToTerms}
+                          onCheckedChange={(checked) => updateFormData("agreedToTerms", !!checked)}
+                        />
+                        <div className="space-y-1">
+                          <Label htmlFor="terms" className="text-sm cursor-pointer">
+                            I agree to the Terms of Service *
+                          </Label>
+                          <Link
+                            to="/terms-of-service"
+                            target="_blank"
+                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                          >
+                            Read Terms of Service
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="privacy"
+                          checked={formData.agreedToPrivacy}
+                          onCheckedChange={(checked) => updateFormData("agreedToPrivacy", !!checked)}
+                        />
+                        <div className="space-y-1">
+                          <Label htmlFor="privacy" className="text-sm cursor-pointer">
+                            I agree to the Privacy Policy *
+                          </Label>
+                          <Link
+                            to="/privacy-policy"
+                            target="_blank"
+                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                          >
+                            Read Privacy Policy
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="dataUsage"
+                          checked={formData.agreedToDataUsage}
+                          onCheckedChange={(checked) => updateFormData("agreedToDataUsage", !!checked)}
+                        />
+                        <div className="space-y-1">
+                          <Label htmlFor="dataUsage" className="text-sm cursor-pointer">
+                            I agree to the Data Usage Policy *
+                          </Label>
+                          <Link
+                            to="/data-usage-policy"
+                            target="_blank"
+                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                          >
+                            Read Data Usage Policy
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
+                      <p className="text-sm text-yellow-800">
+                        <strong>Important:</strong> By registering, you acknowledge that you are responsible for maintaining secure backups of your files. 
+                        The platform is not liable for data loss due to technical issues or unforeseen circumstances.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -535,7 +645,7 @@ const Register = () => {
                   <Button 
                     onClick={handleSubmit} 
                     className="bg-green-600 hover:bg-green-700"
-                    disabled={loading}
+                    disabled={loading || !formData.agreedToTerms || !formData.agreedToPrivacy || !formData.agreedToDataUsage}
                   >
                     {loading ? "Creating Account..." : "Complete Registration"}
                   </Button>

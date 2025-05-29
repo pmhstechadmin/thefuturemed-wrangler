@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -251,6 +250,51 @@ const Index = () => {
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <Shield className="h-6 w-6 text-blue-400" />
+                <h3 className="text-lg font-bold">MedPortal</h3>
+              </div>
+              <p className="text-gray-400 text-sm">
+                The comprehensive medical professional platform for networking, education, and collaboration.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link to="/products" className="hover:text-white">Products</Link></li>
+                <li><Link to="/community" className="hover:text-white">Community</Link></li>
+                <li><Link to="/e-seminar" className="hover:text-white">E-Seminars</Link></li>
+                <li><Link to="/calendar" className="hover:text-white">Calendar</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-white">Terms of Service</Link></li>
+                <li><Link to="/data-usage-policy" className="hover:text-white">Data Usage Policy</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="mailto:support@medportal.com" className="hover:text-white">Contact Support</a></li>
+                <li><a href="mailto:privacy@medportal.com" className="hover:text-white">Privacy Concerns</a></li>
+                <li><a href="mailto:legal@medportal.com" className="hover:text-white">Legal Questions</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+            <p>&copy; 2024 MedPortal. All rights reserved. | Designed for medical professionals worldwide.</p>
+          </div>
+        </div>
+      </footer>
 
       {/* Auth Modal */}
       <AuthModal

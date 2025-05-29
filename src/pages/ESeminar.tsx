@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -87,7 +88,11 @@ const ESeminar = () => {
   };
 
   const handleTryNow = () => {
-    console.log('Try Now button clicked');
+    console.log('Try Now button clicked - navigating to calendar page');
+    toast({
+      title: "Opening Calendar",
+      description: "Navigating to the calendar page...",
+    });
     navigate('/calendar');
   };
 
@@ -138,7 +143,7 @@ const ESeminar = () => {
               onClick={handleTryNow}
             >
               <CalendarDays className="mr-2 h-5 w-5" />
-              Browse Seminars
+              Browse Calendar
             </Button>
           </div>
         </div>

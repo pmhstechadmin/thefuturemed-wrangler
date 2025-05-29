@@ -13,6 +13,9 @@ import ESeminar from "./pages/ESeminar";
 import CalendarPage from "./pages/CalendarPage";
 import HostSeminar from "./pages/HostSeminar";
 import SeminarDetails from "./pages/SeminarDetails";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +36,9 @@ const App = () => (
           <Route path="/host-seminar" element={<HostSeminar />} />
           <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
