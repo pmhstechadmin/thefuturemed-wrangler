@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-white shadow-lg border-b border-blue-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -27,22 +28,25 @@ const Index = () => {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 Products
               </Link>
-              <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 Community
               </Link>
-              <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 E-Seminar
               </Link>
-              <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 E-Learning
               </Link>
-              <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 Calendar
               </Link>
-              <Button onClick={() => setShowAuthModal(true)}>
+              <Button 
+                onClick={() => setShowAuthModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+              >
                 <UserPlus className="mr-2 h-4 w-4" />
                 Sign In / Register
               </Button>
@@ -53,6 +57,7 @@ const Index = () => {
               <Button
                 variant="ghost"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 hover:bg-blue-50"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
@@ -61,24 +66,27 @@ const Index = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t pt-4">
+            <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded-lg shadow-sm">
               <div className="flex flex-col space-y-3">
-                <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   Products
                 </Link>
-                <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   Community
                 </Link>
-                <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   E-Seminar
                 </Link>
-                <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   E-Learning
                 </Link>
-                <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   Calendar
                 </Link>
-                <Button onClick={() => setShowAuthModal(true)} className="w-full">
+                <Button 
+                  onClick={() => setShowAuthModal(true)} 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Sign In / Register
                 </Button>
@@ -89,18 +97,27 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
+      <section className="container mx-auto px-4 py-20 text-center">
         <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
           Welcome to <span className="text-blue-600">MedPortal</span>
         </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
           Your comprehensive platform for medical education, community engagement, and professional development.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" onClick={() => setShowAuthModal(true)}>
+          <Button 
+            size="lg" 
+            onClick={() => setShowAuthModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-4 text-lg"
+          >
             Get Started
           </Button>
-          <Button size="lg" variant="outline" asChild>
+          <Button 
+            size="lg" 
+            variant="outline" 
+            asChild
+            className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
+          >
             <Link to="/products">Explore Products</Link>
           </Button>
         </div>
@@ -109,91 +126,115 @@ const Index = () => {
       {/* Features Grid */}
       <section className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-200">
             <CardHeader>
               <Stethoscope className="h-12 w-12 text-blue-600 mb-4" />
-              <CardTitle>Medical Products</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">Medical Products</CardTitle>
+              <CardDescription className="text-gray-600">
                 Discover the latest medical equipment and pharmaceutical products
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
+              >
                 <Link to="/products">Browse Products</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-green-100 hover:border-green-200">
             <CardHeader>
               <Users className="h-12 w-12 text-green-600 mb-4" />
-              <CardTitle>Community</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">Community</CardTitle>
+              <CardDescription className="text-gray-600">
                 Connect with medical professionals and join specialized communities
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-all duration-200"
+              >
                 <Link to="/community">Join Community</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-purple-100 hover:border-purple-200">
             <CardHeader>
               <Calendar className="h-12 w-12 text-purple-600 mb-4" />
-              <CardTitle>E-Seminars</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">E-Seminars</CardTitle>
+              <CardDescription className="text-gray-600">
                 Attend live seminars and webinars by medical experts
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-200"
+              >
                 <Link to="/e-seminar">View Seminars</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-orange-100 hover:border-orange-200">
             <CardHeader>
               <GraduationCap className="h-12 w-12 text-orange-600 mb-4" />
-              <CardTitle>E-Learning</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">E-Learning</CardTitle>
+              <CardDescription className="text-gray-600">
                 Create and take comprehensive medical courses with certifications
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition-all duration-200"
+              >
                 <Link to="/e-learning">Start Learning</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-red-100 hover:border-red-200">
             <CardHeader>
               <Calendar className="h-12 w-12 text-red-600 mb-4" />
-              <CardTitle>Event Calendar</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">Event Calendar</CardTitle>
+              <CardDescription className="text-gray-600">
                 Stay updated with medical conferences, workshops, and events
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200"
+              >
                 <Link to="/calendar">View Calendar</Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-xl transition-all duration-300 border border-indigo-100 hover:border-indigo-200">
             <CardHeader>
               <Shield className="h-12 w-12 text-indigo-600 mb-4" />
-              <CardTitle>Professional Network</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl">Professional Network</CardTitle>
+              <CardDescription className="text-gray-600">
                 Build your professional network and advance your medical career
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" onClick={() => setShowAuthModal(true)} className="w-full">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAuthModal(true)} 
+                className="w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-200"
+              >
                 Join Network
               </Button>
             </CardContent>

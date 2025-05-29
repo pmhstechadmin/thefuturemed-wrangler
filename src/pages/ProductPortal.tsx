@@ -140,10 +140,8 @@ const ProductPortal = () => {
       }
       navigate('/community');
     } else if (productId === 'e-seminar') {
-      // Open E-Seminar in new window
       window.open('/e-seminar', '_blank');
     } else {
-      // For other products, show coming soon message
       toast({
         title: "Coming Soon",
         description: `${products.find(p => p.id === productId)?.name} will be available soon!`,
@@ -154,7 +152,7 @@ const ProductPortal = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
+      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -164,40 +162,47 @@ const ProductPortal = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-1">
                 <Button
-                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('grid')}
-                  className="text-white border-white/30"
+                  className={`${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-white hover:bg-white/20'}`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="text-white border-white/30"
+                  className={`${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-white hover:bg-white/20'}`}
                 >
                   <Layout className="h-4 w-4" />
                 </Button>
               </div>
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-white text-sm">Welcome, {user.email}</span>
-                  <Button variant="outline" className="text-white border-white/30 hover:bg-white/10" onClick={handleSignOut}>
+                  <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
+                  <Button 
+                    variant="outline" 
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm" 
+                    onClick={handleSignOut}
+                  >
                     Sign Out
                   </Button>
                 </div>
               ) : (
                 <>
                   <Link to="/register">
-                    <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
+                    <Button 
+                      variant="outline" 
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    >
                       Register
                     </Button>
                   </Link>
                   <Link to="/">
-                    <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
                       <UserPlus className="mr-2 h-4 w-4" />
                       Sign In
                     </Button>
@@ -210,10 +215,10 @@ const ProductPortal = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="relative pt-12 pb-8">
+      <div className="relative pt-16 pb-8">
         <div className="container mx-auto px-4 text-center">
           <motion.h2 
-            className="text-6xl font-bold text-white mb-6"
+            className="text-5xl md:text-6xl font-bold text-white mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -230,7 +235,7 @@ const ProductPortal = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Explore our comprehensive suite of medical tools and services. 
-            {user ? 'Click on any product to access it.' : 'Register once to access all products.'}
+            {user ? ' Click on any product to access it.' : ' Register once to access all products.'}
           </motion.p>
         </div>
       </div>
@@ -310,7 +315,7 @@ const ProductPortal = () => {
       </div>
 
       {/* Instructions */}
-      <div className="fixed bottom-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4 text-white text-sm">
+      <div className="fixed bottom-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 text-white text-sm border border-white/20 shadow-xl">
         <p>🖱️ Click cards to explore • 📱 Switch between grid and list view</p>
       </div>
     </div>

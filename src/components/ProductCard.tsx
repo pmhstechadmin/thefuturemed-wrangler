@@ -37,20 +37,21 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
       onHoverEnd={() => setIsHovered(false)}
     >
       <Card 
-        className={`cursor-pointer transition-all duration-300 ${
+        className={`cursor-pointer transition-all duration-300 border-2 bg-white/95 backdrop-blur-sm ${
           isSelected 
-            ? 'ring-2 ring-offset-2 shadow-xl scale-105' 
-            : 'hover:shadow-lg'
-        } ${isHovered ? 'shadow-lg' : ''}`}
+            ? 'ring-4 ring-offset-2 shadow-2xl scale-105 border-transparent' 
+            : 'hover:shadow-xl border-white/20 hover:border-white/40'
+        } ${isHovered ? 'shadow-xl' : ''}`}
         style={{ 
           borderColor: isSelected ? product.color : undefined,
-          backgroundColor: isSelected ? `${product.color}10` : undefined
+          backgroundColor: isSelected ? `${product.color}15` : undefined,
+          boxShadow: isSelected ? `0 0 30px ${product.color}40` : undefined
         }}
         onClick={() => onSelect(isSelected ? null : product.id)}
       >
         <CardHeader className="text-center pb-2">
           <motion.div
-            className="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-white text-2xl font-bold mb-2 relative"
+            className="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-white text-2xl font-bold mb-3 relative shadow-lg"
             style={{ backgroundColor: product.color }}
             animate={{
               scale: isSelected ? 1.1 : 1,
@@ -60,25 +61,28 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
           >
             {product.name.charAt(0)}
             {requiresAuth && !isAuthenticated && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                <Lock className="h-3 w-3 text-white" />
+              <div className="absolute -top-1 -right-1 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center shadow-md">
+                <Lock className="h-4 w-4 text-white" />
               </div>
             )}
             {requiresAuth && isAuthenticated && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <Unlock className="h-3 w-3 text-white" />
+              <div className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+                <Unlock className="h-4 w-4 text-white" />
               </div>
             )}
           </motion.div>
-          <CardTitle className="text-lg">{product.name}</CardTitle>
+          <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
           {requiresAuth && (
-            <Badge variant={isAuthenticated ? "default" : "destructive"} className="text-xs">
+            <Badge 
+              variant={isAuthenticated ? "default" : "destructive"} 
+              className={`text-xs font-medium ${isAuthenticated ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+            >
               {isAuthenticated ? "Available" : "Login Required"}
             </Badge>
           )}
         </CardHeader>
         <CardContent className="text-center">
-          <CardDescription className="text-sm mb-4">
+          <CardDescription className="text-sm mb-4 text-gray-600">
             {product.description}
           </CardDescription>
           
@@ -91,10 +95,10 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="space-y-2 pt-2 border-t border-gray-200">
+            <div className="space-y-3 pt-3 border-t border-gray-200">
               <Button 
                 size="sm" 
-                className="w-full text-white"
+                className="w-full text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
                 style={{ backgroundColor: product.color }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -110,7 +114,11 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full"
+                className="w-full border-2 font-medium transition-all duration-200 hover:shadow-md"
+                style={{ 
+                  borderColor: product.color,
+                  color: product.color
+                }}
                 disabled={requiresAuth && !isAuthenticated}
               >
                 {requiresAuth && !isAuthenticated ? 'Login First' : 'Try Now'}
@@ -122,7 +130,7 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
         {/* Selection indicator */}
         {isSelected && (
           <motion.div
-            className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs"
+            className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"
             style={{ backgroundColor: product.color }}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
