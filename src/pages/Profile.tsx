@@ -10,7 +10,7 @@ import { Shield, Edit, User, Activity, DollarSign, BookOpen, Users, Calendar, Tr
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import EditProfileModal from '@/components/profile/EditProfileModal';
-import type { User } from '@supabase/supabase-js';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface Profile {
   id: string;
@@ -50,7 +50,7 @@ interface Earning {
 }
 
 const Profile = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [earnings, setEarnings] = useState<Earning[]>([]);
