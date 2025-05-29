@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, UserPlus, Layout, Grid3X3, User, Home } from 'lucide-react';
+import { Shield, UserPlus, Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';
@@ -116,6 +116,14 @@ const ProductPortal = () => {
     }
   };
 
+  const handleBackNavigation = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -168,7 +176,16 @@ const ProductPortal = () => {
       <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleBackNavigation}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                title="Go back"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
               <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-blue-400" />
                 <h1 className="text-2xl font-bold text-white">MedPortal</h1>
@@ -230,6 +247,15 @@ const ProductPortal = () => {
                   </Link>
                 </>
               )}
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                title="Go to home page"
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Home
+              </Button>
             </div>
           </div>
         </div>

@@ -36,6 +36,14 @@ const SeminarDetails = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const { toast } = useToast();
 
+  const handleBackNavigation = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   useEffect(() => {
     checkUser();
     if (seminarId) {
@@ -195,7 +203,10 @@ const SeminarDetails = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Seminar Not Found</h1>
           <p className="text-gray-600 mb-4">The seminar you're looking for doesn't exist.</p>
           <div className="flex gap-2 justify-center">
-            <Button onClick={() => window.close()}>Close Window</Button>
+            <Button onClick={handleBackNavigation}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Go Back
+            </Button>
             <Button variant="outline" onClick={() => navigate('/')}>
               <Home className="mr-2 h-4 w-4" />
               Go Home
@@ -214,11 +225,11 @@ const SeminarDetails = () => {
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              onClick={() => window.close()}
+              onClick={handleBackNavigation}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Close
+              Back
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Seminar Details</h1>

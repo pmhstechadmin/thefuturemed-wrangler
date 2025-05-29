@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CommunityHeader from '@/components/CommunityHeader';
 import CommunityCard from '@/components/CommunityCard';
@@ -21,6 +21,14 @@ const Community = () => {
     isMember
   } = useCommunityData();
 
+  const handleBackNavigation = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   if (loading) {
     return <CommunityLoadingSpinner />;
   }
@@ -29,8 +37,19 @@ const Community = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex-1">
-            <CommunityHeader membershipCount={memberships.length} />
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={handleBackNavigation}
+              className="hover:bg-gray-100"
+              title="Go back"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+            <div className="flex-1">
+              <CommunityHeader membershipCount={memberships.length} />
+            </div>
           </div>
           <Button
             variant="outline"
