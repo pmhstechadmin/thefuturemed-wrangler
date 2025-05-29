@@ -16,6 +16,8 @@ serve(async (req) => {
   try {
     const { courseId, paymentMethod = 'stripe' } = await req.json();
     
+    console.log('Creating payment for course:', courseId, 'with method:', paymentMethod);
+    
     // Create Supabase client
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -29,29 +31,47 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    // Get course details
-    const { data: course, error: courseError } = await supabaseClient
+    // Get course details using service role key to bypass RLS
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    const { data: course, error: courseError } = await supabaseService
       .from('courses')
       .select('*')
       .eq('id', courseId)
       .single();
 
-    if (courseError || !course) throw new Error("Course not found");
+    if (courseError || !course) {
+      console.error('Course fetch error:', courseError);
+      throw new Error("Course not found");
+    }
+
+    console.log('Found course:', course.title);
 
     // Check if user is already enrolled
-    const { data: existingEnrollment } = await supabaseClient
+    const { data: existingEnrollment } = await supabaseService
       .from('course_enrollments')
       .select('*')
       .eq('user_id', user.id)
       .eq('course_id', courseId)
+      .eq('payment_status', 'paid')
       .single();
 
     if (existingEnrollment) {
       throw new Error("You are already enrolled in this course");
     }
 
+    // Check if Stripe secret key is configured
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeSecretKey) {
+      throw new Error("Stripe is not configured. Please contact administrator.");
+    }
+
     // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2023-10-16",
     });
 
@@ -62,7 +82,7 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Create checkout session
+    // Create checkout session with enhanced security
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -74,28 +94,43 @@ serve(async (req) => {
               name: course.title,
               description: course.description || `Enroll in ${course.title}`,
             },
-            unit_amount: 4999, // $49.99 - you can make this configurable per course
+            unit_amount: 4999, // $49.99
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/course/${courseId}?payment=success`,
+      success_url: `${req.headers.get("origin")}/course/${courseId}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/course/${courseId}?payment=canceled`,
       metadata: {
         courseId: courseId,
         userId: user.id,
         paymentMethod: paymentMethod,
       },
+      payment_method_types: ['card'],
+      billing_address_collection: 'required',
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'ES', 'IT', 'NL', 'SE', 'NO', 'DK', 'FI'],
+      },
+      phone_number_collection: {
+        enabled: true,
+      },
+      automatic_tax: {
+        enabled: false,
+      },
+      invoice_creation: {
+        enabled: true,
+        invoice_data: {
+          description: `Enrollment for ${course.title}`,
+          metadata: {
+            courseId: courseId,
+            userId: user.id,
+          },
+        },
+      },
     });
 
-    // Create order record using service role key
-    const supabaseService = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
+    // Create order record
     await supabaseService.from("orders").insert({
       user_id: user.id,
       course_id: courseId,
@@ -104,6 +139,8 @@ serve(async (req) => {
       status: "pending",
       payment_method: paymentMethod,
     });
+
+    console.log('Payment session created successfully:', session.id);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

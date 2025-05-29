@@ -34,6 +34,8 @@ export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: E
       }
 
       if (paymentMethod === 'stripe') {
+        console.log('Creating Stripe payment for course:', courseId);
+        
         // Create Stripe payment session
         const { data, error } = await supabase.functions.invoke('create-course-payment', {
           body: { courseId, paymentMethod },
@@ -42,29 +44,34 @@ export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: E
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Payment creation error:', error);
+          throw new Error(error.message || 'Failed to create payment session');
+        }
 
         if (data?.url) {
-          // Open Stripe checkout in a new tab
-          window.open(data.url, '_blank');
+          // Open Stripe checkout in current window for better UX
+          window.location.href = data.url;
           
           toast({
-            title: "Payment Processing",
-            description: "Complete your payment in the new tab to enroll in the course.",
+            title: "Redirecting to Payment",
+            description: "You'll be redirected to secure payment processing...",
           });
+        } else {
+          throw new Error('No payment URL received');
         }
       } else if (paymentMethod === 'paypal') {
-        // PayPal integration (placeholder)
+        // PayPal integration placeholder - would implement PayPal SDK here
         toast({
           title: "PayPal Integration",
-          description: "PayPal payment integration coming soon! Please use card payment for now.",
+          description: "PayPal payment integration is coming soon! Please use card payment for now.",
           variant: "destructive",
         });
       } else if (paymentMethod === 'bank') {
-        // Bank transfer integration (placeholder)
+        // Bank transfer integration placeholder
         toast({
           title: "Bank Transfer",
-          description: "Bank transfer option coming soon! Please use card payment for now.",
+          description: "Bank transfer option is coming soon! Please use card payment for now.",
           variant: "destructive",
         });
       }
@@ -72,9 +79,21 @@ export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: E
       setShowPaymentMethods(false);
     } catch (error: any) {
       console.error('Enrollment error:', error);
+      
+      let errorMessage = "Failed to start enrollment process. Please try again.";
+      
+      if (error.message?.includes('Stripe is not configured')) {
+        errorMessage = "Payment system is not configured. Please contact support.";
+      } else if (error.message?.includes('Course not found')) {
+        errorMessage = "Course not found. Please refresh the page and try again.";
+      } else if (error.message?.includes('already enrolled')) {
+        errorMessage = "You are already enrolled in this course.";
+        onEnrollmentChange(); // Refresh enrollment status
+      }
+      
       toast({
         title: "Enrollment Failed",
-        description: error.message || "Failed to start enrollment process. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

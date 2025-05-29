@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -51,8 +50,10 @@ const CourseDetails = () => {
   useEffect(() => {
     // Check for payment status in URL params
     const paymentStatus = searchParams.get('payment');
-    if (paymentStatus === 'success') {
-      handlePaymentSuccess();
+    const sessionId = searchParams.get('session_id');
+    
+    if (paymentStatus === 'success' && sessionId) {
+      handlePaymentSuccess(sessionId);
     } else if (paymentStatus === 'canceled') {
       toast({
         title: "Payment Canceled",
@@ -62,16 +63,55 @@ const CourseDetails = () => {
     }
   }, [searchParams]);
 
-  const handlePaymentSuccess = async () => {
-    toast({
-      title: "Payment Successful!",
-      description: "Checking your enrollment status...",
-    });
-    
-    // Wait a moment for the webhook to process
-    setTimeout(() => {
-      checkEnrollmentStatus();
-    }, 2000);
+  const handlePaymentSuccess = async (sessionId: string) => {
+    try {
+      setCheckingEnrollment(true);
+      
+      toast({
+        title: "Payment Successful!",
+        description: "Verifying your enrollment...",
+      });
+
+      // Verify payment with our backend
+      const { data, error } = await supabase.functions.invoke('verify-payment', {
+        body: { sessionId }
+      });
+
+      if (error) {
+        console.error('Payment verification error:', error);
+        toast({
+          title: "Verification Failed",
+          description: "Payment was successful but verification failed. Please contact support.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data?.enrolled) {
+        setIsEnrolled(true);
+        toast({
+          title: "Enrollment Complete!",
+          description: "Welcome to the course! A confirmation email has been sent to you.",
+        });
+        // Clear the payment params from URL
+        navigate(`/course/${courseId}`, { replace: true });
+      } else {
+        toast({
+          title: "Enrollment Pending",
+          description: "Your payment is being processed. Please refresh in a moment.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Payment success handling error:', error);
+      toast({
+        title: "Verification Error",
+        description: "There was an issue verifying your payment. Please contact support.",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckingEnrollment(false);
+    }
   };
 
   const fetchCourseDetails = async () => {
@@ -119,14 +159,6 @@ const CourseDetails = () => {
 
       if (!error && data) {
         setIsEnrolled(true);
-        if (searchParams.get('payment') === 'success') {
-          toast({
-            title: "Enrollment Complete!",
-            description: "Welcome to the course! A confirmation email has been sent to you.",
-          });
-          // Clear the payment param from URL
-          navigate(`/course/${courseId}`, { replace: true });
-        }
       }
     } catch (error) {
       console.error('Error checking enrollment status:', error);
