@@ -257,7 +257,7 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           <div className="text-sm text-green-700 space-y-1">
             <p>✓ Privacy & Data Usage Policy accepted</p>
             <p>✓ Copyright & Content Agreement accepted</p>
-            <p class="mt-2 text-xs">You have agreed to all terms and conditions for course creation.</p>
+            <p className="mt-2 text-xs">You have agreed to all terms and conditions for course creation.</p>
           </div>
         </CardContent>
       </Card>
