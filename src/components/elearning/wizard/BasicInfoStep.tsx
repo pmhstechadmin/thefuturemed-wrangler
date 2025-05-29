@@ -20,6 +20,17 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
     }
   };
 
+  const handleNumberInput = (field: string, value: string) => {
+    if (value === '') {
+      updateCourseData({ [field]: 0 });
+    } else {
+      const numValue = parseInt(value);
+      if (!isNaN(numValue)) {
+        updateCourseData({ [field]: numValue });
+      }
+    }
+  };
+
   const isValid = courseData.title && courseData.description && courseData.duration_months > 0;
 
   return (
@@ -56,8 +67,9 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               type="number"
               min="1"
               max="24"
-              value={courseData.duration_months}
-              onChange={(e) => updateCourseData({ duration_months: parseInt(e.target.value) || 1 })}
+              value={courseData.duration_months || ''}
+              onChange={(e) => handleNumberInput('duration_months', e.target.value)}
+              placeholder="Enter duration"
               required
             />
           </div>
@@ -68,8 +80,9 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               id="online_hours"
               type="number"
               min="0"
-              value={courseData.online_hours}
-              onChange={(e) => updateCourseData({ online_hours: parseInt(e.target.value) || 0 })}
+              value={courseData.online_hours || ''}
+              onChange={(e) => handleNumberInput('online_hours', e.target.value)}
+              placeholder="Enter online hours"
             />
           </div>
 
@@ -79,8 +92,9 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               id="offline_hours"
               type="number"
               min="0"
-              value={courseData.offline_hours}
-              onChange={(e) => updateCourseData({ offline_hours: parseInt(e.target.value) || 0 })}
+              value={courseData.offline_hours || ''}
+              onChange={(e) => handleNumberInput('offline_hours', e.target.value)}
+              placeholder="Enter offline hours"
             />
           </div>
         </div>
@@ -92,8 +106,9 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
             type="number"
             min="1"
             max="20"
-            value={courseData.number_of_modules}
-            onChange={(e) => updateCourseData({ number_of_modules: parseInt(e.target.value) || 1 })}
+            value={courseData.number_of_modules || ''}
+            onChange={(e) => handleNumberInput('number_of_modules', e.target.value)}
+            placeholder="Enter number of modules"
             required
           />
         </div>
