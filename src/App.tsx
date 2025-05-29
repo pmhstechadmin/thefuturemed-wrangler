@@ -14,6 +14,7 @@ import ELearning from "./pages/ELearning";
 import CalendarPage from "./pages/CalendarPage";
 import HostSeminar from "./pages/HostSeminar";
 import SeminarDetails from "./pages/SeminarDetails";
+import CourseDetails from "./pages/CourseDetails";
 import Profile from "./pages/Profile";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/community/:communityId" element={<CommunityChat />} />
           <Route path="/e-seminar" element={<ESeminar />} />
           <Route path="/e-learning" element={<ELearning />} />
+          <Route path="/course/:courseId" element={<CourseDetails />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/host-seminar" element={<HostSeminar />} />
           <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
