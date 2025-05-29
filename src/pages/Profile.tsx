@@ -10,6 +10,7 @@ import { Shield, Edit, User, Activity, DollarSign, BookOpen, Users, Calendar, Tr
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import EditProfileModal from '@/components/profile/EditProfileModal';
+import ProfilePictureUpload from '@/components/profile/ProfilePictureUpload';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface Profile {
@@ -152,6 +153,12 @@ const Profile = () => {
     });
   };
 
+  const handleProfileImageUpdate = (newImageUrl: string) => {
+    if (profile) {
+      setProfile(prev => prev ? { ...prev, profile_image_url: newImageUrl } : null);
+    }
+  };
+
   const totalEarnings = earnings.reduce((sum, earning) => sum + Number(earning.amount), 0);
   const totalPoints = activities.reduce((sum, activity) => sum + (activity.points_earned || 0), 0);
 
@@ -199,9 +206,12 @@ const Profile = () => {
         <Card className="mb-8">
           <CardContent className="pt-6">
             <div className="flex items-start space-x-6">
-              <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {profile?.first_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
-              </div>
+              <ProfilePictureUpload
+                currentImageUrl={profile?.profile_image_url}
+                userInitial={profile?.first_name?.charAt(0) || profile?.email?.charAt(0) || 'U'}
+                userId={profile?.id || ''}
+                onImageUpdate={handleProfileImageUpdate}
+              />
               <div className="flex-1">
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
                   {profile?.first_name && profile?.last_name 
