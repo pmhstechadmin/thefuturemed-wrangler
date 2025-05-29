@@ -188,13 +188,19 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="medical_student">Medical Student</SelectItem>
-                  <SelectItem value="resident">Resident</SelectItem>
-                  <SelectItem value="attending_physician">Attending Physician</SelectItem>
-                  <SelectItem value="nurse">Nurse</SelectItem>
-                  <SelectItem value="pharmacist">Pharmacist</SelectItem>
-                  <SelectItem value="researcher">Researcher</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="doctor">Doctor</SelectItem>
+                  <SelectItem value="dentist">Dentist</SelectItem>
+                  <SelectItem value="nursing">Nursing</SelectItem>
+                  <SelectItem value="allied_health_professions">Allied Health Professions</SelectItem>
+                  <SelectItem value="physiotherapist">Physiotherapist</SelectItem>
+                  <SelectItem value="ayurveda">Ayurveda</SelectItem>
+                  <SelectItem value="unani">Unani</SelectItem>
+                  <SelectItem value="homeopathy">Homeopathy</SelectItem>
+                  <SelectItem value="naturopathy">Naturopathy</SelectItem>
+                  <SelectItem value="dietician">Dietician</SelectItem>
+                  <SelectItem value="yoga">Yoga</SelectItem>
+                  <SelectItem value="fitness_coach">Fitness Coach</SelectItem>
+                  <SelectItem value="others">Others</SelectItem>
                 </SelectContent>
               </Select>
             </div>
