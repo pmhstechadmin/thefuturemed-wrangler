@@ -109,6 +109,189 @@ export type Database = {
           },
         ]
       }
+      course_modules: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string | null
+          id: string
+          module_number: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          module_number: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          module_number?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          copyright_agreement_accepted: boolean | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          duration_months: number
+          has_project: boolean | null
+          id: string
+          number_of_modules: number
+          offline_hours: number | null
+          online_hours: number | null
+          privacy_policy_accepted: boolean | null
+          project_description: string | null
+          resources_summary: string | null
+          status: Database["public"]["Enums"]["course_status"] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          copyright_agreement_accepted?: boolean | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          duration_months: number
+          has_project?: boolean | null
+          id?: string
+          number_of_modules: number
+          offline_hours?: number | null
+          online_hours?: number | null
+          privacy_policy_accepted?: boolean | null
+          project_description?: string | null
+          resources_summary?: string | null
+          status?: Database["public"]["Enums"]["course_status"] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          copyright_agreement_accepted?: boolean | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          duration_months?: number
+          has_project?: boolean | null
+          id?: string
+          number_of_modules?: number
+          offline_hours?: number | null
+          online_hours?: number | null
+          privacy_policy_accepted?: boolean | null
+          project_description?: string | null
+          resources_summary?: string | null
+          status?: Database["public"]["Enums"]["course_status"] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mcq_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          explanation: string | null
+          id: string
+          module_id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          module_id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          module_id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcq_questions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      module_content: {
+        Row: {
+          content_text: string | null
+          content_title: string
+          content_type: string
+          content_url: string | null
+          created_at: string
+          file_size: number | null
+          id: string
+          module_id: string
+        }
+        Insert: {
+          content_text?: string | null
+          content_title: string
+          content_type: string
+          content_url?: string | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          module_id: string
+        }
+        Update: {
+          content_text?: string | null
+          content_title?: string
+          content_type?: string
+          content_url?: string | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          module_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_content_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           category: string | null
@@ -272,7 +455,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      course_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -387,6 +570,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      course_status: ["draft", "published", "archived"],
+    },
   },
 } as const

@@ -1,307 +1,249 @@
+
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus, Shield, Award, Users, Sparkles } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import AuthModal from "@/components/AuthModal";
-import type { User } from '@supabase/supabase-js';
+import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus, Menu, X } from "lucide-react";
+import { AuthModal } from "@/components/AuthModal";
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    // Check for existing session
-    const checkUser = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Session check error:', error);
-        } else {
-          setUser(session?.user || null);
-          console.log('Current session:', session?.user ? 'Authenticated' : 'Not authenticated');
-        }
-      } catch (error) {
-        console.error('Error checking session:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkUser();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session?.user ? 'User logged in' : 'User logged out');
-      setUser(session?.user || null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleAuthSuccess = () => {
-    console.log('Auth success, closing modal');
-    setShowAuthModal(false);
-    toast({
-      title: "Welcome!",
-      description: "You have successfully signed in.",
-    });
-  };
-
-  const handleSignOut = async () => {
-    try {
-      console.log('Signing out...');
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Sign out error:', error);
-        toast({
-          title: "Error",
-          description: "Failed to sign out. Please try again.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Signed Out",
-          description: "You have been successfully signed out.",
-        });
-      }
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
-  const handleSignInClick = () => {
-    console.log('Sign in button clicked');
-    setShowAuthModal(true);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/products">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Explore Products
-                </Button>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Products
               </Link>
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">Welcome back, {user.email}!</span>
-                  <Link to="/products">
-                    <Button variant="outline">Access Products</Button>
-                  </Link>
-                  <Button variant="outline" onClick={handleSignOut}>
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <Link to="/register">
-                    <Button variant="outline">Register</Button>
-                  </Link>
-                  <Button onClick={handleSignInClick}>Sign In</Button>
-                </>
-              )}
+              <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Community
+              </Link>
+              <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                E-Seminar
+              </Link>
+              <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors">
+                E-Learning
+              </Link>
+              <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Calendar
+              </Link>
+              <Button onClick={() => setShowAuthModal(true)}>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Sign In / Register
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
             </div>
           </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t pt-4">
+              <div className="flex flex-col space-y-3">
+                <Link to="/products" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Products
+                </Link>
+                <Link to="/community" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Community
+                </Link>
+                <Link to="/e-seminar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  E-Seminar
+                </Link>
+                <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  E-Learning
+                </Link>
+                <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Calendar
+                </Link>
+                <Button onClick={() => setShowAuthModal(true)} className="w-full">
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Sign In / Register
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-      </header>
+      </nav>
 
       {/* Hero Section */}
-      <main className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Professional Medical Portal
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Join our comprehensive platform designed exclusively for medical professionals and students. 
-            Register once to access all our cutting-edge tools, resources, and products including our vibrant community platform.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/products">
-              <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4">
-                <Sparkles className="mr-2 h-5 w-5" />
-                Explore All Products
+      <section className="container mx-auto px-4 py-16 text-center">
+        <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+          Welcome to <span className="text-blue-600">MedPortal</span>
+        </h2>
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          Your comprehensive platform for medical education, community engagement, and professional development.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button size="lg" onClick={() => setShowAuthModal(true)}>
+            Get Started
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link to="/products">Explore Products</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Stethoscope className="h-12 w-12 text-blue-600 mb-4" />
+              <CardTitle>Medical Products</CardTitle>
+              <CardDescription>
+                Discover the latest medical equipment and pharmaceutical products
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/products">Browse Products</Link>
               </Button>
-            </Link>
-            {user ? (
-              <Link to="/products">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4">
-                  <Users className="mr-2 h-5 w-5" />
-                  Access Portal
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/register">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4">
-                  <UserPlus className="mr-2 h-5 w-5" />
-                  Register Now
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="text-center hover:shadow-lg transition-shadow duration-300">
-            <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Award className="h-6 w-6 text-blue-600" />
-              </div>
-              <CardTitle>For Professionals</CardTitle>
-              <CardDescription>
-                Advanced tools and resources for practicing medical professionals
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Access specialized products designed for healthcare practitioners with varying degrees and experience levels.
-              </p>
             </CardContent>
           </Card>
 
-          <Card className="text-center hover:shadow-lg transition-shadow duration-300">
+          <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-green-600" />
-              </div>
-              <CardTitle>Community Access</CardTitle>
+              <Users className="h-12 w-12 text-green-600 mb-4" />
+              <CardTitle>Community</CardTitle>
               <CardDescription>
-                Connect with medical professionals in specialized communities
+                Connect with medical professionals and join specialized communities
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
-                Join our vibrant community platform to network, share knowledge, and collaborate with peers worldwide.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center hover:shadow-lg transition-shadow duration-300">
-            <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Sparkles className="h-6 w-6 text-purple-600" />
-              </div>
-              <CardTitle>Multiple Products</CardTitle>
-              <CardDescription>
-                One registration gives you access to all our products
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Navigate through our innovative product suite including community, e-learning, conferences, and more.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white p-12 text-center">
-          <h3 className="text-3xl font-bold mb-4">Ready to Get Started?</h3>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of medical professionals already using our platform
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/products">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-                <Sparkles className="mr-2 h-5 w-5" />
-                View All Products
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/community">Join Community</Link>
               </Button>
-            </Link>
-            {user ? (
-              <Link to="/products">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
-                  <Users className="mr-2 h-5 w-5" />
-                  Access Portal
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/register">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-4 text-white border-white hover:bg-white/10">
-                  Register for Full Access
-                </Button>
-              </Link>
-            )}
-          </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Calendar className="h-12 w-12 text-purple-600 mb-4" />
+              <CardTitle>E-Seminars</CardTitle>
+              <CardDescription>
+                Attend live seminars and webinars by medical experts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/e-seminar">View Seminars</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <GraduationCap className="h-12 w-12 text-orange-600 mb-4" />
+              <CardTitle>E-Learning</CardTitle>
+              <CardDescription>
+                Create and take comprehensive medical courses with certifications
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/e-learning">Start Learning</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Calendar className="h-12 w-12 text-red-600 mb-4" />
+              <CardTitle>Event Calendar</CardTitle>
+              <CardDescription>
+                Stay updated with medical conferences, workshops, and events
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/calendar">View Calendar</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <Shield className="h-12 w-12 text-indigo-600 mb-4" />
+              <CardTitle>Professional Network</CardTitle>
+              <CardDescription>
+                Build your professional network and advance your medical career
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" onClick={() => setShowAuthModal(true)} className="w-full">
+                Join Network
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Shield className="h-6 w-6 text-blue-400" />
-                <h3 className="text-lg font-bold">MedPortal</h3>
+                <Shield className="h-6 w-6" />
+                <span className="text-xl font-bold">MedPortal</span>
               </div>
-              <p className="text-gray-400 text-sm">
-                The comprehensive medical professional platform for networking, education, and collaboration.
+              <p className="text-gray-400">
+                Empowering medical professionals through technology and community.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link to="/products" className="hover:text-white">Products</Link></li>
-                <li><Link to="/community" className="hover:text-white">Community</Link></li>
-                <li><Link to="/e-seminar" className="hover:text-white">E-Seminars</Link></li>
-                <li><Link to="/calendar" className="hover:text-white">Calendar</Link></li>
+              <h3 className="text-lg font-semibold mb-4">Platform</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/products" className="hover:text-white transition-colors">Products</Link></li>
+                <li><Link to="/community" className="hover:text-white transition-colors">Community</Link></li>
+                <li><Link to="/e-learning" className="hover:text-white transition-colors">E-Learning</Link></li>
+                <li><Link to="/e-seminar" className="hover:text-white transition-colors">E-Seminars</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-white">Terms of Service</Link></li>
-                <li><Link to="/data-usage-policy" className="hover:text-white">Data Usage Policy</Link></li>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="mailto:support@medportal.com" className="hover:text-white">Contact Support</a></li>
-                <li><a href="mailto:privacy@medportal.com" className="hover:text-white">Privacy Concerns</a></li>
-                <li><a href="mailto:legal@medportal.com" className="hover:text-white">Legal Questions</a></li>
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link to="/data-usage-policy" className="hover:text-white transition-colors">Data Usage Policy</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 MedPortal. All rights reserved. | Designed for medical professionals worldwide.</p>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 MedPortal. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 };
