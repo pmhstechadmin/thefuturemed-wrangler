@@ -15,23 +15,41 @@ interface BasicInfoStepProps {
 export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInfoStepProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (courseData.title && courseData.description && courseData.duration_months > 0) {
-      onNext();
-    }
+    onNext();
   };
 
   const handleNumberInput = (field: string, value: string) => {
     if (value === '') {
-      updateCourseData({ [field]: 0 });
+      updateCourseData({ [field]: field === 'duration_months' || field === 'number_of_modules' ? 1 : 0 });
     } else {
       const numValue = parseInt(value);
-      if (!isNaN(numValue)) {
+      if (!isNaN(numValue) && numValue >= 0) {
         updateCourseData({ [field]: numValue });
       }
     }
   };
 
-  const isValid = courseData.title && courseData.description && courseData.duration_months > 0;
+  const handleNextClick = () => {
+    // Ensure required fields have minimum values
+    const updates: Partial<CourseData> = {};
+    
+    if (!courseData.duration_months || courseData.duration_months < 1) {
+      updates.duration_months = 1;
+    }
+    
+    if (!courseData.number_of_modules || courseData.number_of_modules < 1) {
+      updates.number_of_modules = 1;
+    }
+    
+    if (Object.keys(updates).length > 0) {
+      updateCourseData(updates);
+    }
+    
+    onNext();
+  };
+
+  const isValid = courseData.title && courseData.description && 
+                  courseData.duration_months > 0 && courseData.number_of_modules > 0;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -137,7 +155,12 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={!isValid}>
+        <Button 
+          type="button" 
+          onClick={handleNextClick}
+          disabled={!courseData.title || !courseData.description}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
           Next: Create Modules
         </Button>
       </div>
