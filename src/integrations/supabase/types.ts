@@ -112,30 +112,39 @@ export type Database = {
       course_enrollments: {
         Row: {
           amount: number | null
+          completed: boolean | null
+          completion_date: string | null
           course_id: string
           currency: string | null
           enrolled_at: string
           id: string
+          payment_method: string | null
           payment_status: string | null
           stripe_session_id: string | null
           user_id: string
         }
         Insert: {
           amount?: number | null
+          completed?: boolean | null
+          completion_date?: string | null
           course_id: string
           currency?: string | null
           enrolled_at?: string
           id?: string
+          payment_method?: string | null
           payment_status?: string | null
           stripe_session_id?: string | null
           user_id: string
         }
         Update: {
           amount?: number | null
+          completed?: boolean | null
+          completion_date?: string | null
           course_id?: string
           currency?: string | null
           enrolled_at?: string
           id?: string
+          payment_method?: string | null
           payment_status?: string | null
           stripe_session_id?: string | null
           user_id?: string
@@ -340,6 +349,7 @@ export type Database = {
           created_at: string
           currency: string | null
           id: string
+          payment_method: string | null
           status: string | null
           stripe_session_id: string | null
           updated_at: string
@@ -351,6 +361,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           id?: string
+          payment_method?: string | null
           status?: string | null
           stripe_session_id?: string | null
           updated_at?: string
@@ -362,6 +373,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           id?: string
+          payment_method?: string | null
           status?: string | null
           stripe_session_id?: string | null
           updated_at?: string
@@ -602,6 +614,51 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_module_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          course_id: string
+          created_at: string
+          id: string
+          module_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          module_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          module_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_module_progress_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_module_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

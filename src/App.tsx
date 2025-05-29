@@ -5,19 +5,20 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Register from "./pages/Register";
-import ProductPortal from "./pages/ProductPortal";
+import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import CommunityChat from "./pages/CommunityChat";
 import ESeminar from "./pages/ESeminar";
-import ELearning from "./pages/ELearning";
-import CalendarPage from "./pages/CalendarPage";
-import HostSeminar from "./pages/HostSeminar";
 import SeminarDetails from "./pages/SeminarDetails";
+import HostSeminar from "./pages/HostSeminar";
+import CalendarPage from "./pages/CalendarPage";
+import ProductPortal from "./pages/ProductPortal";
+import ELearning from "./pages/ELearning";
 import CourseDetails from "./pages/CourseDetails";
-import Profile from "./pages/Profile";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import { CourseAccessPage } from "./components/elearning/CourseAccessPage";
+import Register from "./pages/Register";
 import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 
@@ -31,21 +32,21 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/products" element={<ProductPortal />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/community" element={<Community />} />
-          <Route path="/community/:communityId" element={<CommunityChat />} />
+          <Route path="/community/:communityId/chat" element={<CommunityChat />} />
           <Route path="/e-seminar" element={<ESeminar />} />
+          <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+          <Route path="/host-seminar" element={<HostSeminar />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/product-portal" element={<ProductPortal />} />
           <Route path="/e-learning" element={<ELearning />} />
           <Route path="/course/:courseId" element={<CourseDetails />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/host-seminar" element={<HostSeminar />} />
-          <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+          <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/data-usage" element={<DataUsagePolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

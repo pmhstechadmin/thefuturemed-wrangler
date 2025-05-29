@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { courseId } = await req.json();
+    const { courseId, paymentMethod = 'stripe' } = await req.json();
     
     // Create Supabase client
     const supabaseClient = createClient(
@@ -85,6 +85,7 @@ serve(async (req) => {
       metadata: {
         courseId: courseId,
         userId: user.id,
+        paymentMethod: paymentMethod,
       },
     });
 
@@ -101,6 +102,7 @@ serve(async (req) => {
       stripe_session_id: session.id,
       amount: 4999,
       status: "pending",
+      payment_method: paymentMethod,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {

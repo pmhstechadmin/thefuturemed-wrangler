@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -134,6 +135,10 @@ const CourseDetails = () => {
     }
   };
 
+  const handleAccessCourse = () => {
+    navigate(`/course/${courseId}/learn`);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
@@ -266,6 +271,15 @@ const CourseDetails = () => {
                 {checkingEnrollment ? (
                   <Button className="w-full mb-4" size="lg" disabled>
                     Checking enrollment...
+                  </Button>
+                ) : isEnrolled ? (
+                  <Button 
+                    className="w-full mb-4 bg-green-600 hover:bg-green-700" 
+                    size="lg"
+                    onClick={handleAccessCourse}
+                  >
+                    <Play className="mr-2 h-4 w-4" />
+                    Access Course
                   </Button>
                 ) : (
                   <EnrollmentButton 

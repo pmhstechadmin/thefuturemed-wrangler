@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, CreditCard } from "lucide-react";
+import { PaymentMethodSelector } from "./PaymentMethodSelector";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface EnrollmentButtonProps {
   courseId: string;
@@ -13,9 +15,10 @@ interface EnrollmentButtonProps {
 
 export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: EnrollmentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPaymentMethods, setShowPaymentMethods] = useState(false);
   const { toast } = useToast();
 
-  const handleEnrollment = async () => {
+  const handlePaymentMethodSelect = async (paymentMethod: string) => {
     try {
       setIsLoading(true);
 
@@ -30,25 +33,43 @@ export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: E
         return;
       }
 
-      // Create payment session
-      const { data, error } = await supabase.functions.invoke('create-course-payment', {
-        body: { courseId },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+      if (paymentMethod === 'stripe') {
+        // Create Stripe payment session
+        const { data, error } = await supabase.functions.invoke('create-course-payment', {
+          body: { courseId, paymentMethod },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      if (data?.url) {
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
-        
+        if (data?.url) {
+          // Open Stripe checkout in a new tab
+          window.open(data.url, '_blank');
+          
+          toast({
+            title: "Payment Processing",
+            description: "Complete your payment in the new tab to enroll in the course.",
+          });
+        }
+      } else if (paymentMethod === 'paypal') {
+        // PayPal integration (placeholder)
         toast({
-          title: "Payment Processing",
-          description: "Complete your payment in the new tab to enroll in the course.",
+          title: "PayPal Integration",
+          description: "PayPal payment integration coming soon! Please use card payment for now.",
+          variant: "destructive",
+        });
+      } else if (paymentMethod === 'bank') {
+        // Bank transfer integration (placeholder)
+        toast({
+          title: "Bank Transfer",
+          description: "Bank transfer option coming soon! Please use card payment for now.",
+          variant: "destructive",
         });
       }
+      
+      setShowPaymentMethods(false);
     } catch (error: any) {
       console.error('Enrollment error:', error);
       toast({
@@ -70,23 +91,35 @@ export const EnrollmentButton = ({ courseId, isEnrolled, onEnrollmentChange }: E
   }
 
   return (
-    <Button 
-      className="w-full" 
-      size="lg"
-      onClick={handleEnrollment}
-      disabled={isLoading}
-    >
-      {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Processing...
-        </>
-      ) : (
-        <>
-          <CreditCard className="mr-2 h-4 w-4" />
-          Enroll for $49.99
-        </>
-      )}
-    </Button>
+    <Dialog open={showPaymentMethods} onOpenChange={setShowPaymentMethods}>
+      <DialogTrigger asChild>
+        <Button 
+          className="w-full" 
+          size="lg"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <CreditCard className="mr-2 h-4 w-4" />
+              Enroll for $49.99
+            </>
+          )}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Choose Payment Method</DialogTitle>
+        </DialogHeader>
+        <PaymentMethodSelector 
+          onPaymentMethodSelect={handlePaymentMethodSelect}
+          isLoading={isLoading}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };

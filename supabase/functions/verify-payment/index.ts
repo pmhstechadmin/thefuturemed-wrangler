@@ -34,12 +34,16 @@ serve(async (req) => {
 
       const courseId = session.metadata?.courseId;
       const userId = session.metadata?.userId;
+      const paymentMethod = session.metadata?.paymentMethod || 'stripe';
 
       if (courseId && userId) {
         // Update order status
         await supabaseService
           .from("orders")
-          .update({ status: "paid" })
+          .update({ 
+            status: "paid",
+            payment_method: paymentMethod 
+          })
           .eq("stripe_session_id", sessionId);
 
         // Create enrollment record
@@ -52,6 +56,7 @@ serve(async (req) => {
             stripe_session_id: sessionId,
             amount: session.amount_total,
             currency: session.currency,
+            payment_method: paymentMethod,
           });
 
         // Trigger email confirmation
