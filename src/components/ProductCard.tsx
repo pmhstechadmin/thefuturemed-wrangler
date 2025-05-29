@@ -26,6 +26,17 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
   const [isHovered, setIsHovered] = useState(false);
   const requiresAuth = product.id === 'community';
 
+  const getActionButtonText = () => {
+    if (product.id === 'community') {
+      return isAuthenticated ? 'Access Community' : 'Sign In Required';
+    } else if (product.id === 'e-learning') {
+      return 'Access E-Learning';
+    } else if (product.id === 'e-seminar') {
+      return 'View Seminars';
+    }
+    return 'Learn More';
+  };
+
   return (
     <motion.div
       className="relative"
@@ -106,10 +117,7 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
                 }}
                 disabled={requiresAuth && !isAuthenticated}
               >
-                {product.id === 'community' 
-                  ? (isAuthenticated ? 'Access Community' : 'Sign In Required')
-                  : 'Learn More'
-                }
+                {getActionButtonText()}
               </Button>
               <Button 
                 variant="outline" 

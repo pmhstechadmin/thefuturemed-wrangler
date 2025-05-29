@@ -128,6 +128,8 @@ const ProductPortal = () => {
   };
 
   const handleProductAction = (productId: string) => {
+    console.log('Product action triggered for:', productId);
+    
     if (productId === 'community') {
       if (!user) {
         toast({
@@ -140,7 +142,9 @@ const ProductPortal = () => {
       }
       navigate('/community');
     } else if (productId === 'e-seminar') {
-      window.open('/e-seminar', '_blank');
+      navigate('/e-seminar');
+    } else if (productId === 'e-learning') {
+      navigate('/e-learning');
     } else {
       toast({
         title: "Coming Soon",
@@ -294,7 +298,8 @@ const ProductPortal = () => {
                       style={{ backgroundColor: product.color }}
                       onClick={() => handleProductAction(product.id)}
                     >
-                      {product.id === 'community' ? (user ? 'Access Community' : 'Sign In to Access') : 'Learn More'}
+                      {product.id === 'community' ? (user ? 'Access Community' : 'Sign In to Access') : 
+                       product.id === 'e-learning' ? 'Access E-Learning' : 'Learn More'}
                     </Button>
                     <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
                       {product.id === 'community' && user ? 'Join Now' : 'Try Now'}
