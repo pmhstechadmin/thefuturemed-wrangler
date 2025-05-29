@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,6 +34,42 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
       return 'View Seminars';
     }
     return 'Learn More';
+  };
+
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Action button clicked for product:', product.id);
+    
+    // For community, check authentication
+    if (product.id === 'community' && !isAuthenticated) {
+      console.log('Community access blocked - user not authenticated');
+      return;
+    }
+    
+    // Call the onAction callback
+    if (onAction) {
+      console.log('Calling onAction for product:', product.id);
+      onAction();
+    } else {
+      console.log('No onAction callback provided');
+    }
+  };
+
+  const handleTryNowClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Try Now button clicked for product:', product.id);
+    
+    // For community, check authentication
+    if (product.id === 'community' && !isAuthenticated) {
+      console.log('Try Now blocked - user not authenticated');
+      return;
+    }
+    
+    // Call the onAction callback for try now as well
+    if (onAction) {
+      console.log('Calling onAction from Try Now for product:', product.id);
+      onAction();
+    }
   };
 
   return (
@@ -111,10 +146,7 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
                 size="sm" 
                 className="w-full text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
                 style={{ backgroundColor: product.color }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAction?.();
-                }}
+                onClick={handleActionClick}
                 disabled={requiresAuth && !isAuthenticated}
               >
                 {getActionButtonText()}
@@ -127,6 +159,7 @@ const ProductCard = ({ product, isSelected, onSelect, onAction, isAuthenticated 
                   borderColor: product.color,
                   color: product.color
                 }}
+                onClick={handleTryNowClick}
                 disabled={requiresAuth && !isAuthenticated}
               >
                 {requiresAuth && !isAuthenticated ? 'Login First' : 'Try Now'}

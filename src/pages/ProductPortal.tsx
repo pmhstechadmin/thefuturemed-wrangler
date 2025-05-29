@@ -130,6 +130,10 @@ const ProductPortal = () => {
   const handleProductAction = (productId: string) => {
     console.log('Product action triggered for:', productId);
     
+    // Add more detailed logging to debug navigation
+    console.log('Current user:', user);
+    console.log('Navigating to product:', productId);
+    
     if (productId === 'community') {
       if (!user) {
         toast({
@@ -140,11 +144,17 @@ const ProductPortal = () => {
         navigate('/');
         return;
       }
+      console.log('Navigating to community...');
       navigate('/community');
     } else if (productId === 'e-seminar') {
+      console.log('Navigating to e-seminar...');
       navigate('/e-seminar');
     } else if (productId === 'e-learning') {
+      console.log('Navigating to e-learning...');
       navigate('/e-learning');
+    } else if (productId === 'e-conferences') {
+      console.log('Navigating to e-conferences...');
+      navigate('/e-conferences');
     } else {
       toast({
         title: "Coming Soon",
