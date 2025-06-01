@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus, Menu, X } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
+import HomepageAdsCarousel from "@/components/HomepageAdsCarousel";
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -121,6 +122,11 @@ const Index = () => {
             <Link to="/products">Explore Products</Link>
           </Button>
         </div>
+      </section>
+
+      {/* Homepage Ads Carousel */}
+      <section className="container mx-auto px-4">
+        <HomepageAdsCarousel />
       </section>
 
       {/* Features Grid */}
