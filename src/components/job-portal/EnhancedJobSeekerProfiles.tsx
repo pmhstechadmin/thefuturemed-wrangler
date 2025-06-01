@@ -1,58 +1,64 @@
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, MapPin, GraduationCap, Briefcase, User, Lock, Crown, Mail, Phone } from "lucide-react";
+import { MapPin, Mail, Phone, Clock, Award, Search, Lock } from "lucide-react";
 
-interface JobSeeker {
+interface JobSeekerProfile {
   id: string;
   qualification: string;
-  specialization: string | null;
-  experience_years: number | null;
+  specialization: string;
+  experience_years: number;
+  previous_experience: string;
   email: string;
   phone: string;
-  location: string | null;
-  availability: string | null;
-  skills: string[] | null;
-  bio: string | null;
+  location: string;
+  availability: string;
+  skills: string[];
+  bio: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
   profiles?: {
-    first_name: string | null;
-    last_name: string | null;
+    first_name: string;
+    last_name: string;
   };
 }
 
 export const EnhancedJobSeekerProfiles = () => {
-  const [jobSeekers, setJobSeekers] = useState<JobSeeker[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hasSubscription, setHasSubscription] = useState(false);
+  const [profiles, setProfiles] = useState<JobSeekerProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
-    checkSubscriptionAndFetchProfiles();
+    fetchProfiles();
+    checkSubscription();
   }, []);
 
-  const checkSubscriptionAndFetchProfiles = async () => {
+  const checkSubscription = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      if (!user) return;
 
-      // Check subscription status
-      const { data: hasActiveSub } = await supabase.rpc('has_active_subscription', {
+      const { data, error } = await supabase.rpc('has_active_subscription', {
         user_uuid: user.id
       });
-      
-      setHasSubscription(hasActiveSub || false);
 
-      // Fetch job seeker profiles
+      if (error) throw error;
+      setHasSubscription(data);
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    }
+  };
+
+  const fetchProfiles = async () => {
+    try {
       const { data, error } = await supabase
         .from('job_seekers')
         .select(`
@@ -61,16 +67,21 @@ export const EnhancedJobSeekerProfiles = () => {
             first_name,
             last_name
           )
-        `)
-        .order('created_at', { ascending: false });
+        `);
 
       if (error) throw error;
-      setJobSeekers(data || []);
+      
+      // Filter out profiles where the join failed
+      const validProfiles = (data || []).filter(profile => 
+        profile.profiles && typeof profile.profiles === 'object' && !Array.isArray(profile.profiles)
+      ) as JobSeekerProfile[];
+      
+      setProfiles(validProfiles);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching profiles:', error);
       toast({
         title: "Error",
-        description: "Failed to load job seeker profiles",
+        description: "Failed to load job seeker profiles.",
         variant: "destructive",
       });
     } finally {
@@ -78,205 +89,120 @@ export const EnhancedJobSeekerProfiles = () => {
     }
   };
 
-  const filteredSeekers = jobSeekers.filter(seeker => {
-    const fullName = `${seeker.profiles?.first_name || ''} ${seeker.profiles?.last_name || ''}`.trim();
-    const matchesSearch = 
-      fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      seeker.qualification.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (seeker.specialization && seeker.specialization.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (seeker.skills && seeker.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())));
-    return matchesSearch;
-  });
+  const filteredProfiles = profiles.filter(profile =>
+    profile.qualification?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.specialization?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.profiles?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.profiles?.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const maskContactInfo = (info: string, type: 'email' | 'phone') => {
-    if (hasSubscription) return info;
-    
-    if (type === 'email') {
-      const [username, domain] = info.split('@');
-      return `${username.substring(0, 2)}***@${domain}`;
-    } else {
-      return info.replace(/\d/g, '*');
+  const maskContactInfo = (info: string) => {
+    if (!hasSubscription) {
+      return "••••••••••";
     }
+    return info;
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading job seeker profiles...</div>;
+    return <div className="text-center py-8">Loading profiles...</div>;
   }
 
   return (
     <div className="space-y-6">
-      {/* Subscription Notice */}
-      {!hasSubscription && (
-        <Card className="border-amber-200 bg-amber-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-800">
-              <Crown className="h-5 w-5" />
-              Premium Access Required
-            </CardTitle>
-            <CardDescription className="text-amber-700">
-              Subscribe to access full contact details and premium features for candidate recruitment.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="bg-amber-600 hover:bg-amber-700">
-              Subscribe Now
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Search Section */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search by name, qualification, skills..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              <Search className="mr-2 h-4 w-4" />
-              Search Candidates
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">
-          {filteredSeekers.length} Candidate{filteredSeekers.length !== 1 ? 's' : ''} Found
-        </h2>
-        {hasSubscription && (
-          <Badge className="bg-green-500">
-            <Crown className="h-3 w-3 mr-1" />
-            Premium Access
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Search by qualification, specialization, or location..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        {!hasSubscription && (
+          <Badge variant="outline" className="text-amber-600 border-amber-600">
+            <Lock className="h-3 w-3 mr-1" />
+            Subscription Required for Contact Details
           </Badge>
         )}
       </div>
 
-      {/* Candidate Profiles */}
-      <div className="grid gap-6">
-        {filteredSeekers.map((seeker) => (
-          <Card key={seeker.id} className="hover:shadow-lg transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProfiles.map((profile) => (
+          <Card key={profile.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <CardTitle className="text-xl text-blue-600 flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    {seeker.profiles?.first_name && seeker.profiles?.last_name
-                      ? `${seeker.profiles.first_name} ${seeker.profiles.last_name}`
-                      : 'Professional Candidate'
-                    }
-                  </CardTitle>
-                  <CardDescription className="text-lg font-medium text-gray-900">
-                    {seeker.qualification}
-                  </CardDescription>
-                </div>
-                <Button variant="outline" size="sm" disabled={!hasSubscription}>
-                  {hasSubscription ? 'Contact Candidate' : 'Subscription Required'}
-                </Button>
-              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-blue-600" />
+                {profile.profiles?.first_name} {profile.profiles?.last_name}
+              </CardTitle>
+              <CardDescription>{profile.qualification}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Professional Details */}
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                  {seeker.specialization && (
-                    <div className="flex items-center">
-                      <GraduationCap className="mr-1 h-4 w-4" />
-                      {seeker.specialization}
-                    </div>
-                  )}
-                  {seeker.experience_years && (
-                    <div className="flex items-center">
-                      <Briefcase className="mr-1 h-4 w-4" />
-                      {seeker.experience_years} years experience
-                    </div>
-                  )}
-                  {seeker.location && (
-                    <div className="flex items-center">
-                      <MapPin className="mr-1 h-4 w-4" />
-                      {seeker.location}
-                    </div>
-                  )}
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{profile.specialization}</Badge>
+                  <Badge variant="outline">{profile.experience_years} years exp</Badge>
                 </div>
-
-                {/* Contact Information */}
-                <div className="space-y-2">
-                  <h4 className="font-medium text-gray-900">Contact Information:</h4>
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      {maskContactInfo(seeker.email, 'email')}
-                      {!hasSubscription && <Lock className="h-3 w-3 text-amber-500" />}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      {maskContactInfo(seeker.phone, 'phone')}
-                      {!hasSubscription && <Lock className="h-3 w-3 text-amber-500" />}
-                    </p>
-                  </div>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="h-4 w-4" />
+                  {profile.location || "Location not specified"}
                 </div>
-
-                {/* Skills */}
-                {seeker.skills && seeker.skills.length > 0 && (
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Key Skills:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {seeker.skills.map((skill, index) => (
-                        <Badge key={index} variant="secondary" className="bg-green-100 text-green-800">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Bio */}
-                {seeker.bio && (
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">About:</h4>
-                    <p className="text-sm text-gray-600">{seeker.bio}</p>
-                  </div>
-                )}
-
-                {/* Availability */}
-                {seeker.availability && (
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <span className="font-medium text-gray-900">Availability: </span>
-                    <span className="text-gray-700">{seeker.availability}</span>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <Button 
-                    className="bg-blue-600 hover:bg-blue-700"
-                    disabled={!hasSubscription}
-                  >
-                    {hasSubscription ? "Contact Now" : "Subscribe to Contact"}
-                  </Button>
-                  <Button variant="outline" disabled={!hasSubscription}>
-                    Save Candidate
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    View Full Profile
-                  </Button>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Clock className="h-4 w-4" />
+                  {profile.availability || "Availability not specified"}
                 </div>
               </div>
+
+              {profile.skills && profile.skills.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-2">Skills:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {profile.skills.slice(0, 3).map((skill, index) => (
+                      <Badge key={index} variant="outline" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                    {profile.skills.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{profile.skills.length - 3} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2 pt-2 border-t">
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="h-4 w-4" />
+                  <span className={hasSubscription ? "" : "blur-sm"}>
+                    {maskContactInfo(profile.email)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Phone className="h-4 w-4" />
+                  <span className={hasSubscription ? "" : "blur-sm"}>
+                    {maskContactInfo(profile.phone)}
+                  </span>
+                </div>
+              </div>
+
+              {!hasSubscription && (
+                <Button className="w-full" variant="outline">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Subscribe to View Contact Details
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {filteredSeekers.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No job seekers found matching your search criteria.</p>
+      {filteredProfiles.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No job seeker profiles found matching your search.
         </div>
       )}
     </div>

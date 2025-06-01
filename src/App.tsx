@@ -23,6 +23,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 import JobPortal from "./pages/JobPortal";
+import Publication from "./pages/Publication";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
           <Route path="/jobs" element={<JobPortal />} />
           <Route path="/job-portal" element={<JobPortal />} />
+          <Route path="/publication" element={<Publication />} />
           <Route path="/register" element={<Register />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

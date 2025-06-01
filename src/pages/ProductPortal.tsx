@@ -162,6 +162,12 @@ const ProductPortal = () => {
     } else if (productId === 'e-conferences') {
       console.log('Navigating to e-conferences...');
       navigate('/e-conferences');
+    } else if (productId === 'publication') {
+      console.log('Navigating to publication...');
+      navigate('/publication');
+    } else if (productId === 'medical-jobs') {
+      console.log('Navigating to medical jobs...');
+      navigate('/job-portal');
     } else {
       toast({
         title: "Coming Soon",
