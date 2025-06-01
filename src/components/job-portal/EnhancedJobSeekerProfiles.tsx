@@ -26,7 +26,7 @@ interface JobSeekerProfile {
   profiles?: {
     first_name: string;
     last_name: string;
-  };
+  } | null;
 }
 
 export const EnhancedJobSeekerProfiles = () => {
@@ -71,10 +71,14 @@ export const EnhancedJobSeekerProfiles = () => {
 
       if (error) throw error;
       
-      // Filter out profiles where the join failed
-      const validProfiles = (data || []).filter(profile => 
-        profile.profiles && typeof profile.profiles === 'object' && !Array.isArray(profile.profiles)
-      ) as JobSeekerProfile[];
+      // Filter and type the profiles correctly
+      const validProfiles = (data || []).filter((profile): profile is JobSeekerProfile => {
+        return profile.profiles && 
+               typeof profile.profiles === 'object' && 
+               !Array.isArray(profile.profiles) &&
+               'first_name' in profile.profiles &&
+               'last_name' in profile.profiles;
+      });
       
       setProfiles(validProfiles);
     } catch (error) {
