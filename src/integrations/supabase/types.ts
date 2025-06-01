@@ -254,6 +254,114 @@ export type Database = {
         }
         Relationships: []
       }
+      job_providers: {
+        Row: {
+          address: string
+          contract_details: string | null
+          created_at: string
+          department: string | null
+          duty_hours: string | null
+          google_location: string | null
+          id: string
+          manager_contact: string
+          manager_email: string
+          manager_name: string
+          number_of_vacancies: number | null
+          organization_name: string
+          organization_type: string
+          salary_range: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          contract_details?: string | null
+          created_at?: string
+          department?: string | null
+          duty_hours?: string | null
+          google_location?: string | null
+          id?: string
+          manager_contact: string
+          manager_email: string
+          manager_name: string
+          number_of_vacancies?: number | null
+          organization_name: string
+          organization_type: string
+          salary_range?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          contract_details?: string | null
+          created_at?: string
+          department?: string | null
+          duty_hours?: string | null
+          google_location?: string | null
+          id?: string
+          manager_contact?: string
+          manager_email?: string
+          manager_name?: string
+          number_of_vacancies?: number | null
+          organization_name?: string
+          organization_type?: string
+          salary_range?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      job_seekers: {
+        Row: {
+          availability: string | null
+          bio: string | null
+          created_at: string
+          email: string
+          experience_years: number | null
+          id: string
+          location: string | null
+          phone: string
+          previous_experience: string | null
+          qualification: string
+          skills: string[] | null
+          specialization: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          availability?: string | null
+          bio?: string | null
+          created_at?: string
+          email: string
+          experience_years?: number | null
+          id?: string
+          location?: string | null
+          phone: string
+          previous_experience?: string | null
+          qualification: string
+          skills?: string[] | null
+          specialization?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          availability?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string
+          experience_years?: number | null
+          id?: string
+          location?: string | null
+          phone?: string
+          previous_experience?: string | null
+          qualification?: string
+          skills?: string[] | null
+          specialization?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mcq_questions: {
         Row: {
           correct_answer: string
@@ -389,6 +497,50 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          payment_method: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_method?: string | null
+          status: string
+          stripe_payment_intent_id?: string | null
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_method?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "provider_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -451,6 +603,63 @@ export type Database = {
           year_of_study?: string | null
         }
         Relationships: []
+      }
+      provider_subscriptions: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          payment_status: string | null
+          plan_id: string | null
+          provider_id: string
+          start_date: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          payment_status?: string | null
+          plan_id?: string | null
+          provider_id: string
+          start_date?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          payment_status?: string | null
+          plan_id?: string | null
+          provider_id?: string
+          start_date?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_subscriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "job_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seminar_registrations: {
         Row: {
@@ -554,6 +763,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_plans: {
+        Row: {
+          active: boolean
+          billing_cycle: string
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json | null
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          active?: boolean
+          billing_cycle: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name: string
+          price: number
+        }
+        Update: {
+          active?: boolean
+          billing_cycle?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
       }
       user_activities: {
         Row: {
@@ -675,6 +920,10 @@ export type Database = {
           first_name: string
           last_name: string
         }[]
+      }
+      has_active_subscription: {
+        Args: { user_uuid: string }
+        Returns: boolean
       }
     }
     Enums: {
