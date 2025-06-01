@@ -71,8 +71,8 @@ export const EnhancedJobSeekerProfiles = () => {
 
       if (error) throw error;
       
-      // Filter and type the profiles correctly
-      const validProfiles = (data || []).filter((profile): profile is JobSeekerProfile => {
+      // Filter profiles that have valid user profile data
+      const validProfiles = (data || []).filter(profile => {
         return profile.profiles && 
                typeof profile.profiles === 'object' && 
                !Array.isArray(profile.profiles) &&
