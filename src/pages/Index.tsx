@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus, Menu, X } from "lucide-react";
+import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus, Menu, X, Briefcase } from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 import HomepageAdsCarousel from "@/components/HomepageAdsCarousel";
 
@@ -40,6 +40,9 @@ const Index = () => {
               </Link>
               <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 E-Learning
+              </Link>
+              <Link to="/jobs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
+                Jobs
               </Link>
               <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50">
                 Calendar
@@ -80,6 +83,9 @@ const Index = () => {
                 </Link>
                 <Link to="/e-learning" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   E-Learning
+                </Link>
+                <Link to="/jobs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
+                  Jobs
                 </Link>
                 <Link to="/calendar" className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50">
                   Calendar
@@ -208,6 +214,25 @@ const Index = () => {
             </CardContent>
           </Card>
 
+          <Card className="hover:shadow-xl transition-all duration-300 border border-yellow-100 hover:border-yellow-200">
+            <CardHeader>
+              <Briefcase className="h-12 w-12 text-yellow-600 mb-4" />
+              <CardTitle className="text-xl">Job Portal</CardTitle>
+              <CardDescription className="text-gray-600">
+                Find medical job opportunities and advance your healthcare career
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="outline" 
+                asChild 
+                className="w-full border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white transition-all duration-200"
+              >
+                <Link to="/jobs">Browse Jobs</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card className="hover:shadow-xl transition-all duration-300 border border-red-100 hover:border-red-200">
             <CardHeader>
               <Calendar className="h-12 w-12 text-red-600 mb-4" />
@@ -223,25 +248,6 @@ const Index = () => {
                 className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200"
               >
                 <Link to="/calendar">View Calendar</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-xl transition-all duration-300 border border-indigo-100 hover:border-indigo-200">
-            <CardHeader>
-              <Shield className="h-12 w-12 text-indigo-600 mb-4" />
-              <CardTitle className="text-xl">Professional Network</CardTitle>
-              <CardDescription className="text-gray-600">
-                Build your professional network and advance your medical career
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="outline" 
-                onClick={() => setShowAuthModal(true)} 
-                className="w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-200"
-              >
-                Join Network
               </Button>
             </CardContent>
           </Card>
@@ -268,6 +274,7 @@ const Index = () => {
                 <li><Link to="/community" className="hover:text-white transition-colors">Community</Link></li>
                 <li><Link to="/e-learning" className="hover:text-white transition-colors">E-Learning</Link></li>
                 <li><Link to="/e-seminar" className="hover:text-white transition-colors">E-Seminars</Link></li>
+                <li><Link to="/jobs" className="hover:text-white transition-colors">Jobs</Link></li>
               </ul>
             </div>
             <div>
