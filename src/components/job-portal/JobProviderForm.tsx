@@ -52,7 +52,7 @@ export const JobProviderForm = () => {
       }
 
       const { error } = await supabase
-        .from('job_providers')
+        .from('job_providers' as any)
         .insert([
           {
             user_id: user.id,
