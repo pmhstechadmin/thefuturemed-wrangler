@@ -51,6 +51,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     checkUser();
@@ -199,7 +200,11 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
   const uploadFile = async (file: File): Promise<{ url: string; type: string } | null> => {
     try {
-      console.log('Starting file upload:', file.name, file.type, file.size);
+      console.log('Starting file upload:', {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
       
       // Validate file size (50MB limit)
       if (file.size > 52428800) {
@@ -211,11 +216,11 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
         return null;
       }
 
-      // Create a unique filename with user ID for better organization
+      // Create a unique filename
       const fileExt = file.name.split('.').pop()?.toLowerCase() || 'unknown';
       const timestamp = Date.now();
       const randomId = Math.random().toString(36).substring(2);
-      const fileName = `${user.id}/${timestamp}-${randomId}.${fileExt}`;
+      const fileName = `community-${community.id}/${user.id}/${timestamp}-${randomId}.${fileExt}`;
 
       console.log('Uploading to path:', fileName);
 
@@ -229,27 +234,11 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
       if (uploadError) {
         console.error('Upload error:', uploadError);
-        
-        // More specific error messages
-        if (uploadError.message.includes('Duplicate')) {
-          toast({
-            title: "Upload Error",
-            description: "File with this name already exists. Please try again.",
-            variant: "destructive",
-          });
-        } else if (uploadError.message.includes('size')) {
-          toast({
-            title: "Upload Error", 
-            description: "File is too large. Maximum size is 50MB.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Upload Error",
-            description: `Failed to upload file: ${uploadError.message}`,
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Upload Error",
+          description: `Failed to upload file: ${uploadError.message}`,
+          variant: "destructive",
+        });
         return null;
       }
 
@@ -262,7 +251,6 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
       console.log('Public URL generated:', urlData.publicUrl);
 
-      // Verify the URL is accessible
       if (!urlData.publicUrl) {
         console.error('Failed to generate public URL');
         toast({
@@ -308,8 +296,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     console.log('File selected for upload:', {
       name: file.name,
       size: file.size,
-      type: file.type,
-      lastModified: file.lastModified
+      type: file.type
     });
 
     setUploadingFile(true);
@@ -322,8 +309,8 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
         
         // Create a message content based on file type
         const fileMessage = file.type.startsWith('image/') 
-          ? `Shared an image: ${file.name}`
-          : `Shared a file: ${file.name}`;
+          ? `📷 Shared an image: ${file.name}`
+          : `📎 Shared a file: ${file.name}`;
         
         await sendMessage(uploadResult.url, uploadResult.type, fileMessage);
         
@@ -392,18 +379,24 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
     }
   };
 
-  const triggerFileUpload = () => {
-    console.log('Triggering file upload (gallery)');
-    if (fileInputRef.current) {
-      fileInputRef.current.accept = "image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar";
-      fileInputRef.current.click();
-    }
-  };
-
   const triggerCameraCapture = () => {
     console.log('Triggering camera capture');
     if (cameraInputRef.current) {
       cameraInputRef.current.click();
+    }
+  };
+
+  const triggerGalleryUpload = () => {
+    console.log('Triggering gallery upload');
+    if (galleryInputRef.current) {
+      galleryInputRef.current.click();
+    }
+  };
+
+  const triggerFileUpload = () => {
+    console.log('Triggering file upload');
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -476,9 +469,6 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
               fallback.textContent = 'View Image';
               fallback.className = 'text-blue-600 hover:text-blue-800 text-sm';
               target.parentNode?.appendChild(fallback);
-            }}
-            onLoad={() => {
-              console.log('Image loaded successfully:', post.file_url);
             }}
           />
         </div>
@@ -612,7 +602,7 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={triggerFileUpload}
+                  onClick={triggerGalleryUpload}
                   disabled={uploadingFile || sending}
                   className="flex-1"
                 >
@@ -633,21 +623,26 @@ const CommunityChat = ({ community, onClose }: CommunityChatProps) => {
 
               {/* Hidden File Inputs */}
               <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar"
-                onChange={handleFileUpload}
-                className="hidden"
-                multiple={false}
-              />
-              <input
                 ref={cameraInputRef}
                 type="file"
                 accept="image/*,video/*"
                 capture="environment"
                 onChange={handleFileUpload}
                 className="hidden"
-                multiple={false}
+              />
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="*/*"
+                onChange={handleFileUpload}
+                className="hidden"
               />
 
               {/* Message Input */}
