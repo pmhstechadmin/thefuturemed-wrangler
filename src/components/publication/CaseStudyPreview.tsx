@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Send, Edit, FileText, Users, Calendar } from 'lucide-react';
 
-interface SubAuthor {
+interface Author {
   name: string;
   qualification: string;
   department: string;
@@ -14,16 +14,17 @@ interface CaseStudyData {
   authorName: string;
   authorQualification: string;
   authorDepartment: string;
-  subAuthors: SubAuthor[];
+  subAuthors: Author[];
   topic: string;
   subheading: string;
   comparisonDetails: string;
   statistics: string;
   finalOutcome: string;
   bibliography: string;
-  images: FileList | null;
-  pdfFile: FileList | null;
+  images: File[];
+  pdfFile: File | null;
   privacyPolicyAccepted: boolean;
+  plagiarismDeclaration: boolean;
 }
 
 interface CaseStudyPreviewProps {
@@ -136,12 +137,12 @@ const CaseStudyPreview = ({ data, onBack, onSubmit }: CaseStudyPreviewProps) => 
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-purple-300">Attachments</h3>
             <div className="space-y-2">
-              {data.pdfFile && data.pdfFile.length > 0 && (
+              {data.pdfFile && (
                 <div className="flex items-center gap-3 bg-white/5 rounded-lg p-3 border border-white/10">
                   <FileText className="h-5 w-5 text-red-400" />
                   <div>
                     <p className="font-medium">PDF Document</p>
-                    <p className="text-sm text-gray-400">{data.pdfFile[0].name}</p>
+                    <p className="text-sm text-gray-400">{data.pdfFile.name}</p>
                   </div>
                 </div>
               )}
