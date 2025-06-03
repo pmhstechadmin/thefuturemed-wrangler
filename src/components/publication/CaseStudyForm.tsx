@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, X, Eye, Send, Plus, Minus } from 'lucide-react';
-import { CaseStudyPreview } from './CaseStudyPreview';
+import CaseStudyPreview from './CaseStudyPreview';
 
 interface Author {
   name: string;
