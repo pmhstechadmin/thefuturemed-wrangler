@@ -1,18 +1,18 @@
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { FileText, Plus, Minus, Upload, Eye, Send, AlertTriangle } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import CaseStudyPreview from './CaseStudyPreview';
+import { useToast } from '@/hooks/use-toast';
+import { Upload, X, Eye, Send, Plus, Minus } from 'lucide-react';
+import { CaseStudyPreview } from './CaseStudyPreview';
 
-interface SubAuthor {
+interface Author {
   name: string;
   qualification: string;
   department: string;
@@ -22,364 +22,488 @@ interface CaseStudyData {
   authorName: string;
   authorQualification: string;
   authorDepartment: string;
-  subAuthors: SubAuthor[];
+  subAuthors: Author[];
   topic: string;
   subheading: string;
   comparisonDetails: string;
   statistics: string;
   finalOutcome: string;
   bibliography: string;
-  images: FileList | null;
-  pdfFile: FileList | null;
+  pdfFile: File | null;
+  images: File[];
   privacyPolicyAccepted: boolean;
+  plagiarismDeclaration: boolean;
 }
 
 const CaseStudyForm = () => {
-  const [subAuthors, setSubAuthors] = useState<SubAuthor[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
-  const [formData, setFormData] = useState<CaseStudyData | null>(null);
   const { toast } = useToast();
-
-  const { register, handleSubmit, formState: { errors }, watch, setValue, reset } = useForm<CaseStudyData>({
-    defaultValues: {
-      subAuthors: [],
-      privacyPolicyAccepted: false
-    }
+  const [showPreview, setShowPreview] = useState(false);
+  const [formData, setFormData] = useState<CaseStudyData>({
+    authorName: '',
+    authorQualification: '',
+    authorDepartment: '',
+    subAuthors: [],
+    topic: '',
+    subheading: '',
+    comparisonDetails: '',
+    statistics: '',
+    finalOutcome: '',
+    bibliography: '',
+    pdfFile: null,
+    images: [],
+    privacyPolicyAccepted: false,
+    plagiarismDeclaration: false
   });
 
+  const handleInputChange = (field: keyof CaseStudyData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const addSubAuthor = () => {
-    if (subAuthors.length < 3) {
-      setSubAuthors([...subAuthors, { name: '', qualification: '', department: '' }]);
+    if (formData.subAuthors.length < 3) {
+      setFormData(prev => ({
+        ...prev,
+        subAuthors: [...prev.subAuthors, { name: '', qualification: '', department: '' }]
+      }));
     }
   };
 
   const removeSubAuthor = (index: number) => {
-    const newSubAuthors = subAuthors.filter((_, i) => i !== index);
-    setSubAuthors(newSubAuthors);
+    setFormData(prev => ({
+      ...prev,
+      subAuthors: prev.subAuthors.filter((_, i) => i !== index)
+    }));
   };
 
-  const updateSubAuthor = (index: number, field: keyof SubAuthor, value: string) => {
-    const newSubAuthors = [...subAuthors];
-    newSubAuthors[index][field] = value;
-    setSubAuthors(newSubAuthors);
-    setValue('subAuthors', newSubAuthors);
+  const updateSubAuthor = (index: number, field: keyof Author, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      subAuthors: prev.subAuthors.map((author, i) => 
+        i === index ? { ...author, [field]: value } : author
+      )
+    }));
   };
 
-  const onPreview = (data: CaseStudyData) => {
-    const dataWithSubAuthors = { ...data, subAuthors };
-    setFormData(dataWithSubAuthors);
-    setShowPreview(true);
+  const handleFileUpload = (file: File, type: 'pdf' | 'image') => {
+    if (type === 'pdf') {
+      if (file.type === 'application/pdf') {
+        setFormData(prev => ({ ...prev, pdfFile: file }));
+        toast({
+          title: "Success",
+          description: "PDF uploaded successfully!",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Please upload a valid PDF file.",
+          variant: "destructive",
+        });
+      }
+    } else if (type === 'image') {
+      if (file.type.startsWith('image/')) {
+        setFormData(prev => ({ ...prev, images: [...prev.images, file] }));
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully!",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Please upload a valid image file.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
-  const onSubmit = async (data: CaseStudyData) => {
-    try {
-      const submissionData = { ...data, subAuthors };
-      
-      // Here you would typically send the data to your backend
-      console.log('Submitting case study:', submissionData);
-      
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const validateForm = () => {
+    const requiredFields = [
+      'authorName', 'authorQualification', 'authorDepartment',
+      'topic', 'subheading', 'comparisonDetails', 'statistics',
+      'finalOutcome', 'bibliography'
+    ];
+
+    for (const field of requiredFields) {
+      if (!formData[field as keyof CaseStudyData]) {
+        toast({
+          title: "Validation Error",
+          description: `Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.`,
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
+    if (!formData.privacyPolicyAccepted || !formData.plagiarismDeclaration) {
       toast({
-        title: "Case Study Submitted",
-        description: "Your case study has been submitted successfully for review.",
+        title: "Validation Error",
+        description: "Please accept the privacy policy and plagiarism declaration.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePreview = () => {
+    if (validateForm()) {
+      setShowPreview(true);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      toast({
+        title: "Success",
+        description: "Case study submitted successfully! It will be reviewed by our team.",
       });
       
       // Reset form
-      reset();
-      setSubAuthors([]);
-      setShowPreview(false);
-      setFormData(null);
-    } catch (error) {
-      console.error('Error submitting case study:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit case study. Please try again.",
-        variant: "destructive",
+      setFormData({
+        authorName: '',
+        authorQualification: '',
+        authorDepartment: '',
+        subAuthors: [],
+        topic: '',
+        subheading: '',
+        comparisonDetails: '',
+        statistics: '',
+        finalOutcome: '',
+        bibliography: '',
+        pdfFile: null,
+        images: [],
+        privacyPolicyAccepted: false,
+        plagiarismDeclaration: false
       });
     }
   };
 
-  if (showPreview && formData) {
+  if (showPreview) {
     return (
       <CaseStudyPreview 
         data={formData} 
         onBack={() => setShowPreview(false)}
-        onSubmit={() => onSubmit(formData)}
+        onSubmit={handleSubmit}
       />
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-4xl mx-auto"
-    >
+    <div className="max-w-4xl mx-auto space-y-6">
       <Card className="bg-black/40 backdrop-blur-sm border-white/20 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-2xl">
-            <FileText className="h-6 w-6 text-purple-400" />
-            Submit Case Study
-          </CardTitle>
+          <CardTitle className="text-white">Submit Case Study</CardTitle>
           <CardDescription className="text-gray-300">
-            Share your medical case study or special case with the community
+            Share your medical case study with the community
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onPreview)} className="space-y-6">
-            {/* Author Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-purple-300">Author Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="authorName">Author Name *</Label>
-                  <Input
-                    id="authorName"
-                    {...register('authorName', { required: 'Author name is required' })}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                    placeholder="Dr. John Doe"
-                  />
-                  {errors.authorName && (
-                    <p className="text-red-400 text-sm mt-1">{errors.authorName.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="authorQualification">Qualification *</Label>
-                  <Input
-                    id="authorQualification"
-                    {...register('authorQualification', { required: 'Qualification is required' })}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                    placeholder="MD, PhD"
-                  />
-                  {errors.authorQualification && (
-                    <p className="text-red-400 text-sm mt-1">{errors.authorQualification.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="authorDepartment">Department *</Label>
-                  <Input
-                    id="authorDepartment"
-                    {...register('authorDepartment', { required: 'Department is required' })}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                    placeholder="Cardiology"
-                  />
-                  {errors.authorDepartment && (
-                    <p className="text-red-400 text-sm mt-1">{errors.authorDepartment.message}</p>
-                  )}
-                </div>
+        <CardContent className="space-y-6">
+          {/* Main Author Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Main Author Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="authorName" className="text-white">Author Name *</Label>
+                <Input
+                  id="authorName"
+                  value={formData.authorName}
+                  onChange={(e) => handleInputChange('authorName', e.target.value)}
+                  placeholder="Enter your full name"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                />
+              </div>
+              <div>
+                <Label htmlFor="authorQualification" className="text-white">Qualification *</Label>
+                <Input
+                  id="authorQualification"
+                  value={formData.authorQualification}
+                  onChange={(e) => handleInputChange('authorQualification', e.target.value)}
+                  placeholder="e.g., MD, PhD, MBBS"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                />
+              </div>
+              <div>
+                <Label htmlFor="authorDepartment" className="text-white">Department *</Label>
+                <Input
+                  id="authorDepartment"
+                  value={formData.authorDepartment}
+                  onChange={(e) => handleInputChange('authorDepartment', e.target.value)}
+                  placeholder="e.g., Cardiology, Neurology"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                />
               </div>
             </div>
+          </div>
 
-            {/* Sub Authors */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-purple-300">Sub Authors (Optional)</h3>
-                <Button
-                  type="button"
-                  onClick={addSubAuthor}
-                  disabled={subAuthors.length >= 3}
-                  variant="outline"
-                  size="sm"
-                  className="border-white/20 text-white hover:bg-white/10"
-                >
+          <Separator className="bg-white/20" />
+
+          {/* Sub Authors */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">Sub Authors (Optional)</h3>
+              {formData.subAuthors.length < 3 && (
+                <Button onClick={addSubAuthor} variant="outline" size="sm" className="text-white border-white/30">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Sub Author
                 </Button>
-              </div>
-              {subAuthors.map((subAuthor, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                  <div>
-                    <Label>Name</Label>
-                    <Input
-                      value={subAuthor.name}
-                      onChange={(e) => updateSubAuthor(index, 'name', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                      placeholder="Dr. Jane Smith"
-                    />
-                  </div>
-                  <div>
-                    <Label>Qualification</Label>
-                    <Input
-                      value={subAuthor.qualification}
-                      onChange={(e) => updateSubAuthor(index, 'qualification', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                      placeholder="MD"
-                    />
-                  </div>
-                  <div>
-                    <Label>Department</Label>
-                    <Input
-                      value={subAuthor.department}
-                      onChange={(e) => updateSubAuthor(index, 'department', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                      placeholder="Radiology"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button
-                      type="button"
-                      onClick={() => removeSubAuthor(index)}
-                      variant="outline"
-                      size="sm"
-                      className="border-red-400 text-red-400 hover:bg-red-400/10"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+              )}
             </div>
+            {formData.subAuthors.map((author, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white/5 rounded-lg">
+                <div>
+                  <Label className="text-white">Name</Label>
+                  <Input
+                    value={author.name}
+                    onChange={(e) => updateSubAuthor(index, 'name', e.target.value)}
+                    placeholder="Sub author name"
+                    className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Qualification</Label>
+                  <Input
+                    value={author.qualification}
+                    onChange={(e) => updateSubAuthor(index, 'qualification', e.target.value)}
+                    placeholder="Qualification"
+                    className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Department</Label>
+                  <Input
+                    value={author.department}
+                    onChange={(e) => updateSubAuthor(index, 'department', e.target.value)}
+                    placeholder="Department"
+                    className="bg-white/10 border-white/30 text-white placeholder-white/50"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button onClick={() => removeSubAuthor(index)} variant="outline" size="sm" className="text-white border-white/30">
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Case Study Details */}
+          <Separator className="bg-white/20" />
+
+          {/* Case Study Content */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Case Study Content</h3>
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-purple-300">Case Study Details</h3>
               <div>
-                <Label htmlFor="topic">Topic *</Label>
+                <Label htmlFor="topic" className="text-white">Topic *</Label>
                 <Input
                   id="topic"
-                  {...register('topic', { required: 'Topic is required' })}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  placeholder="Case study topic or title"
+                  value={formData.topic}
+                  onChange={(e) => handleInputChange('topic', e.target.value)}
+                  placeholder="Enter the main topic of your case study"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50"
                 />
-                {errors.topic && (
-                  <p className="text-red-400 text-sm mt-1">{errors.topic.message}</p>
-                )}
               </div>
               <div>
-                <Label htmlFor="subheading">Subheading</Label>
+                <Label htmlFor="subheading" className="text-white">Subheading *</Label>
                 <Input
                   id="subheading"
-                  {...register('subheading')}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  placeholder="Brief subheading or subtitle"
+                  value={formData.subheading}
+                  onChange={(e) => handleInputChange('subheading', e.target.value)}
+                  placeholder="Enter a descriptive subheading"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50"
                 />
               </div>
               <div>
-                <Label htmlFor="comparisonDetails">Comparison Details</Label>
+                <Label htmlFor="comparisonDetails" className="text-white">Comparison Details *</Label>
                 <Textarea
                   id="comparisonDetails"
-                  {...register('comparisonDetails')}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
-                  placeholder="Comparison with existing studies or treatments..."
+                  value={formData.comparisonDetails}
+                  onChange={(e) => handleInputChange('comparisonDetails', e.target.value)}
+                  placeholder="Describe comparison with other studies or methods"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50 min-h-[100px]"
                 />
               </div>
             </div>
+          </div>
 
-            {/* File Uploads */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-purple-300">File Uploads</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="pdfFile">PDF Document *</Label>
-                  <Input
-                    id="pdfFile"
-                    type="file"
-                    accept=".pdf"
-                    {...register('pdfFile', { required: 'PDF file is required' })}
-                    className="bg-white/10 border-white/20 text-white file:text-white file:bg-purple-600 file:border-0 file:rounded file:px-3 file:py-1"
-                  />
-                  {errors.pdfFile && (
-                    <p className="text-red-400 text-sm mt-1">{errors.pdfFile.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="images">Images (Optional)</Label>
-                  <Input
-                    id="images"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    {...register('images')}
-                    className="bg-white/10 border-white/20 text-white file:text-white file:bg-purple-600 file:border-0 file:rounded file:px-3 file:py-1"
-                  />
-                </div>
-              </div>
-            </div>
+          <Separator className="bg-white/20" />
 
-            {/* Statistics and Outcomes */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-purple-300">Results & Analysis</h3>
-              <div>
-                <Label htmlFor="statistics">Statistics & Data</Label>
-                <Textarea
-                  id="statistics"
-                  {...register('statistics')}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
-                  placeholder="Statistical analysis and key data points..."
+          {/* File Uploads */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">File Uploads</h3>
+            
+            {/* PDF Upload */}
+            <div>
+              <Label className="text-white">Case Study PDF</Label>
+              <div className="mt-2">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file, 'pdf');
+                  }}
+                  className="hidden"
+                  id="pdf-upload"
                 />
-              </div>
-              <div>
-                <Label htmlFor="finalOutcome">Final Outcome *</Label>
-                <Textarea
-                  id="finalOutcome"
-                  {...register('finalOutcome', { required: 'Final outcome is required' })}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
-                  placeholder="Conclusion and final outcomes of the study..."
-                />
-                {errors.finalOutcome && (
-                  <p className="text-red-400 text-sm mt-1">{errors.finalOutcome.message}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="bibliography">Bibliography & References</Label>
-                <Textarea
-                  id="bibliography"
-                  {...register('bibliography')}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 min-h-[100px]"
-                  placeholder="References and citations..."
-                />
-              </div>
-            </div>
-
-            {/* Privacy Policy */}
-            <div className="space-y-4">
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                <div className="flex items-start space-x-3">
-                  <AlertTriangle className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-amber-300">Privacy Policy & Declaration</h4>
-                    <p className="text-sm text-amber-200">
-                      By submitting this case study, you declare that:
+                <Label htmlFor="pdf-upload" className="cursor-pointer">
+                  <div className="border-2 border-dashed border-white/30 rounded-lg p-6 text-center hover:border-white/50 transition-colors">
+                    <Upload className="h-8 w-8 mx-auto mb-2 text-white/70" />
+                    <p className="text-white/70">
+                      {formData.pdfFile ? formData.pdfFile.name : 'Click to upload PDF'}
                     </p>
-                    <ul className="text-sm text-amber-200 list-disc list-inside space-y-1">
-                      <li>This is original work conducted by you/your team</li>
-                      <li>The study has not been plagiarized or copied from other sources</li>
-                      <li>You take full responsibility for the accuracy and authenticity of the data</li>
-                      <li>You have obtained necessary permissions for patient data (if applicable)</li>
-                      <li>The study follows ethical guidelines and institutional approval</li>
-                    </ul>
-                    <div className="flex items-center space-x-2 mt-3">
-                      <Checkbox
-                        id="privacyPolicy"
-                        {...register('privacyPolicyAccepted', { required: 'You must accept the privacy policy' })}
-                        className="border-amber-400"
-                      />
-                      <Label htmlFor="privacyPolicy" className="text-sm text-amber-200">
-                        I acknowledge and agree to the above terms *
-                      </Label>
-                    </div>
-                    {errors.privacyPolicyAccepted && (
-                      <p className="text-red-400 text-sm">{errors.privacyPolicyAccepted.message}</p>
-                    )}
+                  </div>
+                </Label>
+              </div>
+            </div>
+
+            {/* Image Uploads */}
+            <div>
+              <Label className="text-white">Supporting Images</Label>
+              <div className="mt-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    files.forEach(file => handleFileUpload(file, 'image'));
+                  }}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <Label htmlFor="image-upload" className="cursor-pointer">
+                  <div className="border-2 border-dashed border-white/30 rounded-lg p-6 text-center hover:border-white/50 transition-colors">
+                    <Upload className="h-8 w-8 mx-auto mb-2 text-white/70" />
+                    <p className="text-white/70">Click to upload images</p>
+                  </div>
+                </Label>
+              </div>
+              
+              {formData.images.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-white text-sm">Uploaded Images:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.images.map((image, index) => (
+                      <Badge key={index} variant="outline" className="text-white border-white/30">
+                        {image.name}
+                        <Button
+                          onClick={() => removeImage(index)}
+                          variant="ghost"
+                          size="sm"
+                          className="ml-2 h-4 w-4 p-0 text-white hover:bg-white/20"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    ))}
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
+
+          <Separator className="bg-white/20" />
+
+          {/* Statistics and Outcome */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Results & Analysis</h3>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="statistics" className="text-white">Statistics *</Label>
+                <Textarea
+                  id="statistics"
+                  value={formData.statistics}
+                  onChange={(e) => handleInputChange('statistics', e.target.value)}
+                  placeholder="Enter statistical data and analysis"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50 min-h-[100px]"
+                />
+              </div>
+              <div>
+                <Label htmlFor="finalOutcome" className="text-white">Final Outcome *</Label>
+                <Textarea
+                  id="finalOutcome"
+                  value={formData.finalOutcome}
+                  onChange={(e) => handleInputChange('finalOutcome', e.target.value)}
+                  placeholder="Describe the final outcome and conclusions"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50 min-h-[100px]"
+                />
+              </div>
+              <div>
+                <Label htmlFor="bibliography" className="text-white">Bibliography *</Label>
+                <Textarea
+                  id="bibliography"
+                  value={formData.bibliography}
+                  onChange={(e) => handleInputChange('bibliography', e.target.value)}
+                  placeholder="List your references and citations"
+                  className="bg-white/10 border-white/30 text-white placeholder-white/50 min-h-[100px]"
+                />
               </div>
             </div>
+          </div>
 
-            {/* Submit Buttons */}
-            <div className="flex gap-4 pt-6">
-              <Button
-                type="submit"
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Preview
-              </Button>
+          <Separator className="bg-white/20" />
+
+          {/* Privacy & Declarations */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Privacy & Declarations</h3>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="privacyPolicy"
+                  checked={formData.privacyPolicyAccepted}
+                  onCheckedChange={(checked) => handleInputChange('privacyPolicyAccepted', checked)}
+                  className="border-white/30"
+                />
+                <Label htmlFor="privacyPolicy" className="text-white text-sm leading-relaxed">
+                  I accept the privacy policy and agree to the terms of submission
+                </Label>
+              </div>
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="plagiarismDeclaration"
+                  checked={formData.plagiarismDeclaration}
+                  onCheckedChange={(checked) => handleInputChange('plagiarismDeclaration', checked)}
+                  className="border-white/30"
+                />
+                <Label htmlFor="plagiarismDeclaration" className="text-white text-sm leading-relaxed">
+                  I declare that this is original work based on a real study conducted by me/us and is not copied or plagiarized. I take full responsibility for the authenticity of this submission.
+                </Label>
+              </div>
             </div>
-          </form>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-6">
+            <Button 
+              onClick={handlePreview} 
+              variant="outline" 
+              className="flex-1 text-white border-white/30 hover:bg-white/10"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Preview
+            </Button>
+            <Button 
+              onClick={handleSubmit} 
+              className="flex-1 bg-purple-600 hover:bg-purple-700"
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Submit Case Study
+            </Button>
+          </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 };
 

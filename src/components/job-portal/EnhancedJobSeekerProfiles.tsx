@@ -71,14 +71,14 @@ export const EnhancedJobSeekerProfiles = () => {
 
       if (error) throw error;
       
-      // Filter profiles that have valid user profile data
-      const validProfiles = (data || []).filter(profile => {
+      // Filter and properly type the profiles
+      const validProfiles = (data || []).filter((profile: any) => {
         return profile.profiles && 
                typeof profile.profiles === 'object' && 
                !Array.isArray(profile.profiles) &&
                'first_name' in profile.profiles &&
                'last_name' in profile.profiles;
-      });
+      }) as JobSeekerProfile[];
       
       setProfiles(validProfiles);
     } catch (error) {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import EditProfileModal from '@/components/profile/EditProfileModal';
 import ProfilePictureUpload from '@/components/profile/ProfilePictureUpload';
+import { UserProductsSection } from '@/components/profile/UserProductsSection';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface Profile {
@@ -332,12 +334,17 @@ const Profile = () => {
         </div>
 
         {/* Tabs Section */}
-        <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="products" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="products">My Products</TabsTrigger>
             <TabsTrigger value="details">Personal Details</TabsTrigger>
             <TabsTrigger value="activities">Platform Activity</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="products">
+            {profile?.id && <UserProductsSection userId={profile.id} />}
+          </TabsContent>
 
           <TabsContent value="details">
             <Card>
