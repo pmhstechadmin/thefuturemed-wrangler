@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -136,42 +137,52 @@ const ProductPortal = () => {
 
   const handleProductAction = (productId: string) => {
     console.log('Product action triggered for:', productId);
-    
-    // Add more detailed logging to debug navigation
     console.log('Current user:', user);
     console.log('Navigating to product:', productId);
     
-    if (productId === 'community') {
-      if (!user) {
+    try {
+      if (productId === 'community') {
+        if (!user) {
+          toast({
+            title: "Authentication Required",
+            description: "Please sign in to access the community.",
+            variant: "destructive",
+          });
+          navigate('/');
+          return;
+        }
+        console.log('Navigating to community...');
+        navigate('/community');
+      } else if (productId === 'e-seminar') {
+        console.log('Navigating to e-seminar...');
+        navigate('/e-seminar');
+      } else if (productId === 'e-learning') {
+        console.log('Navigating to e-learning...');
+        navigate('/e-learning');
+      } else if (productId === 'e-conferences') {
+        console.log('E-conferences coming soon...');
         toast({
-          title: "Authentication Required",
-          description: "Please sign in to access the community.",
-          variant: "destructive",
+          title: "Coming Soon",
+          description: "E-Conferences will be available soon!",
         });
-        navigate('/');
-        return;
+      } else if (productId === 'publication') {
+        console.log('Navigating to publication...');
+        navigate('/publication');
+      } else if (productId === 'medical-jobs') {
+        console.log('Navigating to medical jobs...');
+        navigate('/jobs');
+      } else {
+        toast({
+          title: "Coming Soon",
+          description: `${products.find(p => p.id === productId)?.name} will be available soon!`,
+        });
       }
-      console.log('Navigating to community...');
-      navigate('/community');
-    } else if (productId === 'e-seminar') {
-      console.log('Navigating to e-seminar...');
-      navigate('/e-seminar');
-    } else if (productId === 'e-learning') {
-      console.log('Navigating to e-learning...');
-      navigate('/e-learning');
-    } else if (productId === 'e-conferences') {
-      console.log('Navigating to e-conferences...');
-      navigate('/e-conferences');
-    } else if (productId === 'publication') {
-      console.log('Navigating to publication...');
-      navigate('/publication');
-    } else if (productId === 'medical-jobs') {
-      console.log('Navigating to medical jobs...');
-      navigate('/job-portal');
-    } else {
+    } catch (error) {
+      console.error('Navigation error:', error);
       toast({
-        title: "Coming Soon",
-        description: `${products.find(p => p.id === productId)?.name} will be available soon!`,
+        title: "Navigation Error",
+        description: "Failed to navigate. Please try again.",
+        variant: "destructive",
       });
     }
   };

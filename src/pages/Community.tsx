@@ -8,6 +8,7 @@ import CommunityEmptyState from '@/components/CommunityEmptyState';
 import CommunityLoadingSpinner from '@/components/CommunityLoadingSpinner';
 import CommunityAdsCarousel from '@/components/CommunityAdsCarousel';
 import { useCommunityData } from '@/hooks/useCommunityData';
+import { useEffect } from 'react';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -28,6 +29,14 @@ const Community = () => {
       navigate('/');
     }
   };
+
+  // Add error boundary for debugging
+  useEffect(() => {
+    console.log('Community page loaded');
+    console.log('Communities:', communities);
+    console.log('Memberships:', memberships);
+    console.log('Loading:', loading);
+  }, [communities, memberships, loading]);
 
   if (loading) {
     return <CommunityLoadingSpinner />;

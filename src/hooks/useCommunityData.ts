@@ -32,8 +32,16 @@ export const useCommunityData = () => {
 
   const checkAuthAndLoadData = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Checking authentication...');
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw sessionError;
+      }
+      
       if (!session?.user) {
+        console.log('No authenticated user found');
         toast({
           title: "Authentication Required",
           description: "Please sign in to access communities.",
@@ -43,6 +51,7 @@ export const useCommunityData = () => {
         return;
       }
       
+      console.log('User authenticated:', session.user.email);
       setUser(session.user);
       await Promise.all([loadCommunities(), loadUserMemberships(session.user.id)]);
     } catch (error) {
@@ -59,6 +68,7 @@ export const useCommunityData = () => {
 
   const loadCommunities = async () => {
     try {
+      console.log('Loading communities...');
       const { data: communitiesData, error } = await supabase
         .from('communities')
         .select('*')
@@ -66,8 +76,12 @@ export const useCommunityData = () => {
 
       if (error) {
         console.error('Error loading communities:', error);
+        // Don't throw here, just log and continue with empty array
+        setCommunities([]);
         return;
       }
+
+      console.log('Communities loaded:', communitiesData?.length || 0);
 
       const communitiesWithCounts = await Promise.all(
         (communitiesData || []).map(async (community) => {
@@ -89,19 +103,28 @@ export const useCommunityData = () => {
       setCommunities(communitiesWithCounts);
     } catch (error) {
       console.error('Error loading communities:', error);
+      setCommunities([]);
     }
   };
 
   const loadUserMemberships = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('community_memberships')
-      .select('*')
-      .eq('user_id', userId);
+    try {
+      console.log('Loading user memberships for:', userId);
+      const { data, error } = await supabase
+        .from('community_memberships')
+        .select('*')
+        .eq('user_id', userId);
 
-    if (error) {
+      if (error) {
+        console.error('Error loading memberships:', error);
+        setMemberships([]);
+      } else {
+        console.log('Memberships loaded:', data?.length || 0);
+        setMemberships(data || []);
+      }
+    } catch (error) {
       console.error('Error loading memberships:', error);
-    } else {
-      setMemberships(data || []);
+      setMemberships([]);
     }
   };
 
@@ -118,6 +141,7 @@ export const useCommunityData = () => {
     }
 
     try {
+      console.log('Joining community:', communityId);
       const { error } = await supabase
         .from('community_memberships')
         .insert({
@@ -154,6 +178,7 @@ export const useCommunityData = () => {
     if (!user) return;
 
     try {
+      console.log('Leaving community:', communityId);
       const { error } = await supabase
         .from('community_memberships')
         .delete()
@@ -181,7 +206,8 @@ export const useCommunityData = () => {
   };
 
   const openCommunityChat = (communityId: string) => {
-    navigate(`/community/${communityId}`);
+    console.log('Opening community chat:', communityId);
+    navigate(`/community/${communityId}/chat`);
   };
 
   const isMember = (communityId: string) => {
