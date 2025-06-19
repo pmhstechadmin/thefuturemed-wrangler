@@ -33,7 +33,7 @@ serve(async (req) => {
     if (session.payment_status === 'paid') {
       // Create Supabase service client
       const supabaseService = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
         { auth: { persistSession: false } }
       );

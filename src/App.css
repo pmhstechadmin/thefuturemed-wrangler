@@ -40,3 +40,71 @@
 .read-the-docs {
   color: #888;
 }
+.zoom {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+.home-screen h1 {
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.new-meeting {
+  background: #2d8cff;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.new-meeting:hover {
+  background: #1a7ae8;
+}
+
+.join-section {
+  display: flex;
+  gap: 10px;
+}
+
+.join-section input {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.join-button {
+  background: #f0f0f0;
+  border: none;
+  padding: 0 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.join-button:hover {
+  background: #e0e0e0;
+}

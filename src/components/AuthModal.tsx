@@ -1,11 +1,16 @@
-
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,8 +21,10 @@ interface AuthModalProps {
 const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
   const { toast } = useToast();
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("testuser@gmail.com");
+  const [password, setPassword] = useState("TestUser@123");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,26 +37,28 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
           email,
           password,
         });
-        
+
         if (error) {
-          console.error('Login error:', error);
+          console.error("Login error:", error);
           toast({
             title: "Login Failed",
-            description: error.message || "Invalid email or password. Please check your credentials and try again.",
+            description:
+              error.message ||
+              "Invalid email or password. Please check your credentials and try again.",
             variant: "destructive",
           });
           return;
         }
 
         if (data.user) {
-          console.log('Login successful:', data.user);
+          console.log("Login successful:", data.user);
           toast({
             title: "Success",
             description: "Signed in successfully!",
           });
           // Reset form
-          setEmail('');
-          setPassword('');
+          setEmail("");
+          setPassword("");
           onSuccess();
           onClose();
         }
@@ -58,13 +67,14 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
           email,
           password,
         });
-        
+
         if (error) {
-          console.error('Signup error:', error);
-          if (error.message.includes('User already registered')) {
+          console.error("Signup error:", error);
+          if (error.message.includes("User already registered")) {
             toast({
               title: "Account Exists",
-              description: "An account with this email already exists. Please sign in instead.",
+              description:
+                "An account with this email already exists. Please sign in instead.",
               variant: "destructive",
             });
             setIsLogin(true);
@@ -79,19 +89,19 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         }
 
         if (data.user) {
-          console.log('Signup successful:', data.user);
+          console.log(" successful:", data.user);
           toast({
             title: "Success",
             description: "Account created successfully! You can now sign in.",
           });
           // Reset form and switch to login
-          setEmail('');
-          setPassword('');
+          setEmail("");
+          setPassword("");
           setIsLogin(true);
         }
       }
     } catch (error: any) {
-      console.error('Auth error:', error);
+      console.error("Auth error:", error);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
@@ -103,8 +113,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
   };
 
   const resetForm = () => {
-    setEmail('');
-    setPassword('');
+    setEmail("");
+    setPassword("");
   };
 
   const toggleMode = () => {
@@ -121,17 +131,14 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {isLogin ? 'Sign In' : 'Create Account'}
-          </DialogTitle>
+          <DialogTitle>{isLogin ? "Sign In" : "Create Account"}</DialogTitle>
           <DialogDescription>
-            {isLogin 
-              ? 'Enter your credentials to access your account'
-              : 'Create a new account to get started'
-            }
+            {isLogin
+              ? "Enter your credentials to access your account"
+              : "Create a new account to get started"}
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
@@ -145,7 +152,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               disabled={loading}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="password">Password</Label>
             <Input
@@ -153,17 +160,29 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={isLogin ? "Enter your password" : "Create a password (min 6 characters)"}
+              placeholder={
+                isLogin
+                  ? "Enter your password"
+                  : "Create a password (min 6 characters)"
+              }
               required
               minLength={isLogin ? undefined : 6}
               disabled={loading}
             />
           </div>
-          
-          <Button type="submit" className="w-full" disabled={loading || !email || !password}>
-            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading || !email || !password}
+          >
+            {loading
+              ? "Please wait..."
+              : isLogin
+              ? "Sign In"
+              : "Create Account"}
           </Button>
-          
+
           <Button
             type="button"
             variant="ghost"
@@ -171,7 +190,9 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
             onClick={toggleMode}
             disabled={loading}
           >
-            {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
+            {isLogin
+              ? "Need an account? Sign up"
+              : "Already have an account? Sign in"}
           </Button>
         </form>
       </DialogContent>
