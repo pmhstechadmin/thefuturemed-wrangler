@@ -14,7 +14,7 @@ import HostSeminar from "./pages/HostSeminar";
 import CalendarPage from "./pages/CalendarPage";
 import ProductPortal from "./pages/ProductPortal";
 import ELearning from "./pages/ELearning";
-import CoursesListing from "./pages/CoursesListing";
+import CoursesListing from "./pages/CoursesListing ";
 import CourseDetails from "./pages/CourseDetails";
 import { CourseAccessPage } from "./components/elearning/CourseAccessPage";
 import Register from "./pages/Register";
