@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Shield, UserPlus, Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
+import { Shield, UserPlus, Layout, Grid3X3, User, Home, ArrowLeft, LogOut, Menu } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
+import AuthModal from '@/components/AuthModal';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const products = [
   {
@@ -82,6 +84,12 @@ const ProductPortal = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  const handleAuthSuccess = () => {
+    // Handle successful authentication - you can add any additional logic here
+    console.log("Authentication successful");
+  };
 
   useEffect(() => {
     checkUser();
@@ -190,7 +198,7 @@ const ProductPortal = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -211,36 +219,46 @@ const ProductPortal = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-1">
                 <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                  variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className={`${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-white hover:bg-white/20'}`}
+                  onClick={() => setViewMode("grid")}
+                  className={`${
+                    viewMode === "grid"
+                      ? "bg-blue-600 text-white"
+                      : "text-white hover:bg-white/20"
+                  }`}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  variant={viewMode === "list" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode('list')}
-                  className={`${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-white hover:bg-white/20'}`}
+                  onClick={() => setViewMode("list")}
+                  className={`${
+                    viewMode === "list"
+                      ? "bg-blue-600 text-white"
+                      : "text-white hover:bg-white/20"
+                  }`}
                 >
                   <Layout className="h-4 w-4" />
                 </Button>
               </div>
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
-                  <Button 
-                    variant="outline" 
-                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm" 
-                    onClick={() => navigate('/profile')}
+                  <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
+                    Welcome, {user.email}
+                  </span>
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    onClick={() => navigate("/profile")}
                   >
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm" 
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
                     onClick={handleSignOut}
                   >
                     Sign Out
@@ -249,24 +267,26 @@ const ProductPortal = () => {
               ) : (
                 <>
                   <Link to="/register">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
                     >
                       Register
                     </Button>
                   </Link>
-                  <Link to="/">
-                    <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Sign In
-                    </Button>
-                  </Link>
+
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200"
+                    onClick={() => setShowAuthModal(true)} 
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
                 </>
               )}
               <Button
                 variant="outline"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
                 className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
                 title="Go to home page"
               >
@@ -276,12 +296,197 @@ const ProductPortal = () => {
             </div>
           </div>
         </div>
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      </header> */}
+      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left Section - Logo and Back Button */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleBackNavigation}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"
+                title="Go back"
+              >
+                <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+              <Link to="/" className="flex items-center space-x-2">
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
+                <h1 className="text-xl sm:text-2xl font-bold text-white">
+                  MedPortal
+                </h1>
+              </Link>
+            </div>
+
+            {/* Right Section - Navigation Items */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* View Mode Toggle - Hidden on smallest screens */}
+              <div className="hidden sm:flex items-center space-x-2 bg-white/10 rounded-lg p-1">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className={`${
+                    viewMode === "grid"
+                      ? "bg-blue-600 text-white"
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className={`${
+                    viewMode === "list"
+                      ? "bg-blue-600 text-white"
+                      : "text-white hover:bg-white/20"
+                  }`}
+                >
+                  <Layout className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* User Section */}
+              {user ? (
+                <div className="flex items-center space-x-2 sm:space-x-4">
+                  <span className="hidden md:inline text-white text-sm bg-white/10 px-3 py-1 rounded-full">
+                    Welcome, {user.email}
+                  </span>
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"
+                    onClick={() => navigate("/profile")}
+                    title="Profile"
+                  >
+                    <User className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Profile</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"
+                    onClick={handleSignOut}
+                    title="Sign Out"
+                  >
+                    <span className="hidden sm:inline">Sign Out</span>
+                    <LogOut className="h-4 w-4 sm:ml-2 sm:hidden" />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button
+                      variant="outline"
+                      className="hidden sm:flex text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    >
+                      Register
+                    </Button>
+                  </Link>
+
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 p-2 sm:px-4 sm:py-2"
+                    onClick={() => setShowAuthModal(true)}
+                    title="Sign In"
+                  >
+                    <UserPlus className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Sign In</span>
+                  </Button>
+                </>
+              )}
+
+              {/* Home Button - Icon only on mobile */}
+              <Button
+                variant="outline"
+                onClick={() => navigate("/")}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"
+                title="Go to home page"
+              >
+                <Home className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
+
+              {/* Mobile Menu Button - Only shown on small screens */}
+              {user && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="sm:hidden text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    >
+                      <Menu className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 bg-black/80 backdrop-blur-md border-white/20">
+                    <DropdownMenuLabel className="text-white">
+                      {user.email}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-white/20" />
+                    <DropdownMenuItem
+                      className="text-white hover:bg-white/10"
+                      onClick={() => navigate("/profile")}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-white hover:bg-white/10"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Sign Out</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-white/20" />
+                    <div className="flex justify-center p-1 bg-white/10 rounded-lg">
+                      <Button
+                        variant={viewMode === "grid" ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setViewMode("grid")}
+                        className={`${
+                          viewMode === "grid"
+                            ? "bg-blue-600 text-white"
+                            : "text-white hover:bg-white/20"
+                        }`}
+                      >
+                        <Grid3X3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant={viewMode === "list" ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setViewMode("list")}
+                        className={`${
+                          viewMode === "list"
+                            ? "bg-blue-600 text-white"
+                            : "text-white hover:bg-white/20"
+                        }`}
+                      >
+                        <Layout className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </div>
+        </div>
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onSuccess={handleAuthSuccess}
+        />
       </header>
 
       {/* Hero Section */}
       <div className="relative pt-16 pb-8">
         <div className="container mx-auto px-4 text-center">
-          <motion.h2 
+          <motion.h2
             className="text-5xl md:text-6xl font-bold text-white mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -292,14 +497,16 @@ const ProductPortal = () => {
               of the Future
             </span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Explore our comprehensive suite of medical tools and services. 
-            {user ? ' Click on any product to access it.' : ' Register once to access all products.'}
+            Explore our comprehensive suite of medical tools and services.
+            {user
+              ? " Click on any product to access it."
+              : " Register once to access all products."}
           </motion.p>
         </div>
       </div>
@@ -308,9 +515,9 @@ const ProductPortal = () => {
       <div className="container mx-auto px-4 pb-16">
         <motion.div
           className={`${
-            viewMode === 'grid' 
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
-              : 'flex flex-col space-y-4 max-w-2xl mx-auto'
+            viewMode === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              : "flex flex-col space-y-4 max-w-2xl mx-auto"
           }`}
           variants={containerVariants}
           initial="hidden"
@@ -337,11 +544,11 @@ const ProductPortal = () => {
             transition={{ duration: 0.3 }}
           >
             {(() => {
-              const product = products.find(p => p.id === selectedProduct);
+              const product = products.find((p) => p.id === selectedProduct);
               return product ? (
                 <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 text-white border border-white/10">
                   <div className="flex items-center gap-4 mb-6">
-                    <div 
+                    <div
                       className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold"
                       style={{ backgroundColor: product.color }}
                     >
@@ -353,19 +560,29 @@ const ProductPortal = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <Button 
+                    <Button
                       className="text-white"
                       style={{ backgroundColor: product.color }}
                       onClick={() => handleProductAction(product.id)}
                     >
-                      {product.id === 'community' ? (user ? 'Access Community' : 'Sign In to Access') : 
-                       product.id === 'e-learning' ? 'Access E-Learning' : 'Learn More'}
+                      {product.id === "community"
+                        ? user
+                          ? "Access Community"
+                          : "Sign In to Access"
+                        : product.id === "e-learning"
+                        ? "Access E-Learning"
+                        : "Learn More"}
                     </Button>
-                    <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
-                      {product.id === 'community' && user ? 'Join Now' : 'Try Now'}
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10"
+                    >
+                      {product.id === "community" && user
+                        ? "Join Now"
+                        : "Try Now"}
                     </Button>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="text-gray-300 hover:text-white"
                       onClick={() => setSelectedProduct(null)}
                     >

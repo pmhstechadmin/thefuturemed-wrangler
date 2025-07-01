@@ -44,6 +44,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Seminar {
   id: string;
@@ -160,25 +169,28 @@ const ESeminar = () => {
     });
     navigate("/calendar");
   };
-
   const handleSeminarClick = (seminar: Seminar) => {
-    const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
-    const newWindow = window.open(
-      seminarUrl,
-      "_blank",
-      "width=1200,height=800,scrollbars=yes,resizable=yes"
-    );
-
-    if (!newWindow) {
-      toast({
-        title: "Popup Blocked",
-        description:
-          "Please allow popups for this site to view seminar details.",
-        variant: "destructive",
-      });
-      navigate(`/seminar/${seminar.id}`);
-    }
+    navigate(`/seminar/${seminar.id}`);
   };
+  
+  // const handleSeminarClick = (seminar: Seminar) => {
+  //   const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
+  //   const newWindow = window.open(
+  //     seminarUrl,
+  //     "_blank",
+  //     "width=1200,height=800,scrollbars=yes,resizable=yes"
+  //   );
+
+  //   if (!newWindow) {
+  //     toast({
+  //       title: "Popup Blocked",
+  //       description:
+  //         "Please allow popups for this site to view seminar details.",
+  //       variant: "destructive",
+  //     });
+  //     navigate(`/seminar/${seminar.id}`);
+  //   }
+  // };
 
   const handleRescheduleClick = (seminar: Seminar) => {
     if (!user || user.id !== seminar.host_id) {
@@ -279,7 +291,7 @@ const ESeminar = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header - Same as ProductPortal */}
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -298,7 +310,7 @@ const ESeminar = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              {/* <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-1">
+               <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-1">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
@@ -323,7 +335,7 @@ const ESeminar = () => {
                 >
                   <Layout className="h-4 w-4" />
                 </Button>
-              </div> */}
+              </div> 
               {user ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
@@ -371,6 +383,128 @@ const ESeminar = () => {
               >
                 <Home className="mr-2 h-4 w-4" />
                 Home
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header> */}
+      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left Section - Logo and Back Button */}
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleBackNavigation}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                title="Go back"
+              >
+                <ArrowLeft className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Back</span>
+              </Button>
+              <Link to="/" className="flex items-center space-x-2">
+                <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
+                <h1 className="text-xl md:text-2xl font-bold text-white">
+                  MedPortal
+                </h1>
+              </Link>
+            </div>
+
+            {/* Right Section - Navigation Items */}
+            <div className="flex items-center space-x-2 md:space-x-4">
+              {user ? (
+                <>
+                  {/* Desktop View - Full User Info */}
+                  <div className="hidden lg:flex items-center space-x-4">
+                    <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
+                      Welcome, {user.email}
+                    </span>
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                      onClick={() => navigate("/profile")}
+                      title="Profile"
+                    >
+                      <UserIcon className="h-4 w-4 md:mr-2" />
+                      <span className="hidden md:inline">Profile</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                      onClick={handleSignOut}
+                      title="Sign Out"
+                    >
+                      <span className="hidden md:inline">Sign Out</span>
+                    </Button>
+                  </div>
+
+                  {/* Mobile/Tablet View - User Menu Dropdown */}
+                  <div className="lg:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                        >
+                          <UserIcon className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56 bg-black/80 backdrop-blur-md border-white/20">
+                        <DropdownMenuLabel className="text-white">
+                          {user.email}
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-white/20" />
+                        <DropdownMenuItem
+                          className="text-white hover:bg-white/10"
+                          onClick={() => navigate("/profile")}
+                        >
+                          <UserIcon className="mr-2 h-4 w-4" />
+                          <span>Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-white hover:bg-white/10"
+                          onClick={handleSignOut}
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          <span>Sign Out</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button
+                      variant="outline"
+                      className="hidden md:flex text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    >
+                      Register
+                    </Button>
+                  </Link>
+
+                  <Link to="/">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 p-2 md:px-4 md:py-2"
+                      title="Sign In"
+                    >
+                      <UserIcon className="h-4 w-4 md:mr-2" />
+                      <span className="hidden md:inline">Sign In</span>
+                    </Button>
+                  </Link>
+                </>
+              )}
+
+              {/* Home Button - Icon only on mobile/tablet */}
+              <Button
+                variant="outline"
+                onClick={() => navigate("/")}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                title="Go to home page"
+              >
+                <Home className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Home</span>
               </Button>
             </div>
           </div>
@@ -497,7 +631,7 @@ const ESeminar = () => {
                                 <CalendarCheck className="h-4 w-4 mr-2" />
                                 Reschedule
                               </Button>
-                              <Button
+                              {/* <Button
                                 variant="ghost"
                                 size="sm"
                                 className="text-red-600 hover:text-red-800"
@@ -508,7 +642,7 @@ const ESeminar = () => {
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Cancel
-                              </Button>
+                              </Button> */}
                             </div>
                           )}
                         </div>
