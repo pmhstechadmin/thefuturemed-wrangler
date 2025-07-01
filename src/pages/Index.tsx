@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,63 @@ import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus
 import AuthModal from "@/components/AuthModal";
 import HomepageAdsCarousel from "@/components/HomepageAdsCarousel";
 import logo from "@/image/thefuturemed_logo__1_-removebg-preview.png"
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+import { Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
+
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      console.log('🔄 Checking user session...');
+
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('❌ Error getting session:', error);
+      }
+
+      console.log('📦 Full session data:', session);
+      console.log('👤 User data:', session?.user);
+
+      setUser(session?.user || null);
+    } catch (error) {
+      console.error('❗ Unexpected error checking user:', error);
+    } finally {
+      setLoading(false);
+      console.log('✅ Done checking user. Loading set to false.');
+    }
+  };
+  useEffect(() => {
+    checkUser(); // check once on load
+
+    // 👂 Listen for login/logout
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null); // ✅ Update user without refresh
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe(); // cleanup listener
+    };
+  }, []);
+
+
+
+
+
 
   const handleAuthSuccess = () => {
     // Handle successful authentication - you can add any additional logic here
@@ -69,13 +122,40 @@ const Index = () => {
               >
                 Calendar
               </Link>
-              <Button
-                onClick={() => setShowAuthModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                {/* <UserPlus className="mr-2 h-4 w-4" /> */}
-                Sign In / Register
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-4">
+                  {/* Profile Button */}
+                  <Button
+                    variant="outline"
+                    className="text-white bg-gray-800 hover:bg-gray-700 border border-white/30"
+                    onClick={() => navigate('/profile')}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Button>
+
+                  {/* Sign Out Button */}
+                  <Button
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      setUser(null); // optional if you're listening for auth changes
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                // Sign In / Register Button (shown when user is NOT logged in)
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Sign In / Register
+                </Button>
+              )}
+
+
             </div>
 
             {/* Mobile menu button */}
@@ -312,8 +392,8 @@ const Index = () => {
                 {/* <Shield className="h-6 w-6" />
                 <span className="text-xl font-bold">MedPortal</span> */}
                 <Link to="/" >
-                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
-              </Link>
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
               </div>
               <p className="text-gray-400">
                 Empowering medical professionals through technology and
