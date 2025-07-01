@@ -81,7 +81,8 @@ const ProductPortal = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
+
+    const [loadingS, setLoadingS] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -91,20 +92,31 @@ const ProductPortal = () => {
     console.log("Authentication successful");
   };
 
+ 
   useEffect(() => {
-    checkUser();
-  }, []);
+  checkUser();
+}, []);
 
-  const checkUser = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
-    } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setLoading(false);
+const checkUser = async () => {
+  console.log('Checking user sessionZZZZZZZZZZZZZZZZZZZ.');
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    console.log('Session dataAAAAAAA:', session);
+    if (error) console.error('Supabase session error:', error);
+
+    setUser(session?.user || null);
+    if (session?.user) {
+      console.log('User logged in:', session.user.email);
+    } else {
+      console.log('No user session ZZZZZZZZZZZZZZZZ.');
     }
-  };
+  } catch (error) {
+    console.error('Error checking ZZZZZZZZZZZZZZZ:', error);
+  } finally {
+    console.log('Finished checking ZZZZZZZZZZZZZZ.');
+    setLoadingS(false);
+  }
+};
 
   const handleSignOut = async () => {
     try {
@@ -482,6 +494,8 @@ const ProductPortal = () => {
           onSuccess={handleAuthSuccess}
         />
       </header>
+
+      //////
 
       {/* Hero Section */}
       <div className="relative pt-16 pb-8">

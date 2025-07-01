@@ -79,7 +79,7 @@ import HostSeminar from "./pages/HostSeminar";
 import CalendarPage from "./pages/CalendarPage";
 import ProductPortal from "./pages/ProductPortal";
 import ELearning from "./pages/ELearning";
-import CoursesListing from "./pages/CoursesListing";
+import CoursesListing from "./pages/CoursesListing ";
 import CourseDetails from "./pages/CourseDetails";
 import { CourseAccessPage } from "./components/elearning/CourseAccessPage";
 import Register from "./pages/Register";
@@ -89,6 +89,7 @@ import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 import JobPortal from "./pages/JobPortal";
 import Publication from "./pages/Publication";
+
 import VideoMeeting4 from "./components/VideoMeeting4";
 import VideoMeeting from "./components/VideoMeeting";
 // import { MeetingWrapper } from "./pages/meeting/MeetingWrapper";
@@ -186,5 +187,49 @@ const App = () => {
     </QueryClientProvider>
   );
 };
+
+import UpdatePassword from "./pages/UpdatePassword";
+import Myjob from "./components/Myjob";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/:communityId/chat" element={<CommunityChat />} />
+          <Route path="/e-seminar" element={<ESeminar />} />
+          <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+          <Route path="/host-seminar" element={<HostSeminar />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/products" element={<ProductPortal />} />
+          <Route path="/product-portal" element={<ProductPortal />} />
+          <Route path="/e-learning" element={<ELearning />} />
+          <Route path="/courses" element={<CoursesListing />} />
+          <Route path="/course/:courseId" element={<CourseDetails />} />
+          <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
+          <Route path="/jobs" element={<JobPortal />} />
+          <Route path="/job-portal" element={<JobPortal />} />
+          <Route path="/publication" element={<Publication />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/data-usage" element={<DataUsagePolicy />} />
+          <Route path="*" element={<NotFound />} />
+           <Route path="/update-password" element={<UpdatePassword />} />
+             <Route path="/my-job" element={<Myjob />} />
+
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
 
 export default App;

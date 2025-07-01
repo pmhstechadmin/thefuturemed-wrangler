@@ -110,7 +110,7 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
         navigate('/publication');
         break;
       case 'jobs':
-        navigate('/job-portal');
+        navigate('/my-job');
         break;
       case 'seminar-detail':
         if (id) navigate(`/seminar/${id}`);
