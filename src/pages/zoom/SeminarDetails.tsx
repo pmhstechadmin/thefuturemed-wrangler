@@ -8374,11 +8374,10 @@ const SeminarDetails = () => {
           meetingId={seminar.meeting_id}
           name={user?.email || "Participant"}
           onMeetingLeave={handleLeaveMeeting}
-          micEnabled={true}
-          webcamEnabled={true}
+          micEnabled={false}
+          webcamEnabled={false}
           containerId="video-container"
           style={{ marginTop: "70px" }}
-          // style={{ margin: "60px", height: "60px" }}
         />
       </div>
     );
