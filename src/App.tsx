@@ -24,6 +24,8 @@ import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 import JobPortal from "./pages/JobPortal";
 import Publication from "./pages/Publication";
+import UpdatePassword from "./pages/UpdatePassword";
+import Myjob from "./components/Myjob";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +58,9 @@ const App = () => (
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/data-usage" element={<DataUsagePolicy />} />
           <Route path="*" element={<NotFound />} />
+           <Route path="/update-password" element={<UpdatePassword />} />
+             <Route path="/my-job" element={<Myjob />} />
+
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
