@@ -1257,7 +1257,9 @@ const Myjob = () => {
                     {job.organization_name}
                   </CardDescription>
 
+
                   <CardDescription>{job.organization_name}</CardDescription>
+
 
                 </div>
               </div>
@@ -1278,7 +1280,9 @@ const Myjob = () => {
                     })}
                   </div>
 
+
                 <div className="flex items-center"><Clock className="mr-1 h-4 w-4" />{new Date(job.updated_at).toLocaleDateString()}</div>
+
 
               </div>
               <p className="mt-2 text-gray-700">{job.description}</p>

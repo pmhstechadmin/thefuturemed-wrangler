@@ -99,6 +99,9 @@ import PostBlog from "./components/Blogs/PostBlog";
 import BlogPortal from "./components/Blogs/BlogPortal";
 import MyBlog from "./components/Blogs/MyBlog";
 
+import EditBlogs from "./components/Blogs/EditBlogs";
+
+
 import UpdatePassword from "./pages/UpdatePassword";
 import Myjob from "./components/Myjob";
 import CoursesListing from "./pages/CoursesListing";
@@ -112,6 +115,7 @@ import { EditCoursePage } from "./components/elearning/EditCoursePage";
 //import {VideoMeeting1} from "./components/VideoMeeting1";
 // import VideoMeeting from "./components/VideoMeeting3";
 // import {VideoMeeting3} from "./components/VideoMeeting3";
+
 
 const queryClient = new QueryClient();
 
@@ -281,6 +285,15 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
            <Route path="/update-password" element={<UpdatePassword />} />
              <Route path="/my-job" element={<Myjob />} />
+             <Route path="/saved-job" element={<SaveJob />} />
+              <Route path="/saved-candidates" element={<SaveCandidate />} />
+               {/* <Route path="/blog-list" element={<BlogList />} /> */}
+                 <Route path="/blog-list/:id" element={<BlogList />} />
+               <Route path="/post-blog" element={<PostBlog />} />
+                 <Route path="/blog-portal" element={<BlogPortal/>} />
+                  <Route path="/my-blogs" element={<MyBlog/>} />
+                   <Route path="/edit-blog/:id" element={<EditBlogs/>} />
+
 
              <Route path="/saved-job" element={<SaveJob />} />
               <Route path="/saved-candidates" element={<SaveCandidate />} />
