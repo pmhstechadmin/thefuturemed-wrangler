@@ -1,0 +1,565 @@
+
+
+
+
+// import { useState, useEffect } from "react";
+// import { Button } from "@/components/ui/button";
+// import {
+//     Card,
+//     CardContent,
+//     CardHeader,
+//     CardTitle
+// } from "@/components/ui/card";
+// import {
+//     Tabs,
+//     TabsList
+// } from "@/components/ui/tabs";
+// import {
+//     Building,
+//     ArrowLeft,
+//     Shield,
+//     UserPlus,
+//     Home,
+//     User
+// } from "lucide-react";
+
+// import { useNavigate, Link } from "react-router-dom";
+// import { supabase } from "@/integrations/supabase/client";
+// import type { User as SupabaseUser } from "@supabase/supabase-js";
+// import { useToast } from "@/hooks/use-toast";
+// import { Badge } from "@/components/ui/badge";
+// import { useLocation } from 'react-router-dom';
+
+
+// type Blog = {
+//     id: string;
+//     title: string;
+//     content: string;
+//     is_published: boolean;
+//     user_id: string;
+//     created_at: string;
+// };
+
+// const BlogPortal: React.FC = () => {
+//     const navigate = useNavigate();
+//     const [user, setUser] = useState<SupabaseUser | null>(null);
+//     const [loading, setLoading] = useState(true);
+//     const [blogs, setBlogs] = useState<Blog[]>([]);
+//     const { toast } = useToast();
+//     const location = useLocation();
+
+//     const isBlogList = location.pathname === '/blog-portal';
+//     const isPostBlog = location.pathname === '/post-blog';
+
+//     const handleBackNavigation = () => {
+//         if (window.history.length > 1) {
+//             navigate(-1);
+//         } else {
+//             navigate('/');
+//         }
+//     };
+
+//     const handleSignOut = async () => {
+//         try {
+//             const { error } = await supabase.auth.signOut();
+//             if (error) throw error;
+//             setUser(null);
+//             toast({
+//                 title: "Signed Out",
+//                 description: "You have been successfully signed out.",
+//             });
+//         } catch (error) {
+//             console.error('Sign out error:', error);
+//             toast({
+//                 title: "Error",
+//                 description: "Failed to sign out. Please try again.",
+//                 variant: "destructive",
+//             });
+//         }
+//     };
+
+//     useEffect(() => {
+//         const checkUser = async () => {
+//             try {
+//                 const { data: { session }, error } = await supabase.auth.getSession();
+//                 if (error) console.error('Error fetching session:', error);
+//                 setUser(session?.user ?? null);
+//             } catch (err) {
+//                 console.error('Failed to fetch user:', err);
+//             } finally {
+//                 setLoading(false);
+//             }
+//         };
+
+//         checkUser();
+//     }, []);
+
+//     useEffect(() => {
+//         const fetchBlogs = async () => {
+//             setLoading(true);
+//             const { data: { user }, error: userError } = await supabase.auth.getUser();
+//             if (userError || !user) {
+//                 console.error('User not found:', userError?.message);
+//                 setLoading(false);
+//                 return;
+//             }
+
+//             const { data, error } = await supabase
+//                 .from('blog')
+//                 .select('*')
+//                 .eq('is_published', true)
+//                 .neq('user_id', user.id)
+//                 .order('created_at', { ascending: false });
+
+//             if (error) {
+//                 console.error('Error fetching blogs:', error.message);
+//             } else {
+//                 setBlogs(data || []);
+//             }
+
+//             setLoading(false);
+//         };
+
+//         fetchBlogs();
+//     }, []);
+
+//     if (loading) return <p className="text-center mt-8">Loading blogs...</p>;
+
+//     return (
+//         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+//             {/* Header */}
+//             <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+//                 <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+//                     <div className="flex items-center space-x-4">
+//                         <Button
+//                             variant="outline"
+//                             onClick={handleBackNavigation}
+//                             className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+//                             title="Go back"
+//                         >
+//                             <ArrowLeft className="mr-2 h-4 w-4" />
+//                             Back
+//                         </Button>
+//                         <Link to="/" className="flex items-center space-x-2">
+//                             <Shield className="h-8 w-8 text-blue-400" />
+//                             <h1 className="text-2xl font-bold text-white">MedPortal</h1>
+//                         </Link>
+//                     </div>
+//                     <div className="flex items-center space-x-4">
+//                         {user ? (
+//                             <>
+//                                 <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
+//                                 <Button
+//                                     variant="outline"
+//                                     className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+//                                     onClick={() => navigate('/profile')}
+//                                 >
+//                                     <User className="mr-2 h-4 w-4" />
+//                                     Profile
+//                                 </Button>
+//                                 <Button
+//                                     variant="outline"
+//                                     className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+//                                     onClick={handleSignOut}
+//                                 >
+//                                     Sign Out
+//                                 </Button>
+//                             </>
+//                         ) : (
+//                             <>
+//                                 <Link to="/register">
+//                                     <Button variant="outline" className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">Register</Button>
+//                                 </Link>
+//                                 <Link to="/">
+//                                     <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
+//                                         <UserPlus className="mr-2 h-4 w-4" />
+//                                         Sign In
+//                                     </Button>
+//                                 </Link>
+//                             </>
+//                         )}
+//                         <Button
+//                             variant="outline"
+//                             onClick={() => navigate('/')}
+//                             className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+//                         >
+//                             <Home className="mr-2 h-4 w-4" />
+//                             Home
+//                         </Button>
+//                     </div>
+//                 </div>
+//             </header>
+
+//             {/* Page Title */}
+//             <div className="bg-white shadow-sm border-b">
+//                 <div className="container mx-auto px-4 py-6 text-center">
+//                     <h1 className="text-4xl font-bold text-gray-900 mb-2">Blogs</h1>
+//                     <p className="text-gray-600 text-lg">Connect healthcare professionals with opportunities</p>
+//                 </div>
+//             </div>
+
+//             {/* Tabs */}
+//             <div className="container mx-auto px-4 py-8">
+//                 <Tabs defaultValue="blog-list" className="w-full">
+//                     <TabsList className="grid w-full grid-cols-2 mb-8">
+//                         <Link
+//                             to="/blog-portal"
+//                             className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${isBlogList ? 'bg-white text-black shadow' : 'hover:bg-muted'
+//                                 }`}
+//                         >
+//                             <Building className="h-4 w-4" />
+//                             Blog List
+//                         </Link>
+//                         <Link
+//                             to="/post-blog"
+//                             className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${isPostBlog ? 'bg-white text-black shadow' : 'hover:bg-muted'
+//                                 }`}
+//                         >
+//                             <Building className="h-4 w-4" />
+//                             Post Blog
+//                         </Link>
+//                     </TabsList>
+//                 </Tabs>
+
+//                 {/* Blog Cards */}
+//                 <h2 className="text-xl font-semibold mb-6">Published Blogs by Others</h2>
+//                 {blogs.length === 0 ? (
+//                     <Card>
+//                         <CardContent className="text-center py-12">
+//                             <h3 className="text-lg font-medium text-gray-900 mb-2">
+//                                 No blogs found
+//                             </h3>
+//                             <p className="text-gray-600">Check back later for updates!</p>
+//                         </CardContent>
+//                     </Card>
+//                 ) : (
+//                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//                         {blogs.map((blog) => (
+//                             <Card
+//                                 key={blog.id}
+//                                 className="flex flex-col justify-between h-full hover:shadow-lg transition-shadow cursor-pointer"
+//                                 onClick={() => navigate(`/blog-list/${blog.id}`)}
+//                             >
+//                                 <CardHeader>
+//                                     <div className="flex justify-between items-start mb-2">
+//                                         <Badge variant="default">Published</Badge>
+//                                     </div>
+//                                     <CardTitle className="text-lg line-clamp-2">{blog.title}</CardTitle>
+//                                 </CardHeader>
+
+//                                 <CardContent className="flex flex-col justify-between flex-grow">
+//                                     <div
+//                                         className="text-sm text-gray-600 line-clamp-3 mb-4"
+//                                         dangerouslySetInnerHTML={{ __html: blog.content }}
+//                                     />
+
+//                                     <div className="mt-auto">
+//                                         <Button
+//                                             className="w-full"
+//                                             onClick={(e) => {
+//                                                 e.stopPropagation();
+//                                                 console.log("Blog IDddddddddd:", blog.id);
+//                                                 navigate(`/blog-list/${blog.id}`);
+//                                             }}
+//                                         >
+//                                             View Blog
+//                                         </Button>
+//                                     </div>
+//                                 </CardContent>
+//                             </Card>
+
+
+//                         ))}
+//                     </div>
+//                 )}
+//             </div>
+
+
+//         </div>
+//     );
+// };
+
+// export default BlogPortal;
+
+
+
+
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import {
+    Tabs,
+    TabsList
+} from "@/components/ui/tabs";
+import {
+    Building,
+    ArrowLeft,
+    Shield,
+    UserPlus,
+    Home,
+    User
+} from "lucide-react";
+
+import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { useLocation } from 'react-router-dom';
+
+
+type Blog = {
+    id: string;
+    title: string;
+    content: string;
+    is_published: boolean;
+    user_id: string;
+    created_at: string;
+};
+
+const BlogPortal: React.FC = () => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState<SupabaseUser | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const { toast } = useToast();
+    const location = useLocation();
+
+    const isBlogList = location.pathname === '/blog-portal';
+    const isPostBlog = location.pathname === '/post-blog';
+
+    const handleBackNavigation = () => {
+        if (window.history.length > 1) {
+            navigate(-1);
+        } else {
+            navigate('/');
+        }
+    };
+
+    const handleSignOut = async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+            setUser(null);
+            toast({
+                title: "Signed Out",
+                description: "You have been successfully signed out.",
+            });
+        } catch (error) {
+            console.error('Sign out error:', error);
+            toast({
+                title: "Error",
+                description: "Failed to sign out. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) console.error('Error fetching session:', error);
+                setUser(session?.user ?? null);
+            } catch (err) {
+                console.error('Failed to fetch user:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkUser();
+    }, []);
+
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            setLoading(true);
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError || !user) {
+                console.error('User not found:', userError?.message);
+                setLoading(false);
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('blog')
+                .select('*')
+                .eq('is_published', true)
+                .neq('user_id', user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error fetching blogs:', error.message);
+            } else {
+                setBlogs(data || []);
+            }
+
+            setLoading(false);
+        };
+
+        fetchBlogs();
+    }, []);
+
+    if (loading) return <p className="text-center mt-8">Loading blogs...</p>;
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+            {/* Header */}
+            <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+                <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <Button
+                            variant="outline"
+                            onClick={handleBackNavigation}
+                            className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                            title="Go back"
+                        >
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back
+                        </Button>
+                        <Link to="/" className="flex items-center space-x-2">
+                            <Shield className="h-8 w-8 text-blue-400" />
+                            <h1 className="text-2xl font-bold text-white">MedPortal</h1>
+                        </Link>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        {user ? (
+                            <>
+                                <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
+                                <Button
+                                    variant="outline"
+                                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                                    onClick={() => navigate('/profile')}
+                                >
+                                    <User className="mr-2 h-4 w-4" />
+                                    Profile
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                                    onClick={handleSignOut}
+                                >
+                                    Sign Out
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/register">
+                                    <Button variant="outline" className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">Register</Button>
+                                </Link>
+                                <Link to="/">
+                                    <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
+                                        <UserPlus className="mr-2 h-4 w-4" />
+                                        Sign In
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
+                        <Button
+                            variant="outline"
+                            onClick={() => navigate('/')}
+                            className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                        >
+                            <Home className="mr-2 h-4 w-4" />
+                            Home
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            {/* Page Title */}
+            <div className="bg-white shadow-sm border-b">
+                <div className="container mx-auto px-4 py-6 text-center">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">Blogs</h1>
+                    <p className="text-gray-600 text-lg">Connect healthcare professionals with opportunities</p>
+                </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="container mx-auto px-4 py-8">
+                <Tabs defaultValue="blog-list" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-8">
+                        <Link
+                            to="/blog-portal"
+                            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${isBlogList ? 'bg-white text-black shadow' : 'hover:bg-muted'
+                                }`}
+                        >
+                            <Building className="h-4 w-4" />
+                            Blog List
+                        </Link>
+                        <Link
+                            to="/post-blog"
+                            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${isPostBlog ? 'bg-white text-black shadow' : 'hover:bg-muted'
+                                }`}
+                        >
+                            <Building className="h-4 w-4" />
+                            Post Blog
+                        </Link>
+                    </TabsList>
+                </Tabs>
+
+                {/* Blog Cards */}
+                <h2 className="text-xl font-semibold mb-6">Published Blogs by Others</h2>
+                {blogs.length === 0 ? (
+                    <Card>
+                        <CardContent className="text-center py-12">
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                No blogs found
+                            </h3>
+                            <p className="text-gray-600">Check back later for updates!</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {blogs.map((blog) => (
+                            <Card
+                                key={blog.id}
+                                className="flex flex-col justify-between h-full hover:shadow-lg transition-shadow cursor-pointer"
+                                onClick={() => navigate(`/blog-list/${blog.id}`)}
+                            >
+                                <CardHeader>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <Badge variant="default">Published</Badge>
+                                    </div>
+                                    <CardTitle className="text-lg line-clamp-2">{blog.title}</CardTitle>
+                                </CardHeader>
+
+                                <CardContent className="flex flex-col justify-between flex-grow">
+                                    <div
+                                        className="text-sm text-gray-600 line-clamp-3 mb-4"
+                                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                                    />
+
+                                    <div className="mt-auto">
+                                        <Button
+                                            className="w-full"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log("Blog IDddddddddd:", blog.id);
+                                                navigate(`/blog-list/${blog.id}`);
+                                            }}
+                                        >
+                                            View Blog
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            
+        </div>
+    );
+};
+
+export default BlogPortal;

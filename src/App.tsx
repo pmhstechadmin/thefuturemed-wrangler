@@ -89,6 +89,15 @@ import DataUsagePolicy from "./pages/DataUsagePolicy";
 import NotFound from "./pages/NotFound";
 import JobPortal from "./pages/JobPortal";
 import Publication from "./pages/Publication";
+import UpdatePassword from "./pages/UpdatePassword";
+import Myjob from "./components/Myjob";
+import SaveJob from "./components/job-portal/SaveJob";
+import SaveCandidate from "./components/job-portal/SaveCandidate";
+import PostBlogs from "./components/Blogs/BlogList";
+import BlogList from "./components/Blogs/BlogList";
+import PostBlog from "./components/Blogs/PostBlog";
+import BlogPortal from "./components/Blogs/BlogPortal";
+import MyBlog from "./components/Blogs/MyBlog";
 
 import UpdatePassword from "./pages/UpdatePassword";
 import Myjob from "./components/Myjob";
@@ -202,6 +211,7 @@ const App = () => {
 
 // const queryClient = new QueryClient();
 
+
 // const App = () => (
 //   <QueryClientProvider client={queryClient}>
 //     <TooltipProvider>
@@ -239,6 +249,54 @@ const App = () => {
 //     </TooltipProvider>
 //   </QueryClientProvider>
 // );
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/:communityId/chat" element={<CommunityChat />} />
+          <Route path="/e-seminar" element={<ESeminar />} />
+          <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+          <Route path="/host-seminar" element={<HostSeminar />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/products" element={<ProductPortal />} />
+          <Route path="/product-portal" element={<ProductPortal />} />
+          <Route path="/e-learning" element={<ELearning />} />
+          <Route path="/courses" element={<CoursesListing />} />
+          <Route path="/course/:courseId" element={<CourseDetails />} />
+          <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
+          <Route path="/jobs" element={<JobPortal />} />
+          <Route path="/job-portal" element={<JobPortal />} />
+          <Route path="/publication" element={<Publication />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/data-usage" element={<DataUsagePolicy />} />
+          <Route path="*" element={<NotFound />} />
+           <Route path="/update-password" element={<UpdatePassword />} />
+             <Route path="/my-job" element={<Myjob />} />
+
+             <Route path="/saved-job" element={<SaveJob />} />
+              <Route path="/saved-candidates" element={<SaveCandidate />} />
+               {/* <Route path="/blog-list" element={<BlogList />} /> */}
+                 <Route path="/blog-list/:id" element={<BlogList />} />
+               <Route path="/post-blog" element={<PostBlog />} />
+                 <Route path="/blog-portal" element={<BlogPortal/>} />
+                  <Route path="/my-blogs" element={<MyBlog/>} />
+
+
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
 
 
 export default App;
