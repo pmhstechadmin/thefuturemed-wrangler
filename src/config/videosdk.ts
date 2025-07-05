@@ -1,0 +1,40 @@
+export const VIDEO_SDK_CONFIG = {
+    apiKey: "YOUR_API_KEY", // Replace with your VideoSDK API key
+    meetingId: "default-medical-meeting",
+    name: "Medical Professional",
+    micEnabled: true,
+    webcamEnabled: true,
+    participantCanToggleSelfWebcam: true,
+    participantCanToggleSelfMic: true,
+    chatEnabled: true,
+    screenShareEnabled: true,
+    pollEnabled: true,
+    whiteboardEnabled: true,
+    raiseHandEnabled: true,
+    recordingEnabled: false, // Disabled in free version
+    brandingEnabled: true,
+    brandLogoURL: "/logo.png",
+    brandName: "MedPortal",
+    poweredBy: true,
+    permissions: {
+      askToJoin: false,
+      toggleParticipantMic: true,
+      toggleParticipantWebcam: true,
+      drawOnWhiteboard: true,
+      toggleWhiteboard: true,
+      toggleRecording: false,
+      removeParticipant: true,
+      endMeeting: true,
+    },
+    joinScreen: {
+      visible: true,
+      title: "Medical Consultation",
+      meetingUrl: window.location.href,
+    },
+    pin: {
+      allowed: true,
+      layout: "SPOTLIGHT",
+    },
+    notificationSoundEnabled: true,
+    maxResolution: "sd",
+  };

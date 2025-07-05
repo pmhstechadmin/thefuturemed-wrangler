@@ -1,3 +1,4 @@
+
 // import React, { useEffect, useState } from 'react';
 // import { supabase } from '@/integrations/supabase/client';
 // import { Blog } from '../../types/blog';
@@ -204,6 +205,7 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Blog } from '../../types/blog';
@@ -283,7 +285,11 @@ const BlogList: React.FC = () => {
     };
 
     fetchUserAndBlogs();
+
   }, [showPublishedOnly, userId]);
+
+  }, [showPublishedOnly]);
+
 
   const deleteBlog = async (id: string | undefined) => {
     if (!id) return;
@@ -396,12 +402,14 @@ const BlogList: React.FC = () => {
                 >
                   {blog.is_published ? "Unpublish" : "Publish"}
                 </button>
+
                 <button
                   onClick={() => navigate(`/edit-blog/${blog.id}`)}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   Edit
                 </button>
+
               </div>
             </div>
           ))

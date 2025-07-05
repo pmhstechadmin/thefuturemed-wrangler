@@ -104,7 +104,8 @@ export const CourseAccessPage = () => {
         .eq('user_id', session.user.id)
         .eq('course_id', courseId)
         .eq('payment_status', 'paid')
-        .single();
+        // .single();
+        setIsEnrolled(data && data.length > 0);
 
       if (!error && data) {
         setIsEnrolled(true);
