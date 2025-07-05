@@ -75,6 +75,7 @@ export const SubscriptionStatus = () => {
     } catch (error) {
       console.error('Error checking subscription:', error);
     } finally {
+      
       setLoading(false);
     }
   };

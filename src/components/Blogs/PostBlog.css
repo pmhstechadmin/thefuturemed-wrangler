@@ -1,0 +1,50 @@
+/* .ql-snow .ql-editor img {
+  max-width: 300px; 
+  height: auto;
+  display: inline-block;
+}
+
+
+.ql-snow .ql-editor img.float-left {
+  float: left;
+  margin: 0 15px 15px 0;
+  max-width: 40%;
+  height: auto;
+  display: inline-block;
+}
+
+.ql-snow .ql-editor img.float-right {
+  float: right;
+  margin: 0 0 15px 15px;
+  max-width: 40%;
+  height: auto;
+  display: inline-block;
+} */
+
+
+
+/* Default image styling */
+.ql-snow .ql-editor img {
+  max-width: 300px; /* or 100% for responsive */
+  height: auto;
+  display: inline-block;
+  margin: 10px 0; /* optional spacing */
+}
+
+/* Float left style */
+.ql-snow .ql-editor img.float-left {
+  float: left;
+  margin: 0 15px 15px 0;
+  max-width: 40%;
+  height: auto;
+  display: inline-block;
+}
+
+/* Float right style */
+.ql-snow .ql-editor img.float-right {
+  float: right;
+  margin: 0 0 15px 15px;
+  max-width: 40%;
+  height: auto;
+  display: inline-block;
+}
