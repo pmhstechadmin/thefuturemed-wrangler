@@ -73,6 +73,13 @@ const products = [
     color: '#98FB98',
     position: [0, -2, 0] as [number, number, number],
   },
+   {
+    id: 'medical-blogs',
+    name: 'Medical Blogs',
+    description: 'Find and post medical career opportunities',
+    color: '#98FB98',
+    position: [0, -2, 0] as [number, number, number],
+  },
 ];
 
 const ProductPortal = () => {
@@ -183,6 +190,9 @@ const checkUser = async () => {
       } else if (productId === 'medical-jobs') {
         console.log('Navigating to medical jobs...');
         navigate('/jobs');
+        } else if (productId === 'medical-blogs') {
+        console.log('Navigating to medical jobs...');
+        navigate('/blog-portal');
       } else {
         toast({
           title: "Coming Soon",
