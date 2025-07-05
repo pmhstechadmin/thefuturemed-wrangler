@@ -26,6 +26,14 @@ import JobPortal from "./pages/JobPortal";
 import Publication from "./pages/Publication";
 import UpdatePassword from "./pages/UpdatePassword";
 import Myjob from "./components/Myjob";
+import SaveJob from "./components/job-portal/SaveJob";
+import SaveCandidate from "./components/job-portal/SaveCandidate";
+import PostBlogs from "./components/Blogs/BlogList";
+import BlogList from "./components/Blogs/BlogList";
+import PostBlog from "./components/Blogs/PostBlog";
+import BlogPortal from "./components/Blogs/BlogPortal";
+import MyBlog from "./components/Blogs/MyBlog";
+import EditBlogs from "./components/Blogs/EditBlogs";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +68,15 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
            <Route path="/update-password" element={<UpdatePassword />} />
              <Route path="/my-job" element={<Myjob />} />
+             <Route path="/saved-job" element={<SaveJob />} />
+              <Route path="/saved-candidates" element={<SaveCandidate />} />
+               {/* <Route path="/blog-list" element={<BlogList />} /> */}
+                 <Route path="/blog-list/:id" element={<BlogList />} />
+               <Route path="/post-blog" element={<PostBlog />} />
+                 <Route path="/blog-portal" element={<BlogPortal/>} />
+                  <Route path="/my-blogs" element={<MyBlog/>} />
+                   <Route path="/edit-blog/:id" element={<EditBlogs/>} />
+
 
         </Routes>
       </BrowserRouter>
