@@ -563,12 +563,14 @@ if (blogsError) throw blogsError;
         break;
       case 'jobs':
         navigate('/my-job');
+
         break;
           case 'saved-job':
         navigate('/saved-job');
         break;
          case 'saved-candidates':
         navigate('/saved-candidates');
+
         break;
       case 'seminar-detail':
         if (id) navigate(`/seminar/${id}`);

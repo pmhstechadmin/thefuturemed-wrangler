@@ -858,7 +858,11 @@ export const JobListings = () => {
       if (error) {
         console.error("Error fetching jobsssssssssss:", error);
       } else {
+
         console.log("✅ Fetched Jobszzzzzzzzz:", data);
+
+          console.log("✅ Fetched Jobszzzzzzzzz:", data);
+
         setJobs(data);
       }
     };
@@ -912,16 +916,28 @@ export const JobListings = () => {
     const manager = job.manager_name || "";
     const location = job.google_location || "";
     const orgType = job.organization_type || "";
+
     const email = job.manager_email || "";
     const contact = job.manager_contact || "";
+
+
+      const email = job.manager_email || "";
+  const contact = job.manager_contact || "";
+    
 
 
     const matchesSearch =
       org.toLowerCase().includes(searchTerm.toLowerCase()) ||
       manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
+
       orgType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.toLowerCase().includes(searchTerm.toLowerCase());
+
+      orgType.toLowerCase().includes(searchTerm.toLowerCase())||
+         email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    contact.toLowerCase().includes(searchTerm.toLowerCase());
+
 
     const matchesLocation =
       locationFilter === "" ||
@@ -1037,6 +1053,7 @@ export const JobListings = () => {
 
 
 
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1145,7 +1162,7 @@ export const JobListings = () => {
                       </Badge>
                     ))}
                 </div>
-                {/* 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 */}
+
                 <div className="flex gap-3 pt-4">
                   <Button
                     className="bg-blue-600 hover:bg-blue-700"
@@ -1156,11 +1173,16 @@ export const JobListings = () => {
                   >
                     Apply Now
                   </Button>
+
                   <Button variant="outline" onClick={() => handleSaveJob(job)}>
                     Save Job
                   </Button>
 
 
+
+
+                  <Button variant="outline">Save Job</Button>
+                  {/* ########################################################################################## */}
 
                   <Button
                     variant="ghost"
@@ -1265,6 +1287,96 @@ export const JobListings = () => {
           </div>
         </div>
       )}
+
+
+
+      {selectedJobId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative shadow-lg">
+            <button
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
+              onClick={() => {
+                setSelectedJobId(null);
+                setSelectedSeekerId(null);
+              }}
+              aria-label="Close modal"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <h2 className="text-2xl font-bold mb-4">Job Seeker Profiles</h2>
+
+            {jobSeekers.map((seeker) => (
+              <Card
+                key={seeker.id}
+                className={`mb-4 ${selectedSeekerId === seeker.id ? "border-2 border-blue-600" : "border"}`}
+              >
+                <CardHeader>
+                  <CardTitle>{seeker.highest_qualification}</CardTitle>
+                  <CardDescription>{seeker.specialization}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p><strong>Skills:</strong> {Array.isArray(seeker.skills) ? seeker.skills.join(", ") : "N/A"}</p>
+                  <p><strong>Experience:</strong> {seeker.years_of_experience || "N/A"} years</p>
+                  <p><strong>Preferred Location:</strong> {seeker.preferred_location}</p>
+                  <p><strong>Availability:</strong> {seeker.availability}</p>
+                  <p><strong>Email:</strong> {seeker.email}</p>
+                  <p><strong>Phone:</strong> {seeker.phone}</p>
+
+                  {appliedSeekerIds.includes(seeker.id) ? (
+                    <Button className="mt-3 bg-gray-400 cursor-not-allowed" disabled>
+                      Already Applied
+                    </Button>
+                  ) : (
+                    <Button
+                      className="mt-3 bg-green-600 hover:bg-green-700"
+                      onClick={() => handleApplyOnBehalf(seeker.id)}
+                    >
+                      Apply Here
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {viewedJob && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative shadow-lg">
+      <button
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
+        onClick={() => setViewedJob(null)}
+        aria-label="Close modal"
+      >
+        <X className="h-6 w-6" />
+      </button>
+
+      <h2 className="text-2xl font-bold mb-2">{viewedJob.title}</h2>
+      <p className="text-gray-600 mb-4">{viewedJob.description}</p>
+
+      <div className="space-y-2 text-sm">
+        <p><strong>Organization:</strong> {viewedJob.organization_name}</p>
+        <p><strong>Manager:</strong> {viewedJob.manager_name}</p>
+        <p><strong>Location:</strong> {viewedJob.google_location}</p>
+        <p><strong>Type:</strong> {viewedJob.organization_type}</p>
+        <p><strong>Salary:</strong> {viewedJob.salary}</p>
+        <p><strong>Email:</strong> {viewedJob.manager_email}</p>
+        <p><strong>Contact:</strong> {viewedJob.manager_contact}</p>
+       
+        <p><strong>Last Updated:</strong> {new Date(viewedJob.updated_at).toLocaleString()}</p>
+        {Array.isArray(viewedJob.tags) && (
+          <div className="flex flex-wrap gap-2 pt-2">
+            {viewedJob.tags.map((tag, index) => (
+              <Badge key={index} variant="secondary">{tag}</Badge>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
 
       <div className="text-center">

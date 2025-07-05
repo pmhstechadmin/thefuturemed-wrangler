@@ -1251,10 +1251,14 @@ const Myjob = () => {
               <div className="flex justify-between">
                 <div>
                   <CardTitle>{job.title}</CardTitle>
+
                   <CardDescription className="text-lg font-medium text-gray-900 flex items-center gap-2">
                     <Building className="h-4 w-4" />
                     {job.organization_name}
                   </CardDescription>
+
+                  <CardDescription>{job.organization_name}</CardDescription>
+
                 </div>
               </div>
             </CardHeader>
@@ -1263,6 +1267,7 @@ const Myjob = () => {
                 <div className="flex items-center"><MapPin className="mr-1 h-4 w-4" />{job.google_location}</div>
                 <div className="flex items-center"><Briefcase className="mr-1 h-4 w-4" />{job.organization_type}</div>
                 <div className="flex items-center"><DollarSign className="mr-1 h-4 w-4" />{job.salary}</div>
+
                  <div className="flex items-center">
                     <Clock className="mr-1 h-4 w-4" />
                     Posted on{" "}
@@ -1272,6 +1277,9 @@ const Myjob = () => {
                       day: "numeric",
                     })}
                   </div>
+
+                <div className="flex items-center"><Clock className="mr-1 h-4 w-4" />{new Date(job.updated_at).toLocaleDateString()}</div>
+
               </div>
               <p className="mt-2 text-gray-700">{job.description}</p>
               <div className="flex gap-2 mt-4">
