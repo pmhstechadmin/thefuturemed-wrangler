@@ -1,4 +1,3 @@
-
 // import { useState } from 'react';
 // import { Button } from '@/components/ui/button';
 // import { Input } from '@/components/ui/input';
@@ -51,7 +50,7 @@
 
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault();
-    
+
 //     if (!date || !time || !hostName || !topic) {
 //       toast({
 //         title: "Error",
@@ -62,7 +61,7 @@
 //     }
 
 //     // Validate speakers
-//     const validSpeakers = speakers.filter(speaker => 
+//     const validSpeakers = speakers.filter(speaker =>
 //       speaker.name && speaker.qualification && speaker.department
 //     );
 
@@ -79,7 +78,7 @@
 
 //     try {
 //       const { data: { session } } = await supabase.auth.getSession();
-      
+
 //       if (!session?.user) {
 //         toast({
 //           title: "Error",
@@ -198,7 +197,7 @@
 //                   />
 //                 </div>
 //               </div>
-              
+
 //               <div>
 //                 <Label htmlFor="description">Description</Label>
 //                 <Textarea
@@ -287,7 +286,7 @@
 //                       </Button>
 //                     )}
 //                   </div>
-                  
+
 //                   <div className="grid md:grid-cols-3 gap-4">
 //                     <div>
 //                       <Label htmlFor={`speaker-name-${index}`}>Name</Label>
@@ -324,8 +323,8 @@
 
 //           {/* Submit Button */}
 //           <div className="flex justify-end">
-//             <Button 
-//               type="submit" 
+//             <Button
+//               type="submit"
 //               className="bg-blue-600 hover:bg-blue-700 px-8"
 //               disabled={loading}
 //             >
@@ -376,7 +375,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 import type { User as AuthUser } from "@supabase/supabase-js";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Speaker {
   name: string;
@@ -1031,7 +1037,7 @@ export default HostSeminar;
 //   const [loading, setLoading] = useState(false);
 //   const { toast } = useToast();
 //   const navigate = useNavigate();
-//   const [eventType, setEventType] = useState<"free" | "paid">("free");
+//   const [eventType, setEventType] = useState<"free" | "paid">("");
 //   const [price, setPrice] = useState("");
 //   const [currency, setCurrency] = useState("USD");
 

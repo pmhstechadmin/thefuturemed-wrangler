@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Edit, Eye, Trash2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface Course {
   id: string;
@@ -24,7 +25,7 @@ export const MyCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchMyCourses();
   }, []);
@@ -131,7 +132,7 @@ export const MyCourses = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">My Courses</h2>
         <div className="text-sm text-gray-600">
-          {courses.length} course{courses.length !== 1 ? 's' : ''} created
+          {courses.length} course{courses.length !== 1 ? "s" : ""} created
         </div>
       </div>
 
@@ -139,8 +140,12 @@ export const MyCourses = () => {
         <Card>
           <CardContent className="text-center py-12">
             <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No courses yet</h3>
-            <p className="text-gray-600">Create your first course to get started!</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No courses yet
+            </h3>
+            <p className="text-gray-600">
+              Create your first course to get started!
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -149,7 +154,9 @@ export const MyCourses = () => {
             <Card key={course.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                  <CardTitle className="text-lg line-clamp-2">
+                    {course.title}
+                  </CardTitle>
                   <Badge className={getStatusColor(course.status)}>
                     {course.status}
                   </Badge>
@@ -159,7 +166,7 @@ export const MyCourses = () => {
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                   {course.description}
                 </p>
-                
+
                 <div className="space-y-2 text-xs text-gray-500 mb-4">
                   <div className="flex justify-between">
                     <span>Duration:</span>
@@ -182,42 +189,47 @@ export const MyCourses = () => {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" className="flex-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => navigate(`/edit-course/${course.id}`)}
+                  >
                     <Edit className="h-3 w-3 mr-1" />
                     Edit
                   </Button>
-                  
-                  {course.status === 'draft' ? (
-                    <Button 
-                      size="sm" 
+
+                  {course.status === "draft" ? (
+                    <Button
+                      size="sm"
                       className="flex-1"
-                      onClick={() => updateCourseStatus(course.id, 'published')}
+                      onClick={() => updateCourseStatus(course.id, "published")}
                     >
                       <Eye className="h-3 w-3 mr-1" />
                       Publish
                     </Button>
-                  ) : course.status === 'published' ? (
-                    <Button 
-                      size="sm" 
+                  ) : course.status === "published" ? (
+                    <Button
+                      size="sm"
                       variant="secondary"
                       className="flex-1"
-                      onClick={() => updateCourseStatus(course.id, 'archived')}
+                      onClick={() => updateCourseStatus(course.id, "archived")}
                     >
                       Archive
                     </Button>
                   ) : (
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       className="flex-1"
-                      onClick={() => updateCourseStatus(course.id, 'published')}
+                      onClick={() => updateCourseStatus(course.id, "published")}
                     >
                       <Eye className="h-3 w-3 mr-1" />
                       Publish
                     </Button>
                   )}
-                  
-                  <Button 
-                    size="sm" 
+
+                  <Button
+                    size="sm"
                     variant="destructive"
                     onClick={() => deleteCourse(course.id)}
                   >

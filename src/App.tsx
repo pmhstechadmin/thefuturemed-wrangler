@@ -79,7 +79,7 @@ import HostSeminar from "./pages/HostSeminar";
 import CalendarPage from "./pages/CalendarPage";
 import ProductPortal from "./pages/ProductPortal";
 import ELearning from "./pages/ELearning";
-import CoursesListing from "./pages/CoursesListing ";
+// import CoursesListing from "./pages/CoursesListing ";
 import CourseDetails from "./pages/CourseDetails";
 import { CourseAccessPage } from "./components/elearning/CourseAccessPage";
 import Register from "./pages/Register";
@@ -99,8 +99,13 @@ import PostBlog from "./components/Blogs/PostBlog";
 import BlogPortal from "./components/Blogs/BlogPortal";
 import MyBlog from "./components/Blogs/MyBlog";
 
+import UpdatePassword from "./pages/UpdatePassword";
+import Myjob from "./components/Myjob";
+import CoursesListing from "./pages/CoursesListing";
+
 import VideoMeeting4 from "./components/VideoMeeting4";
 import VideoMeeting from "./components/VideoMeeting";
+import { EditCoursePage } from "./components/elearning/EditCoursePage";
 // import { MeetingWrapper } from "./pages/meeting/MeetingWrapper";
 // import VideoMeeting from "./components/VideoMeeting2";
 // import VideoMeeting1 from "./components/VideoMeeting1"
@@ -139,6 +144,7 @@ const App = () => {
             <Route path="/e-learning" element={<ELearning />} />
             <Route path="/courses" element={<CoursesListing />} />
             <Route path="/course/:courseId" element={<CourseDetails />} />
+            <Route path="/edit-course/:courseId" element={<EditCoursePage />} />
             <Route
               path="/course/:courseId/learn"
               element={<CourseAccessPage />}
@@ -150,6 +156,8 @@ const App = () => {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/data-usage" element={<DataUsagePolicy />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
+            <Route path="/my-job" element={<Myjob />} />
             <Route
               path="/mee"
               element={
@@ -197,10 +205,50 @@ const App = () => {
   );
 };
 
-import UpdatePassword from "./pages/UpdatePassword";
-import Myjob from "./components/Myjob";
+// import UpdatePassword from "./pages/UpdatePassword";
+// import Myjob from "./components/Myjob";
+// import CoursesListing from "./pages/CoursesListing";
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
+
+
+// const App = () => (
+//   <QueryClientProvider client={queryClient}>
+//     <TooltipProvider>
+//       <Toaster />
+//       <Sonner />
+//       <BrowserRouter>
+//         <Routes>
+//           <Route path="/" element={<Index />} />
+//           <Route path="/profile" element={<Profile />} />
+//           <Route path="/community" element={<Community />} />
+//           <Route path="/community/:communityId/chat" element={<CommunityChat />} />
+//           <Route path="/e-seminar" element={<ESeminar />} />
+//           <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+//           <Route path="/host-seminar" element={<HostSeminar />} />
+//           <Route path="/calendar" element={<CalendarPage />} />
+//           <Route path="/products" element={<ProductPortal />} />
+//           <Route path="/product-portal" element={<ProductPortal />} />
+//           <Route path="/e-learning" element={<ELearning />} />
+//           <Route path="/courses" element={<CoursesListing />} />
+//           <Route path="/course/:courseId" element={<CourseDetails />} />
+//           <Route path="/course/:courseId/learn" element={<CourseAccessPage />} />
+//           <Route path="/jobs" element={<JobPortal />} />
+//           <Route path="/job-portal" element={<JobPortal />} />
+//           <Route path="/publication" element={<Publication />} />
+//           <Route path="/register" element={<Register />} />
+//           <Route path="/terms" element={<TermsOfService />} />
+//           <Route path="/privacy" element={<PrivacyPolicy />} />
+//           <Route path="/data-usage" element={<DataUsagePolicy />} />
+//           <Route path="*" element={<NotFound />} />
+//            <Route path="/update-password" element={<UpdatePassword />} />
+//              <Route path="/my-job" element={<Myjob />} />
+
+//         </Routes>
+//       </BrowserRouter>
+//     </TooltipProvider>
+//   </QueryClientProvider>
+// );
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -248,6 +296,7 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
 
 
 export default App;
