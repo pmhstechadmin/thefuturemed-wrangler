@@ -572,12 +572,12 @@ if (blogsError) throw blogsError;
         navigate('/saved-candidates');
 
         break;
-          case 'saved-job':
-        navigate('/saved-job');
-        break;
-         case 'saved-candidates':
-        navigate('/saved-candidates');
-        break;
+        //   case 'saved-job':
+        // navigate('/saved-job');
+        // break;
+        //  case 'saved-candidates':
+        // navigate('/saved-candidates');
+        // break;
       case 'seminar-detail':
         if (id) navigate(`/seminar/${id}`);
         break;
