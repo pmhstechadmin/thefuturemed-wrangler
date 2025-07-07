@@ -2170,6 +2170,166 @@
 
 // export default EnrollmentButton;
 
+// const handlePaymentMethodSelect = async (method: string) => {
+//   if (method !== "razorpay") {
+//     toast({
+//       title: "Coming Soon",
+//       description: `${method} is not available.`,
+//       variant: "destructive",
+//     });
+//     return;
+//   }
+
+//   setIsLoading(true);
+
+//   try {
+//     // Get user session
+//     const {
+//       data: { session },
+//     } = await supabase.auth.getSession();
+
+//     if (!session) throw new Error("Please log in to enroll");
+
+//     const userId = session.user.id;
+//     // ✅ CHECK for existing enrollment BEFORE creating an order
+//     const { data: existingEnrollment, error: checkError } = await supabase
+//       .from("course_enrollments")
+//       .select("id")
+//       .eq("user_id", userId)
+//       .eq("course_id", courseId)
+//       .eq("payment_status", "paid")
+//       .limit(1)
+//       .maybeSingle();
+
+//     if (checkError) {
+//       throw new Error("Failed to check enrollment status");
+//     }
+
+//     if (existingEnrollment) {
+//       throw new Error("You are already enrolled in this course");
+//     }
+
+//     // Load Razorpay script
+//     const loaded = await loadRazorpayScript();
+//     if (!loaded) throw new Error("Failed to load payment processor");
+
+//     // ✅ NOW insert order only after confirming user is not enrolled
+//     const { data: order, error: orderError } = await supabase
+//       .from("orders")
+//       .insert({
+//         user_id: userId,
+//         course_id: courseId,
+//         amount: 499,
+//         currency: "INR",
+//         status: "created",
+//         payment_method: "razorpay",
+//       })
+//       .select()
+//       .single();
+
+//     if (orderError || !order) {
+//       throw new Error(orderError?.message || "Failed to create order");
+//     }
+//     console.log("ORder created : ", order.id);
+//     const options = {
+//       key: "rzp_test_eK57VjQhXHjIGR",
+//       // key: process.env.RAZORPAY_KEY_ID,
+//       amount: order.amount,
+//       currency: order.currency,
+//       name: "TheFutemed",
+//       description: `Payment for course enrollment`,
+//       // order_id: order.id,
+//       order_id: undefined,
+//       handler: async function (response) {
+//         try {
+//           const paymentId = response.razorpay_payment_id;
+//           // Capture payment
+//           await handleCapturePayment(paymentId, priceAmount / 100); // Convert paise to rupees
+//           // Update subscription after capturing payment
+//           await handleUpdateSubscription();
+//           setCurrentPlan();
+//           localStorage.setItem("userPlan"); // Sync localStorage
+//           setSuccessMessage(
+//             `Successfully subscribed to plan. Payment ID: `
+//           );
+//           const { error: verifyError } = await supabase
+//             .from("orders")
+//             .update({
+//               status: "paid",
+//               razorpay_payment_id: response.razorpay_payment_id,
+//               razorpay_signature: response.razorpay_signature,
+//             })
+//             .eq("id", order.id);
+
+//           if (verifyError) {
+//             throw new Error("Payment verification failed");
+//           }
+//           const sessionId = response.razorpay_payment_id;
+//           console.log("zzzzzzzzzzzzzzz", order.id);
+//           const { error: enrollmentError } = await supabase
+//             .from("course_enrollments")
+//             .insert({
+//               user_id: userId,
+//               course_id: courseId,
+//               payment_status: "paid",
+//               razorpay_payment_id: sessionId,
+//               amount: order.amount,
+//               currency: order.currency,
+//               payment_method: "razorpay", // Corrected column name
+//               enrolled_at: new Date().toISOString(), // Add enrolled date
+//             });
+
+//           if (enrollmentError) {
+//             throw new Error("Failed to create enrollment");
+//           }
+
+//           toast({
+//             title: "Enrollment Successful",
+//             description: "You have been enrolled in the course!",
+//           });
+//           onEnrollmentChange();
+//         } catch (error: any) {
+//           toast({
+//             title: "Payment Verification Failed 123333",
+//             description: error.message,
+//             variant: "destructive",
+//           });
+//         }
+//       },
+//       prefill: {
+//         name: session.user.user_metadata?.full_name || "User",
+//         email: session.user.email || "",
+//         contact: session.user.phone || "",
+//       },
+//       theme: {
+//         color: "#528FF0",
+//       },
+//       modal: {
+//         ondismiss: () => {
+//           toast({
+//             title: "Payment Cancelled",
+//             description: "You cancelled the payment process",
+//           });
+//           setIsLoading(false);
+//         },
+//       },
+//     };
+
+//     const rzp = new window.Razorpay(options);
+//     rzp.open();
+//   } catch (error: any) {
+//     console.log("Payment error:", error);
+//     toast({
+//       title: "Payment Failed 456",
+//       description: error.message,
+//       variant: "destructive",
+//     });
+//   } finally {
+//     setIsLoading(false);
+//     setShowPaymentMethods(false);
+//   }
+// };
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -2197,6 +2357,7 @@ declare global {
   }
 }
 
+
 export const EnrollmentButton = ({
   courseId,
   isEnrolled,
@@ -2218,165 +2379,6 @@ export const EnrollmentButton = ({
     });
   };
 
-  // const handlePaymentMethodSelect = async (method: string) => {
-  //   if (method !== "razorpay") {
-  //     toast({
-  //       title: "Coming Soon",
-  //       description: `${method} is not available.`,
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-
-  //   try {
-  //     // Get user session
-  //     const {
-  //       data: { session },
-  //     } = await supabase.auth.getSession();
-
-  //     if (!session) throw new Error("Please log in to enroll");
-
-  //     const userId = session.user.id;
-  //     // ✅ CHECK for existing enrollment BEFORE creating an order
-  //     const { data: existingEnrollment, error: checkError } = await supabase
-  //       .from("course_enrollments")
-  //       .select("id")
-  //       .eq("user_id", userId)
-  //       .eq("course_id", courseId)
-  //       .eq("payment_status", "paid")
-  //       .limit(1)
-  //       .maybeSingle();
-
-  //     if (checkError) {
-  //       throw new Error("Failed to check enrollment status");
-  //     }
-
-  //     if (existingEnrollment) {
-  //       throw new Error("You are already enrolled in this course");
-  //     }
-
-  //     // Load Razorpay script
-  //     const loaded = await loadRazorpayScript();
-  //     if (!loaded) throw new Error("Failed to load payment processor");
-
-  //     // ✅ NOW insert order only after confirming user is not enrolled
-  //     const { data: order, error: orderError } = await supabase
-  //       .from("orders")
-  //       .insert({
-  //         user_id: userId,
-  //         course_id: courseId,
-  //         amount: 499,
-  //         currency: "INR",
-  //         status: "created",
-  //         payment_method: "razorpay",
-  //       })
-  //       .select()
-  //       .single();
-
-  //     if (orderError || !order) {
-  //       throw new Error(orderError?.message || "Failed to create order");
-  //     }
-  //     console.log("ORder created : ", order.id);
-  //     const options = {
-  //       key: "rzp_test_eK57VjQhXHjIGR",
-  //       // key: process.env.RAZORPAY_KEY_ID,
-  //       amount: order.amount,
-  //       currency: order.currency,
-  //       name: "TheFutemed",
-  //       description: `Payment for course enrollment`,
-  //       // order_id: order.id,
-  //       order_id: undefined,
-  //       handler: async function (response) {
-  //         try {
-  //           const paymentId = response.razorpay_payment_id;
-  //           // Capture payment
-  //           await handleCapturePayment(paymentId, priceAmount / 100); // Convert paise to rupees
-  //           // Update subscription after capturing payment
-  //           await handleUpdateSubscription();
-  //           setCurrentPlan();
-  //           localStorage.setItem("userPlan"); // Sync localStorage
-  //           setSuccessMessage(
-  //             `Successfully subscribed to plan. Payment ID: `
-  //           );
-  //           const { error: verifyError } = await supabase
-  //             .from("orders")
-  //             .update({
-  //               status: "paid",
-  //               razorpay_payment_id: response.razorpay_payment_id,
-  //               razorpay_signature: response.razorpay_signature,
-  //             })
-  //             .eq("id", order.id);
-
-  //           if (verifyError) {
-  //             throw new Error("Payment verification failed");
-  //           }
-  //           const sessionId = response.razorpay_payment_id;
-  //           console.log("zzzzzzzzzzzzzzz", order.id);
-  //           const { error: enrollmentError } = await supabase
-  //             .from("course_enrollments")
-  //             .insert({
-  //               user_id: userId,
-  //               course_id: courseId,
-  //               payment_status: "paid",
-  //               razorpay_payment_id: sessionId,
-  //               amount: order.amount,
-  //               currency: order.currency,
-  //               payment_method: "razorpay", // Corrected column name
-  //               enrolled_at: new Date().toISOString(), // Add enrolled date
-  //             });
-
-  //           if (enrollmentError) {
-  //             throw new Error("Failed to create enrollment");
-  //           }
-
-  //           toast({
-  //             title: "Enrollment Successful",
-  //             description: "You have been enrolled in the course!",
-  //           });
-  //           onEnrollmentChange();
-  //         } catch (error: any) {
-  //           toast({
-  //             title: "Payment Verification Failed 123333",
-  //             description: error.message,
-  //             variant: "destructive",
-  //           });
-  //         }
-  //       },
-  //       prefill: {
-  //         name: session.user.user_metadata?.full_name || "User",
-  //         email: session.user.email || "",
-  //         contact: session.user.phone || "",
-  //       },
-  //       theme: {
-  //         color: "#528FF0",
-  //       },
-  //       modal: {
-  //         ondismiss: () => {
-  //           toast({
-  //             title: "Payment Cancelled",
-  //             description: "You cancelled the payment process",
-  //           });
-  //           setIsLoading(false);
-  //         },
-  //       },
-  //     };
-
-  //     const rzp = new window.Razorpay(options);
-  //     rzp.open();
-  //   } catch (error: any) {
-  //     console.log("Payment error:", error);
-  //     toast({
-  //       title: "Payment Failed 456",
-  //       description: error.message,
-  //       variant: "destructive",
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //     setShowPaymentMethods(false);
-  //   }
-  // };
   const handlePaymentMethodSelect = async (method: string) => {
     if (method !== "razorpay" && method !== "free") {
       toast({

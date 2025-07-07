@@ -142,14 +142,14 @@ export const SubscriptionStatus = () => {
           )}
         </div>
         
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <Button variant="outline" size="sm">
             Manage Subscription
           </Button>
           <Button variant="ghost" size="sm">
             View Invoices
           </Button>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

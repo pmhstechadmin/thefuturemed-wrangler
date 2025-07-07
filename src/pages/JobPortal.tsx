@@ -187,6 +187,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useToast } from "@/hooks/use-toast";
 import { JobSeekerProfiles } from "@/components/job-portal/JobSeekerProfiles";
+import PaymentHistory from "@/components/job-portal/PaymentHistory ";
 
 
 const JobPortal = () => {
@@ -440,11 +441,12 @@ const JobPortal = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8 text-gray-500">
+                  {/* <div className="text-center py-8 text-gray-500">
                     <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No payment history available</p>
                     <p className="text-sm">Payments will appear here once you subscribe</p>
-                  </div>
+                  </div> */}
+                  <PaymentHistory/>
                 </CardContent>
               </Card>
             </div>
