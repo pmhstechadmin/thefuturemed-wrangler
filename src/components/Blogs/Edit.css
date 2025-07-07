@@ -1,0 +1,32 @@
+/* Ensures image respects alignment inside Quill editor */
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Align center */
+.ql-editor .ql-align-center {
+  text-align: center;
+}
+.ql-editor .ql-align-center img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Align right */
+.ql-editor .ql-align-right {
+  text-align: right;
+}
+.ql-editor .ql-align-right img {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Align left (optional, but clearer) */
+.ql-editor .ql-align-left {
+  text-align: left;
+}
+.ql-editor .ql-align-left img {
+  margin-right: auto;
+}
