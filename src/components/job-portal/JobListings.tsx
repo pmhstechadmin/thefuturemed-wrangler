@@ -925,12 +925,7 @@ export const JobListings = () => {
     const contact = job.manager_contact || "";
 
 
-    const email = job.manager_email || "";
-    const contact = job.manager_contact || "";
-
-
-      const email = job.manager_email || "";
-  const contact = job.manager_contact || "";
+    
     
 
 

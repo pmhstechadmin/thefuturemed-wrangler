@@ -398,16 +398,6 @@ import { Blog } from '../../types/blog';
 import ImageResize from 'quill-image-resize-module-react';
 import { Button } from "@/components/ui/button";
 
-import { useNavigate, Link } from 'react-router-dom';
-import { useToast } from "@/hooks/use-toast";
-import {
-  Building,
-  ArrowLeft,
-  Shield,
-  UserPlus,
-  Home,
-  User
-} from "lucide-react";
 
 
 import { useNavigate ,Link } from 'react-router-dom';
@@ -464,34 +454,34 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleBackNavigation = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
-  };
+  // const handleBackNavigation = () => {
+  //   if (window.history.length > 1) {
+  //     navigate(-1);
+  //   } else {
+  //     navigate('/');
+  //   }
+  // };
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      setUser(null);
-      toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
-      });
-    } catch (error) {
-      console.error('Sign out error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
+  // const handleSignOut = async () => {
+  //   try {
+  //     const { error } = await supabase.auth.signOut();
+  //     if (error) throw error;
+  //     setUser(null);
+  //     toast({
+  //       title: "Signed Out",
+  //       description: "You have been successfully signed out.",
+  //     });
+  //   } catch (error) {
+  //     console.error('Sign out error:', error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to sign out. Please try again.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
    const navigate = useNavigate();
 
@@ -568,13 +558,13 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
 
     const { error } = await supabase.from('blog').insert([blogData]);
 
-    const { error } = await supabase.from('blog').insert([
-      {
-        title: formData.title,
-        content: formData.content,
-        user_id: user.id,
-      },
-    ]);
+    // const { error } = await supabase.from('blog').insert([
+    //   {
+    //     title: formData.title,
+    //     content: formData.content,
+    //     user_id: user.id,
+    //   },
+    // ]);
 
 
     if (error) {

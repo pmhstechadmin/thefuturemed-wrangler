@@ -288,7 +288,7 @@ const BlogList: React.FC = () => {
 
   }, [showPublishedOnly, userId]);
 
-  }, [showPublishedOnly]);
+  // }, [showPublishedOnly]);
 
 
   const deleteBlog = async (id: string | undefined) => {
