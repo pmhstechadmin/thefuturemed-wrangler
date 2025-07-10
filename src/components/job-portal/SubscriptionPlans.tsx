@@ -3251,12 +3251,12 @@ export const SubscriptionPlans = () => {
       if (error) throw error;
 
 
-      const parsedPlans = (data || []).map((plan) => ({
+      // const parsedPlans = (data || []).map((plan) => ({
 
       
       // Parse features as string array
 
-      console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
+      // console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
       const parsedPlans = (data || []).map(plan => ({
 
         ...plan,

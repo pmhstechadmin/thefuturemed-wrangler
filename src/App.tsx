@@ -41,6 +41,8 @@ import CoursesListing from "./pages/CoursesListing";
 import VideoMeeting4 from "./components/VideoMeeting4";
 import VideoMeeting from "./components/VideoMeeting";
 import { EditCoursePage } from "./components/elearning/EditCoursePage";
+import AboutPage from "./components/public page/AboutPage";
+import TrackPageView from "./Trackpage/TrackPageView";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <TrackPageView />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/profile" element={<Profile />} />
@@ -82,9 +85,9 @@ const App = () => {
             <Route path="/job-portal" element={<JobPortal />} />
             <Route path="/publication" element={<Publication />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/data-usage" element={<DataUsagePolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/my-job" element={<Myjob />} />
             <Route
@@ -106,8 +109,10 @@ const App = () => {
             {/* <Route path="/blog-list" element={<BlogList />} /> */}
             <Route path="/blog-list/:id" element={<BlogList />} />
             <Route path="/post-blog" element={<PostBlog />} />
+            <Route path="/edit-blog/:id" element={<EditBlogs />} />
             <Route path="/blog-portal" element={<BlogPortal />} />
             <Route path="/my-blogs" element={<MyBlog />} />
+            <Route path="/about-us" element={<AboutPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

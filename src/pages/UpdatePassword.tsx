@@ -171,6 +171,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Shield, UserPlus, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState('');
@@ -208,24 +209,51 @@ const UpdatePassword = () => {
       <nav className="bg-white shadow border-b border-blue-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
+            </div> */}
+            <div className="flex items-center space-x-2">
+              <Link to="/">
+                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+              </Link>
             </div>
             <div className="hidden md:flex items-center gap-6">
-              {['products', 'community', 'e-seminar', 'e-learning', 'jobs', 'calendar'].map((route) => (
-                <Link key={route} to={`/${route}`} className="text-gray-600 hover:text-blue-600 transition font-medium px-3 py-2 rounded-md hover:bg-blue-50 capitalize">
-                  {route.replace('-', ' ')}
+              {[
+                "products",
+                "community",
+                "e-seminar",
+                "e-learning",
+                "jobs",
+                "calendar",
+              ].map((route) => (
+                <Link
+                  key={route}
+                  to={`/${route}`}
+                  className="text-gray-600 hover:text-blue-600 transition font-medium px-3 py-2 rounded-md hover:bg-blue-50 capitalize"
+                >
+                  {route.replace("-", " ")}
                 </Link>
               ))}
-              <Button onClick={() => setShowAuthModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md">
+              <Button
+                onClick={() => setShowAuthModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+              >
                 <UserPlus className="mr-2 h-4 w-4" />
                 Sign In / Register
               </Button>
             </div>
             <div className="md:hidden">
-              <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 hover:bg-blue-50">
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <Button
+                variant="ghost"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 hover:bg-blue-50"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
               </Button>
             </div>
           </div>
@@ -233,12 +261,26 @@ const UpdatePassword = () => {
           {isMenuOpen && (
             <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded shadow-sm">
               <div className="flex flex-col space-y-3">
-                {['products', 'community', 'e-seminar', 'e-learning', 'jobs', 'calendar'].map((route) => (
-                  <Link key={route} to={`/${route}`} className="text-gray-600 hover:text-blue-600 transition font-medium p-3 rounded-md hover:bg-blue-50 capitalize">
-                    {route.replace('-', ' ')}
+                {[
+                  "products",
+                  "community",
+                  "e-seminar",
+                  "e-learning",
+                  "jobs",
+                  "calendar",
+                ].map((route) => (
+                  <Link
+                    key={route}
+                    to={`/${route}`}
+                    className="text-gray-600 hover:text-blue-600 transition font-medium p-3 rounded-md hover:bg-blue-50 capitalize"
+                  >
+                    {route.replace("-", " ")}
                   </Link>
                 ))}
-                <Button onClick={() => setShowAuthModal(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md">
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+                >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Sign In / Register
                 </Button>
@@ -251,9 +293,16 @@ const UpdatePassword = () => {
       {/* PASSWORD FORM */}
       <div className="flex justify-center items-center py-12">
         <div className="w-full max-w-md bg-white p-6 rounded shadow">
-          <h3 className="text-xl font-semibold text-center mb-6">Set New Password</h3>
+          <h3 className="text-xl font-semibold text-center mb-6">
+            Set New Password
+          </h3>
           <div className="mb-4">
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <label
+              htmlFor="newPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              New Password
+            </label>
             <input
               id="newPassword"
               type="password"
@@ -264,7 +313,12 @@ const UpdatePassword = () => {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="repeatPassword" className="block text-sm font-medium text-gray-700 mb-1">Repeat Password</label>
+            <label
+              htmlFor="repeatPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Repeat Password
+            </label>
             <input
               id="repeatPassword"
               type="password"
@@ -288,39 +342,93 @@ const UpdatePassword = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
+              {/* <div className="flex items-center gap-2 mb-4">
                 <Shield className="h-6 w-6" />
                 <span className="text-xl font-bold">MedPortal</span>
+              </div> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
               </div>
               <p className="text-gray-400">
-                Empowering medical professionals through technology and community.
+                Empowering medical professionals through technology and
+                community.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/products" className="hover:text-white">Products</Link></li>
-                <li><Link to="/community" className="hover:text-white">Community</Link></li>
-                <li><Link to="/e-learning" className="hover:text-white">E-Learning</Link></li>
-                <li><Link to="/e-seminar" className="hover:text-white">E-Seminars</Link></li>
-                <li><Link to="/jobs" className="hover:text-white">Jobs</Link></li>
+                <li>
+                  <Link to="/products" className="hover:text-white">
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/community" className="hover:text-white">
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/e-learning" className="hover:text-white">
+                    E-Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/e-seminar" className="hover:text-white">
+                    E-Seminars
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/jobs" className="hover:text-white">
+                    Jobs
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
-                <li><a href="#" className="hover:text-white">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white">Documentation</a></li>
-                <li><a href="#" className="hover:text-white">API</a></li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    API
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Legal</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="hover:text-white">Terms of Service</Link></li>
-                <li><Link to="/data-usage-policy" className="hover:text-white">Data Usage Policy</Link></li>
+                <li>
+                  <Link to="/privacy-policy" className="hover:text-white">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms-of-service" className="hover:text-white">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/data-usage-policy" className="hover:text-white">
+                    Data Usage Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

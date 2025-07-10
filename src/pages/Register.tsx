@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, ArrowLeft, CheckCircle, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 interface FormData {
   firstName: string;
@@ -293,10 +294,15 @@ const Register = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-2">
+            {/* <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
-            </Link>
+            </Link> */}
+            <div className="flex items-center space-x-2">
+              <Link to="/">
+                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+              </Link>
+            </div>
             <Link to="/">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -314,15 +320,25 @@ const Register = () => {
             <div className="flex items-center justify-between mb-4">
               {[1, 2, 3].map((stepNum) => (
                 <div key={stepNum} className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    step >= stepNum ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {step > stepNum ? <CheckCircle className="h-5 w-5" /> : stepNum}
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step >= stepNum
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {step > stepNum ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : (
+                      stepNum
+                    )}
                   </div>
                   {stepNum < 3 && (
-                    <div className={`w-24 h-1 mx-2 ${
-                      step > stepNum ? 'bg-blue-600' : 'bg-gray-200'
-                    }`} />
+                    <div
+                      className={`w-24 h-1 mx-2 ${
+                        step > stepNum ? "bg-blue-600" : "bg-gray-200"
+                      }`}
+                    />
                   )}
                 </div>
               ))}
@@ -343,7 +359,8 @@ const Register = () => {
               </CardTitle>
               <CardDescription>
                 {step === 1 && "Enter your basic information to get started"}
-                {step === 2 && "Tell us about your professional status and medical specialty"}
+                {step === 2 &&
+                  "Tell us about your professional status and medical specialty"}
                 {step === 3 && "Review and agree to our policies and terms"}
               </CardDescription>
             </CardHeader>
@@ -357,7 +374,9 @@ const Register = () => {
                       <Input
                         id="firstName"
                         value={formData.firstName}
-                        onChange={(e) => updateFormData("firstName", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("firstName", e.target.value)
+                        }
                         placeholder="Enter your first name"
                       />
                     </div>
@@ -366,7 +385,9 @@ const Register = () => {
                       <Input
                         id="lastName"
                         value={formData.lastName}
-                        onChange={(e) => updateFormData("lastName", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("lastName", e.target.value)
+                        }
                         placeholder="Enter your last name"
                       />
                     </div>
@@ -398,17 +419,23 @@ const Register = () => {
                         id="password"
                         type="password"
                         value={formData.password}
-                        onChange={(e) => updateFormData("password", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("password", e.target.value)
+                        }
                         placeholder="Create a password (min 6 characters)"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                      <Label htmlFor="confirmPassword">
+                        Confirm Password *
+                      </Label>
                       <Input
                         id="confirmPassword"
                         type="password"
                         value={formData.confirmPassword}
-                        onChange={(e) => updateFormData("confirmPassword", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("confirmPassword", e.target.value)
+                        }
                         placeholder="Confirm your password"
                       />
                     </div>
@@ -420,27 +447,46 @@ const Register = () => {
               {step === 2 && (
                 <div className="space-y-6">
                   <div>
-                    <Label className="text-base font-semibold mb-4 block">Professional Category *</Label>
+                    <Label className="text-base font-semibold mb-4 block">
+                      Professional Category *
+                    </Label>
                     <RadioGroup
                       value={formData.category}
-                      onValueChange={(value) => updateFormData("category", value)}
+                      onValueChange={(value) =>
+                        updateFormData("category", value)
+                      }
                       className="space-y-4"
                     >
                       <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
                         <RadioGroupItem value="student" id="student" />
-                        <Label htmlFor="student" className="cursor-pointer flex-1">
+                        <Label
+                          htmlFor="student"
+                          className="cursor-pointer flex-1"
+                        >
                           <div>
                             <div className="font-semibold">Student</div>
-                            <div className="text-sm text-gray-600">Currently enrolled in medical school</div>
+                            <div className="text-sm text-gray-600">
+                              Currently enrolled in medical school
+                            </div>
                           </div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
-                        <RadioGroupItem value="professional" id="professional" />
-                        <Label htmlFor="professional" className="cursor-pointer flex-1">
+                        <RadioGroupItem
+                          value="professional"
+                          id="professional"
+                        />
+                        <Label
+                          htmlFor="professional"
+                          className="cursor-pointer flex-1"
+                        >
                           <div>
-                            <div className="font-semibold">Medical Professional</div>
-                            <div className="text-sm text-gray-600">Licensed healthcare practitioner</div>
+                            <div className="font-semibold">
+                              Medical Professional
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              Licensed healthcare practitioner
+                            </div>
                           </div>
                         </Label>
                       </div>
@@ -448,24 +494,37 @@ const Register = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="medicalSpecialty">Medical Specialty *</Label>
-                    <Select value={formData.medicalSpecialty} onValueChange={(value) => updateFormData("medicalSpecialty", value)}>
+                    <Label htmlFor="medicalSpecialty">
+                      Medical Specialty *
+                    </Label>
+                    <Select
+                      value={formData.medicalSpecialty}
+                      onValueChange={(value) =>
+                        updateFormData("medicalSpecialty", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your medical specialty" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="doctor">Doctor</SelectItem>
                         <SelectItem value="dentist">Dentist</SelectItem>
-                        <SelectItem value="superspecialist">Superspecialist</SelectItem>
+                        <SelectItem value="superspecialist">
+                          Superspecialist
+                        </SelectItem>
                         <SelectItem value="nursing">Nursing</SelectItem>
-                        <SelectItem value="allied-health">Allied Health</SelectItem>
+                        <SelectItem value="allied-health">
+                          Allied Health
+                        </SelectItem>
                         <SelectItem value="dietician">Dietician</SelectItem>
                         <SelectItem value="yoga">Yoga</SelectItem>
                         <SelectItem value="ayurveda">Ayurveda</SelectItem>
                         <SelectItem value="homeopathy">Homeopathy</SelectItem>
                         <SelectItem value="naturopathy">Naturopathy</SelectItem>
                         <SelectItem value="unani">Unani</SelectItem>
-                        <SelectItem value="fitness-coach">Fitness Coach</SelectItem>
+                        <SelectItem value="fitness-coach">
+                          Fitness Coach
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -475,7 +534,9 @@ const Register = () => {
                     <Input
                       id="institution"
                       value={formData.institution}
-                      onChange={(e) => updateFormData("institution", e.target.value)}
+                      onChange={(e) =>
+                        updateFormData("institution", e.target.value)
+                      }
                       placeholder="Enter your institution or hospital name"
                     />
                   </div>
@@ -484,7 +545,12 @@ const Register = () => {
                   {formData.category === "student" && (
                     <div>
                       <Label htmlFor="yearOfStudy">Year of Study *</Label>
-                      <Select value={formData.yearOfStudy} onValueChange={(value) => updateFormData("yearOfStudy", value)}>
+                      <Select
+                        value={formData.yearOfStudy}
+                        onValueChange={(value) =>
+                          updateFormData("yearOfStudy", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select your current year" />
                         </SelectTrigger>
@@ -505,15 +571,28 @@ const Register = () => {
                   {formData.category === "professional" && (
                     <div>
                       <Label htmlFor="degreeLevel">Degree Level *</Label>
-                      <Select value={formData.degreeLevel} onValueChange={(value) => updateFormData("degreeLevel", value)}>
+                      <Select
+                        value={formData.degreeLevel}
+                        onValueChange={(value) =>
+                          updateFormData("degreeLevel", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select your highest degree" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
-                          <SelectItem value="masters">Master's Degree</SelectItem>
-                          <SelectItem value="doctorate">Doctorate (PhD/MD)</SelectItem>
-                          <SelectItem value="specialist">Specialist Certification</SelectItem>
+                          <SelectItem value="bachelors">
+                            Bachelor's Degree
+                          </SelectItem>
+                          <SelectItem value="masters">
+                            Master's Degree
+                          </SelectItem>
+                          <SelectItem value="doctorate">
+                            Doctorate (PhD/MD)
+                          </SelectItem>
+                          <SelectItem value="specialist">
+                            Specialist Certification
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -525,45 +604,81 @@ const Register = () => {
               {step === 3 && (
                 <div className="space-y-6">
                   <div>
-                    <Label htmlFor="additionalQualifications">Additional Qualifications</Label>
+                    <Label htmlFor="additionalQualifications">
+                      Additional Qualifications
+                    </Label>
                     <Textarea
                       id="additionalQualifications"
                       value={formData.additionalQualifications}
-                      onChange={(e) => updateFormData("additionalQualifications", e.target.value)}
+                      onChange={(e) =>
+                        updateFormData(
+                          "additionalQualifications",
+                          e.target.value
+                        )
+                      }
                       placeholder="List any additional certifications, specializations, or qualifications..."
                       rows={4}
                     />
                   </div>
-                  
+
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 mb-2">Registration Summary</h4>
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                      Registration Summary
+                    </h4>
                     <div className="text-sm text-blue-800 space-y-1">
-                      <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-                      <p><strong>Email:</strong> {formData.email}</p>
-                      <p><strong>Category:</strong> {formData.category}</p>
-                      <p><strong>Medical Specialty:</strong> {formData.medicalSpecialty}</p>
-                      <p><strong>Institution:</strong> {formData.institution}</p>
-                      {formData.category === "student" && formData.yearOfStudy && (
-                        <p><strong>Year of Study:</strong> {formData.yearOfStudy}</p>
-                      )}
-                      {formData.category === "professional" && formData.degreeLevel && (
-                        <p><strong>Degree Level:</strong> {formData.degreeLevel}</p>
-                      )}
+                      <p>
+                        <strong>Name:</strong> {formData.firstName}{" "}
+                        {formData.lastName}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {formData.email}
+                      </p>
+                      <p>
+                        <strong>Category:</strong> {formData.category}
+                      </p>
+                      <p>
+                        <strong>Medical Specialty:</strong>{" "}
+                        {formData.medicalSpecialty}
+                      </p>
+                      <p>
+                        <strong>Institution:</strong> {formData.institution}
+                      </p>
+                      {formData.category === "student" &&
+                        formData.yearOfStudy && (
+                          <p>
+                            <strong>Year of Study:</strong>{" "}
+                            {formData.yearOfStudy}
+                          </p>
+                        )}
+                      {formData.category === "professional" &&
+                        formData.degreeLevel && (
+                          <p>
+                            <strong>Degree Level:</strong>{" "}
+                            {formData.degreeLevel}
+                          </p>
+                        )}
                     </div>
                   </div>
 
                   {/* Legal Agreements */}
                   <div className="border-t pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">Legal Agreements Required</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4">
+                      Legal Agreements Required
+                    </h4>
                     <div className="space-y-4">
                       <div className="flex items-start space-x-3">
                         <Checkbox
                           id="terms"
                           checked={formData.agreedToTerms}
-                          onCheckedChange={(checked) => updateFormData("agreedToTerms", !!checked)}
+                          onCheckedChange={(checked) =>
+                            updateFormData("agreedToTerms", !!checked)
+                          }
                         />
                         <div className="space-y-1">
-                          <Label htmlFor="terms" className="text-sm cursor-pointer">
+                          <Label
+                            htmlFor="terms"
+                            className="text-sm cursor-pointer"
+                          >
                             I agree to the Terms of Service *
                           </Label>
                           <Link
@@ -581,10 +696,15 @@ const Register = () => {
                         <Checkbox
                           id="privacy"
                           checked={formData.agreedToPrivacy}
-                          onCheckedChange={(checked) => updateFormData("agreedToPrivacy", !!checked)}
+                          onCheckedChange={(checked) =>
+                            updateFormData("agreedToPrivacy", !!checked)
+                          }
                         />
                         <div className="space-y-1">
-                          <Label htmlFor="privacy" className="text-sm cursor-pointer">
+                          <Label
+                            htmlFor="privacy"
+                            className="text-sm cursor-pointer"
+                          >
                             I agree to the Privacy Policy *
                           </Label>
                           <Link
@@ -602,10 +722,15 @@ const Register = () => {
                         <Checkbox
                           id="dataUsage"
                           checked={formData.agreedToDataUsage}
-                          onCheckedChange={(checked) => updateFormData("agreedToDataUsage", !!checked)}
+                          onCheckedChange={(checked) =>
+                            updateFormData("agreedToDataUsage", !!checked)
+                          }
                         />
                         <div className="space-y-1">
-                          <Label htmlFor="dataUsage" className="text-sm cursor-pointer">
+                          <Label
+                            htmlFor="dataUsage"
+                            className="text-sm cursor-pointer"
+                          >
                             I agree to the Data Usage Policy *
                           </Label>
                           <Link
@@ -622,8 +747,11 @@ const Register = () => {
 
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
                       <p className="text-sm text-yellow-800">
-                        <strong>Important:</strong> By registering, you acknowledge that you are responsible for maintaining secure backups of your files. 
-                        The platform is not liable for data loss due to technical issues or unforeseen circumstances.
+                        <strong>Important:</strong> By registering, you
+                        acknowledge that you are responsible for maintaining
+                        secure backups of your files. The platform is not liable
+                        for data loss due to technical issues or unforeseen
+                        circumstances.
                       </p>
                     </div>
                   </div>
@@ -634,18 +762,25 @@ const Register = () => {
               <div className="flex justify-between pt-6">
                 <Button
                   variant="outline"
-                  onClick={() => setStep(prev => prev - 1)}
+                  onClick={() => setStep((prev) => prev - 1)}
                   disabled={step === 1 || loading}
                 >
                   Previous
                 </Button>
                 {step < 3 ? (
-                  <Button onClick={handleNext} disabled={loading}>Next</Button>
+                  <Button onClick={handleNext} disabled={loading}>
+                    Next
+                  </Button>
                 ) : (
-                  <Button 
-                    onClick={handleSubmit} 
+                  <Button
+                    onClick={handleSubmit}
                     className="bg-green-600 hover:bg-green-700"
-                    disabled={loading || !formData.agreedToTerms || !formData.agreedToPrivacy || !formData.agreedToDataUsage}
+                    disabled={
+                      loading ||
+                      !formData.agreedToTerms ||
+                      !formData.agreedToPrivacy ||
+                      !formData.agreedToDataUsage
+                    }
                   >
                     {loading ? "Creating Account..." : "Complete Registration"}
                   </Button>

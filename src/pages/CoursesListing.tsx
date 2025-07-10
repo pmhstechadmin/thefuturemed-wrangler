@@ -195,15 +195,17 @@ export const CoursesListing = () => {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              
+
               <Link to="/e-learning" className="flex items-center space-x-2">
                 <BookOpen className="h-8 w-8 text-blue-600" />
-                <h1 className="text-2xl font-bold text-gray-900">All Courses</h1>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  All Courses
+                </h1>
               </Link>
             </div>
             <Button
               variant="outline"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="hover:bg-gray-100"
               title="Go to home page"
             >
@@ -219,17 +221,18 @@ export const CoursesListing = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Browse All Courses</h2>
             <div className="text-sm text-gray-600">
-              {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+              {filteredCourses.length} course
+              {filteredCourses.length !== 1 ? "s" : ""} found
             </div>
           </div>
 
           {/* Filters and Search */}
           <div className="space-y-4">
-            <CourseSearchBar 
+            <CourseSearchBar
               onSearch={setSearchQuery}
               onFilterChange={setStatusFilter}
             />
-            
+
             <div className="flex flex-wrap gap-4">
               <Select onValueChange={setSortBy} defaultValue="duration">
                 <SelectTrigger className="w-[200px]">
@@ -237,8 +240,12 @@ export const CoursesListing = () => {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="duration">Duration (Short to Long)</SelectItem>
-                  <SelectItem value="department">Department Hierarchy</SelectItem>
+                  <SelectItem value="duration">
+                    Duration (Short to Long)
+                  </SelectItem>
+                  <SelectItem value="department">
+                    Department Hierarchy
+                  </SelectItem>
                   <SelectItem value="newest">Newest First</SelectItem>
                 </SelectContent>
               </Select>
@@ -249,8 +256,10 @@ export const CoursesListing = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
-                  {departmentHierarchy.map(dept => (
-                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  {departmentHierarchy.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -262,21 +271,20 @@ export const CoursesListing = () => {
               <CardContent className="text-center py-12">
                 <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {searchQuery ? 'No courses found' : 'No courses available'}
+                  {searchQuery ? "No courses found" : "No courses available"}
                 </h3>
                 <p className="text-gray-600">
-                  {searchQuery 
-                    ? 'Try adjusting your search criteria or filters.'
-                    : 'Check back later for new courses!'
-                  }
+                  {searchQuery
+                    ? "Try adjusting your search criteria or filters."
+                    : "Check back later for new courses!"}
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => (
-                <Card 
-                  key={course.id} 
+                <Card
+                  key={course.id}
                   className="hover:shadow-lg transition-shadow cursor-pointer"
                   onClick={() => handleCourseClick(course.id)}
                 >
@@ -284,24 +292,30 @@ export const CoursesListing = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex flex-wrap gap-1">
                         <Badge variant="default">Published</Badge>
-                        <Badge variant="outline">{getCreatorCategory(course.creator_id)}</Badge>
+                        <Badge variant="outline">
+                          {getCreatorCategory(course.creator_id)}
+                        </Badge>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 text-yellow-400 fill-current" />
                         <span className="text-sm font-medium">4.8</span>
                       </div>
                     </div>
-                    <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                    <CardTitle className="text-lg line-clamp-2">
+                      {course.title}
+                    </CardTitle>
                     <div className="text-sm text-gray-600 space-y-1">
                       <p>By {getCreatorName(course.creator_id)}</p>
-                      <p className="text-xs">Specialty: {getCreatorSpecialty(course.creator_id)}</p>
+                      <p className="text-xs">
+                        Specialty: {getCreatorSpecialty(course.creator_id)}
+                      </p>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                      {course.description || 'No description available.'}
+                      {course.description || "No description available."}
                     </p>
-                    
+
                     <div className="grid grid-cols-2 gap-3 mb-4">
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Clock className="h-4 w-4" />
@@ -317,24 +331,33 @@ export const CoursesListing = () => {
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Award className="h-4 w-4" />
-                        <span>{course.online_hours + course.offline_hours}h total</span>
+                        <span>
+                          {course.online_hours + course.offline_hours}h total
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex space-x-1">
-                        <Badge variant="secondary">{getCreatorSpecialty(course.creator_id)}</Badge>
+                        <Badge variant="secondary">
+                          {getCreatorSpecialty(course.creator_id)}
+                        </Badge>
                         {course.has_project && (
                           <Badge variant="outline">Project</Badge>
                         )}
                       </div>
-                      <div className="text-lg font-bold text-blue-600">$49.99</div>
+                      <div className="text-lg font-bold text-blue-600">
+                        ₹49.99
+                      </div>
                     </div>
 
-                    <Button className="w-full" onClick={(e) => {
-                      e.stopPropagation();
-                      handleCourseClick(course.id);
-                    }}>
+                    <Button
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCourseClick(course.id);
+                      }}
+                    >
                       View Course
                     </Button>
                   </CardContent>

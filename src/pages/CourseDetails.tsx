@@ -1,12 +1,27 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BookOpen, Clock, Users, Award, Star, Play, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Clock,
+  Users,
+  Award,
+  Star,
+  Play,
+  FileText,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { EnrollmentButton } from "@/components/elearning/EnrollmentButton";
 import { useToast } from "@/hooks/use-toast";
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 interface Course {
   id: string;
@@ -49,12 +64,12 @@ const CourseDetails = () => {
 
   useEffect(() => {
     // Check for payment status in URL params
-    const paymentStatus = searchParams.get('payment');
-    const sessionId = searchParams.get('session_id');
-    
-    if (paymentStatus === 'success' && sessionId) {
+    const paymentStatus = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+
+    if (paymentStatus === "success" && sessionId) {
       handlePaymentSuccess(sessionId);
-    } else if (paymentStatus === 'canceled') {
+    } else if (paymentStatus === "canceled") {
       toast({
         title: "Payment Canceled",
         description: "Your enrollment was canceled. You can try again anytime.",
@@ -66,22 +81,26 @@ const CourseDetails = () => {
   const handlePaymentSuccess = async (sessionId: string) => {
     try {
       setCheckingEnrollment(true);
-      
+
       toast({
         title: "Payment Successful!",
         description: "Verifying your enrollment...",
       });
 
       // Verify payment with our backend
-      const { data, error } = await supabase.functions.invoke('verify-payment', {
-        body: { sessionId }
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "verify-payment",
+        {
+          body: { sessionId },
+        }
+      );
 
       if (error) {
-        console.error('Payment verification error:', error);
+        console.error("Payment verification error:", error);
         toast({
           title: "Verification Failed",
-          description: "Payment was successful but verification failed. Please contact support.",
+          description:
+            "Payment was successful but verification failed. Please contact support.",
           variant: "destructive",
         });
         return;
@@ -91,22 +110,25 @@ const CourseDetails = () => {
         setIsEnrolled(true);
         toast({
           title: "Enrollment Complete!",
-          description: "Welcome to the course! A confirmation email has been sent to you.",
+          description:
+            "Welcome to the course! A confirmation email has been sent to you.",
         });
         // Clear the payment params from URL
         navigate(`/course/${courseId}`, { replace: true });
       } else {
         toast({
           title: "Enrollment Pending",
-          description: "Your payment is being processed. Please refresh in a moment.",
+          description:
+            "Your payment is being processed. Please refresh in a moment.",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error('Payment success handling error:', error);
+      console.error("Payment success handling error:", error);
       toast({
         title: "Verification Error",
-        description: "There was an issue verifying your payment. Please contact support.",
+        description:
+          "There was an issue verifying your payment. Please contact support.",
         variant: "destructive",
       });
     } finally {
@@ -117,9 +139,9 @@ const CourseDetails = () => {
   const fetchCourseDetails = async () => {
     try {
       const { data: courseData, error: courseError } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('id', courseId)
+        .from("courses")
+        .select("*")
+        .eq("id", courseId)
         .single();
 
       if (courseError) throw courseError;
@@ -127,17 +149,16 @@ const CourseDetails = () => {
 
       // Fetch creator profile
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('first_name, last_name')
-        .eq('id', courseData.creator_id)
+        .from("profiles")
+        .select("first_name, last_name")
+        .eq("id", courseData.creator_id)
         .single();
 
       if (!profileError) {
         setCreatorProfile(profileData);
       }
-
     } catch (error) {
-      console.error('Error fetching course details:', error);
+      console.error("Error fetching course details:", error);
     } finally {
       setIsLoading(false);
     }
@@ -146,22 +167,24 @@ const CourseDetails = () => {
   const checkEnrollmentStatus = async () => {
     try {
       setCheckingEnrollment(true);
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) return;
 
       const { data, error } = await supabase
-        .from('course_enrollments')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('course_id', courseId)
-        .eq('payment_status', 'paid')
+        .from("course_enrollments")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .eq("course_id", courseId)
+        .eq("payment_status", "paid")
         .single();
 
       if (!error && data) {
         setIsEnrolled(true);
       }
     } catch (error) {
-      console.error('Error checking enrollment status:', error);
+      console.error("Error checking enrollment status:", error);
     } finally {
       setCheckingEnrollment(false);
     }
@@ -183,7 +206,9 @@ const CourseDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Course Not Found
+          </h2>
           <Link to="/e-learning">
             <Button>Back to Courses</Button>
           </Link>
@@ -192,9 +217,10 @@ const CourseDetails = () => {
     );
   }
 
-  const creatorName = creatorProfile 
-    ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.trim() || 'Unknown Creator'
-    : 'Unknown Creator';
+  const creatorName = creatorProfile
+    ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.trim() ||
+      "Unknown Creator"
+    : "Unknown Creator";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -210,11 +236,18 @@ const CourseDetails = () => {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            
-            <Link to="/e-learning" className="flex items-center space-x-2">
+
+            {/* <Link to="/e-learning" className="flex items-center space-x-2">
               <BookOpen className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal E-Learning</h1>
-            </Link>
+              <h1 className="text-2xl font-bold text-gray-900">
+                MedPortal E-Learning
+              </h1>
+            </Link> */}
+            <div className="flex items-center space-x-2">
+              <Link to="/">
+                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -225,15 +258,23 @@ const CourseDetails = () => {
           <div className="lg:col-span-2 space-y-6">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
+                <Badge
+                  variant={
+                    course.status === "published" ? "default" : "secondary"
+                  }
+                >
                   {course.status}
                 </Badge>
                 <Badge variant="outline">Medical</Badge>
-                {course.has_project && <Badge variant="outline">Project Included</Badge>}
+                {course.has_project && (
+                  <Badge variant="outline">Project Included</Badge>
+                )}
               </div>
-              
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{course.title}</h1>
-              
+
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                {course.title}
+              </h1>
+
               <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center space-x-1">
                   <Users className="h-4 w-4" />
@@ -252,7 +293,8 @@ const CourseDetails = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 leading-relaxed">
-                  {course.description || 'No description available for this course.'}
+                  {course.description ||
+                    "No description available for this course."}
                 </p>
               </CardContent>
             </Card>
@@ -289,14 +331,24 @@ const CourseDetails = () => {
               <CardContent className="p-6">
                 {isEnrolled ? (
                   <div className="text-center mb-6">
-                    <Badge className="mb-4 bg-green-100 text-green-800">Enrolled</Badge>
-                    <div className="text-2xl font-bold text-green-600 mb-2">Access Granted</div>
-                    <p className="text-sm text-gray-600">You have full access to this course</p>
+                    <Badge className="mb-4 bg-green-100 text-green-800">
+                      Enrolled
+                    </Badge>
+                    <div className="text-2xl font-bold text-green-600 mb-2">
+                      Access Granted
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      You have full access to this course
+                    </p>
                   </div>
                 ) : (
                   <div className="text-center mb-6">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">$49.99</div>
-                    <p className="text-sm text-gray-600">One-time payment • Full access</p>
+                    <div className="text-3xl font-bold text-blue-600 mb-2">
+                      ₹49.99
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      One-time payment • Full access
+                    </p>
                   </div>
                 )}
 
@@ -305,8 +357,8 @@ const CourseDetails = () => {
                     Checking enrollment...
                   </Button>
                 ) : isEnrolled ? (
-                  <Button 
-                    className="w-full mb-4 bg-green-600 hover:bg-green-700" 
+                  <Button
+                    className="w-full mb-4 bg-green-600 hover:bg-green-700"
                     size="lg"
                     onClick={handleAccessCourse}
                   >
@@ -314,7 +366,7 @@ const CourseDetails = () => {
                     Access Course
                   </Button>
                 ) : (
-                  <EnrollmentButton 
+                  <EnrollmentButton
                     courseId={courseId!}
                     isEnrolled={isEnrolled}
                     onEnrollmentChange={checkEnrollmentStatus}
@@ -329,7 +381,7 @@ const CourseDetails = () => {
                     </span>
                     <span>{course.duration_months} months</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="flex items-center space-x-2">
                       <BookOpen className="h-4 w-4" />
@@ -337,7 +389,7 @@ const CourseDetails = () => {
                     </span>
                     <span>{course.number_of_modules}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="flex items-center space-x-2">
                       <Play className="h-4 w-4" />
@@ -345,7 +397,7 @@ const CourseDetails = () => {
                     </span>
                     <span>{course.online_hours}h</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="flex items-center space-x-2">
                       <Users className="h-4 w-4" />
@@ -353,7 +405,7 @@ const CourseDetails = () => {
                     </span>
                     <span>{course.offline_hours}h</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="flex items-center space-x-2">
                       <Award className="h-4 w-4" />
@@ -380,7 +432,8 @@ const CourseDetails = () => {
                   </div>
                 </div>
                 <p className="text-sm text-gray-700">
-                  Experienced medical professional with expertise in clinical education and research.
+                  Experienced medical professional with expertise in clinical
+                  education and research.
                 </p>
               </CardContent>
             </Card>

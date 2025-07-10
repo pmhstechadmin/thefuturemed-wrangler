@@ -207,7 +207,8 @@ export const PublishedCourses = () => {
                       <Badge variant="outline">Project</Badge>
                     )}
                   </div>
-                  <div className="text-lg font-bold text-blue-600">Free</div>
+                  <div className="text-lg font-bold text-blue-600">Paid</div>
+                  {/* <div className="text-lg font-bold text-blue-600">Free</div> */}
                 </div>
 
                 <Button className="w-full" onClick={(e) => {

@@ -55,9 +55,30 @@ const SaveCandidate = () => {
     fetchSavedCandidates();
   }, []);
 
-  const handleSaveCandidate = async (id: string) => {
-    console.log("Already saved, or logic can be extended");
-  };
+  const handleSaveCandidate = async (jobSeekerId: string) => {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) return;
+
+  // Delete the saved entry
+  const { error: deleteError } = await supabase
+    .from("save_profiles")
+    .delete()
+    .match({ user_id: user.id, job_seekers_id: jobSeekerId });
+
+  if (deleteError) {
+    console.error("Failed to unsave candidate:", deleteError);
+    return;
+  }
+
+  // Update the local state to remove the unsaved profile
+  setSavedProfiles((prev) =>
+    prev.filter((seeker) => seeker.id !== jobSeekerId)
+  );
+};
 
   const setSelectedSeeker = (seeker: any) => {
     console.log("Viewing full profile:", seeker);
@@ -140,7 +161,7 @@ const SaveCandidate = () => {
                     {hasSubscription ? "Contact Now" : "Subscribe to Contact"}
                   </Button>
                   <Button variant="outline" onClick={() => handleSaveCandidate(seeker.id)}>
-                    Saved
+                    Unsave
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedSeeker(seeker)}>
                     View Full Profile

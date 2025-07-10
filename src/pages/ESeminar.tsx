@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -53,6 +51,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 interface Seminar {
   id: string;
@@ -172,7 +171,7 @@ const ESeminar = () => {
   const handleSeminarClick = (seminar: Seminar) => {
     navigate(`/seminar/${seminar.id}`);
   };
-  
+
   // const handleSeminarClick = (seminar: Seminar) => {
   //   const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
   //   const newWindow = window.open(
@@ -402,12 +401,19 @@ const ESeminar = () => {
                 <ArrowLeft className="h-4 w-4 md:mr-2" />
                 <span className="hidden md:inline">Back</span>
               </Button>
-              <Link to="/" className="flex items-center space-x-2">
+              {/* <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                 <h1 className="text-xl md:text-2xl font-bold text-white">
                   MedPortal
                 </h1>
-              </Link>
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                {/* <Shield className="h-8 w-8 text-blue-600" />
+                                                <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
             </div>
 
             {/* Right Section - Navigation Items */}

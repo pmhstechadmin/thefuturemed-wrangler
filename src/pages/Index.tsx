@@ -79,7 +79,7 @@ const Index = () => {
             <div className="flex items-center space-x-2">
               {/* <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
-              <Link to="/" >
+              <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
               </Link>
             </div>
@@ -128,7 +128,7 @@ const Index = () => {
                   <Button
                     variant="outline"
                     className="text-white bg-gray-800 hover:bg-gray-700 border border-white/30"
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                   >
                     <User className="mr-2 h-4 w-4" />
                     Profile
@@ -154,8 +154,6 @@ const Index = () => {
                   Sign In / Register
                 </Button>
               )}
-
-
             </div>
 
             {/* Mobile menu button */}
@@ -214,13 +212,50 @@ const Index = () => {
                 >
                   Calendar
                 </Link>
-                <Button
+                {/* <Button
                   onClick={() => setShowAuthModal(true)}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Sign In / Register
-                </Button>
+                </Button> */}
+
+                {user ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="text-blue border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm justify-center mt-2"
+                      onClick={() => {
+                        navigate("/profile");
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </Button>
+                    <Button
+                      className="bg-red-600 hover:bg-red-700 text-white justify-center"
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        setUser(null);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2"
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Sign In / Register
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -391,7 +426,7 @@ const Index = () => {
               <div className="flex items-center space-x-2 mb-4">
                 {/* <Shield className="h-6 w-6" />
                 <span className="text-xl font-bold">MedPortal</span> */}
-                <Link to="/" >
+                <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>
               </div>
@@ -481,6 +516,15 @@ const Index = () => {
                     Privacy Policy
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/about-us"
+                    className="hover:text-white transition-colors"
+                  >
+                    About Us
+                  </Link>
+                </li>
+
                 <li>
                   <Link
                     to="/terms-of-service"

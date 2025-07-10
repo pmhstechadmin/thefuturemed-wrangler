@@ -110,6 +110,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield, Home, User as UserIcon, Copy } from "lucide-react";
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 interface ZoomHeaderProps {
   user?: {
@@ -164,10 +165,15 @@ const ZoomHeader: React.FC<ZoomHeaderProps> = ({
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
-            <Link to="/" className="flex items-center space-x-2">
+            {/* <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-400" />
               <h1 className="text-2xl font-bold text-white">MedPortal</h1>
-            </Link>
+            </Link> */}
+            <div className="flex items-center space-x-2">
+              <Link to="/">
+                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+              </Link>
+            </div>
             {meetingId && (
               <div className="flex items-center space-x-2 ml-4">
                 <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">

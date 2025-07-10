@@ -131,18 +131,25 @@ export const SubscriptionStatus = () => {
           <span className="font-medium">{subscription.plan.name}</span>
           {getStatusBadge(subscription.status)}
         </div>
-        
+
         <div className="text-2xl font-bold text-blue-600">
-          ${subscription.plan.price}/{subscription.plan.billing_cycle === 'monthly' ? 'mo' : subscription.plan.billing_cycle === 'quarterly' ? '3mo' : 'year'}
+          ₹{subscription.plan.price}/
+          {subscription.plan.billing_cycle === "monthly"
+            ? "mo"
+            : subscription.plan.billing_cycle === "quarterly"
+            ? "3mo"
+            : "year"}
         </div>
-        
+
         <div className="space-y-2 text-sm text-gray-600">
-          <p>Started: {new Date(subscription.start_date).toLocaleDateString()}</p>
+          <p>
+            Started: {new Date(subscription.start_date).toLocaleDateString()}
+          </p>
           {subscription.end_date && (
             <p>Ends: {new Date(subscription.end_date).toLocaleDateString()}</p>
           )}
         </div>
-        
+
         {/* <div className="flex gap-2">
           <Button variant="outline" size="sm">
             Manage Subscription

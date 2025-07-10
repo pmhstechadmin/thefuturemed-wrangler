@@ -1,23 +1,23 @@
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import {
-  FileText,
-  Users,
-  Calendar,
-  BookOpen,
-  Briefcase,
-  Edit,
-  Eye,
-  DollarSign,
-  TrendingUp,
-} from "lucide-react";
+// import { useState, useEffect } from "react";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
+// import { Separator } from "@/components/ui/separator";
+// import { useNavigate } from "react-router-dom";
+// import { supabase } from "@/integrations/supabase/client";
+// import { useToast } from "@/hooks/use-toast";
+// import {
+//   FileText,
+//   Users,
+//   Calendar,
+//   BookOpen,
+//   Briefcase,
+//   Edit,
+//   Eye,
+//   DollarSign,
+//   TrendingUp,
+// } from "lucide-react";
 
 
 // import { useState, useEffect } from 'react';
@@ -590,15 +590,10 @@ if (blogsError) throw blogsError;
       case "jobs":
         navigate("/my-job");
         break;
-      case "seminar-detail":
-        if (id) navigate(`/seminar/${id}`);
-        break;
-      case "course-detail":
+      
+      
 
-      case 'jobs':
-        navigate('/my-job');
-
-        break;
+        
           case 'saved-job':
         navigate('/saved-job');
         break;

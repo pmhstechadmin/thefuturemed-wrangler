@@ -7923,6 +7923,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logo from "@/image/thefuturemed_logo (1).jpg";
 
 interface Seminar {
   id: string;
@@ -8269,12 +8270,17 @@ const SeminarDetails = () => {
                   <span className="hidden md:inline">Back</span>
                 </Button>
 
-                <Link to="/" className="flex items-center space-x-2">
+                {/* <Link to="/" className="flex items-center space-x-2">
                   <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                   <h1 className="text-xl md:text-2xl font-bold text-white">
                     MedPortal
                   </h1>
-                </Link>
+                </Link> */}
+                <div className="flex items-center space-x-2">
+                  <Link to="/">
+                    <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                  </Link>
+                </div>
 
                 {seminar.meeting_id && (
                   <div className="flex items-center space-x-2 ml-2 md:ml-4">
@@ -8497,12 +8503,17 @@ const SeminarDetails = () => {
                 <span className="hidden md:inline">Back</span>
               </Button>
 
-              <Link to="/" className="flex items-center space-x-2">
+              {/* <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                 <h1 className="text-xl md:text-2xl font-bold text-white">
                   MedPortal
                 </h1>
-              </Link>
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
 
               {seminar.meeting_id && (
                 <div className="flex items-center space-x-2 ml-2 md:ml-4">
