@@ -535,10 +535,11 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
       if (coursesError) throw coursesError;
 
       // Fetch user's job postings (if they're a job provider)
-      const { data: jobProviders, error: jobProvidersError } = await supabase
-        .from("")
-        .select("*")
-        .eq("user_id", userId);
+     const { data: jobProviders, error: jobProvidersError } = await supabase
+  .from("job_providers")
+  .select("*")
+  .eq("user_id", userId);
+
 
       if (jobProvidersError) throw jobProvidersError;
 
@@ -587,10 +588,12 @@ if (blogsError) throw blogsError;
         navigate("/publication");
         break;
 
-      case "jobs":
+      case "myprofile":
+        navigate("/my-job-profile");
+        break;
+         case "myjob":
         navigate("/my-job");
         break;
-      
       
 
         
@@ -894,10 +897,10 @@ if (blogsError) throw blogsError;
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <Briefcase className="h-5 w-5 text-orange-600" />
-                      Job Postings ({products.jobPostings.length})
+                      My job ({products.jobPostings.length})
                     </h3>
                     <Button
-                      onClick={() => handleNavigateToProduct("jobs")}
+                      onClick={() => handleNavigateToProduct("myjob")}
                       variant="outline"
                       size="sm"
                     >
@@ -1041,14 +1044,14 @@ if (blogsError) throw blogsError;
                   <FileText className="h-4 w-4 mr-2" />
                   Submit Publication
                 </Button>
-                <Button
-                  onClick={() => handleNavigateToProduct("jobs")}
+                 <Button
+                  onClick={() => handleNavigateToProduct("myprofile")}
                   variant="outline"
                   size="sm"
                 >
                   <Briefcase className="h-4 w-4 mr-2" />
-                  Post Job Opening
-                </Button>
+                  My profile
+                </Button> 
                 <Button onClick={() => handleNavigateToProduct('saved-job')} variant="outline" size="sm">
                   <Save className="h-4 w-4 mr-2" />
                   Saved Jobs

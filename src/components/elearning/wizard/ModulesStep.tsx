@@ -19,6 +19,11 @@ interface ModulesStepProps {
 export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: ModulesStepProps) => {
   const [activeModule, setActiveModule] = useState(0);
 
+  useEffect(() => {
+  console.log("✅ Updated courseData:", courseData);
+}, [courseData]);
+
+
   // Initialize modules when component mounts or when number_of_modules changes
   useEffect(() => {
     if (courseData.modules.length !== courseData.number_of_modules) {
@@ -206,7 +211,7 @@ export const ModulesStep = ({ courseData, updateCourseData, onNext, onPrev }: Mo
                 placeholder="Enter module title"
               />
             </div>
-
+{/* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */}
             <div>
               <Label htmlFor="module_description">Module Description</Label>
               <Textarea

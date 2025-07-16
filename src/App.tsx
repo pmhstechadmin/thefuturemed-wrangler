@@ -43,6 +43,8 @@ import VideoMeeting from "./components/VideoMeeting";
 import { EditCoursePage } from "./components/elearning/EditCoursePage";
 import AboutPage from "./components/public page/AboutPage";
 import TrackPageView from "./Trackpage/TrackPageView";
+import MyJobProfile from "./components/job-portal/MyJobProfile";
+import { JobSeekerForm } from "./components/job-portal/JobSeekerForm";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +84,7 @@ const App = () => {
               element={<CourseAccessPage />}
             />
             <Route path="/jobs" element={<JobPortal />} />
+             <Route path="/job-seekerform" element={<JobSeekerForm />} />
             <Route path="/job-portal" element={<JobPortal />} />
             <Route path="/publication" element={<Publication />} />
             <Route path="/register" element={<Register />} />
@@ -90,6 +93,7 @@ const App = () => {
             <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/my-job" element={<Myjob />} />
+             <Route path="/my-job-profile" element={<MyJobProfile/>} />
             <Route
               path="/mee"
               element={

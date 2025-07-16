@@ -572,24 +572,24 @@ const JobPortal = () => {
     },
     {
       value: "job-provider",
-      label: "Job Provider",
+      label: "Create Jobs",
       icon: <Building className="h-4 w-4" />,
     },
     {
       value: "job-seeker",
-      label: "Job Seeker",
+      label: "Create Job Seekers Profile",
       icon: <User className="h-4 w-4" />,
     },
     {
       value: "job-seekers-form",
-      label: "Job Seekers Profile",
+      label: " Find Candidates",
       icon: <CreditCard className="h-4 w-4" />,
     },
-    {
-      value: "candidates",
-      label: "Find Candidates",
-      icon: <Users className="h-4 w-4" />,
-    },
+    // {
+    //   value: "candidates",
+    //   label: "Find Candidates",
+    //   icon: <Users className="h-4 w-4" />,
+    // },
     {
       value: "subscription",
       label: "Subscription",

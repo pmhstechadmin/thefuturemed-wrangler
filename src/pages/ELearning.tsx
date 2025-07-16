@@ -354,7 +354,7 @@ const ELearning = () => {
       <main className="container mx-auto px-4 py-8 pb-20 md:pb-8">
         {activeTab === "browse" && (
           <div className="space-y-8">
-            {/* Stats Cards - Responsive Grid */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card
                 className="hover:shadow-lg transition-shadow cursor-pointer"

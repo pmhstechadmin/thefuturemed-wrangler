@@ -1579,7 +1579,7 @@ export const JobSeekerProfiles = () => {
       const { data, error } = await supabase
         .from("job_seekers")
         .select("*")
-        .eq("user_id", user.id);
+        .neq("user_id", user.id);
 
       if (!error) setJobSeeker(data);
     };

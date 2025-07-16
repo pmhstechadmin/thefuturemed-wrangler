@@ -1476,6 +1476,7 @@ const Profile = () => {
             setProfile(updatedProfile);
           }
         } else {
+          
           setProfile(profileData);
         }
       }
