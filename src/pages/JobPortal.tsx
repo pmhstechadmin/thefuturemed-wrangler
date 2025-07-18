@@ -880,7 +880,7 @@ const JobPortal = () => {
           </TabsContent>
 
           <TabsContent value="job-seekers-form">
-            <JobSeekerProfiles setActiveTab={setActiveTab} />
+            <JobSeekerProfiles />
           </TabsContent>
 
           <TabsContent value="subscription">
@@ -995,7 +995,7 @@ const JobPortal = () => {
           )}
         </div>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
