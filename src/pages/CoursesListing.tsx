@@ -3,7 +3,16 @@ import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Users, Award, Star, ArrowLeft, Filter, Home } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  Users,
+  Award,
+  Star,
+  ArrowLeft,
+  Filter,
+  Home,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseSearchBar } from "@/components/elearning/CourseSearchBar";
 import {
@@ -13,6 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import logo from "@/image/thefuturemed_logo (1).jpg";
+import Footer from "@/footer/Footer";
+
 
 interface Course {
   id: string;
@@ -37,13 +50,13 @@ interface Profile {
 }
 
 const departmentHierarchy = [
-  'Doctor',
-  'Resident',
-  'Medical Student',
-  'Nurse',
-  'Pharmacist',
-  'Technician',
-  'Other'
+  "Doctor",
+  "Resident",
+  "Medical Student",
+  "Nurse",
+  "Pharmacist",
+  "Technician",
+  "Other",
 ];
 
 export const CoursesListing = () => {
@@ -68,21 +81,23 @@ export const CoursesListing = () => {
   const fetchAllCourses = async () => {
     try {
       const { data: coursesData, error: coursesError } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('status', 'published')
-        .order('created_at', { ascending: false });
+        .from("courses")
+        .select("*")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
 
       if (coursesError) throw coursesError;
       setCourses(coursesData || []);
 
       // Fetch creator profiles
-      const creatorIds = [...new Set(coursesData?.map(course => course.creator_id) || [])];
+      const creatorIds = [
+        ...new Set(coursesData?.map((course) => course.creator_id) || []),
+      ];
       if (creatorIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, medical_specialty, degree_level')
-          .in('id', creatorIds);
+          .from("profiles")
+          .select("id, first_name, last_name, medical_specialty, degree_level")
+          .in("id", creatorIds);
 
         if (!profilesError && profilesData) {
           const profilesMap = profilesData.reduce((acc, profile) => {
@@ -93,7 +108,7 @@ export const CoursesListing = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
     } finally {
       setIsLoading(false);
     }
@@ -104,12 +119,12 @@ export const CoursesListing = () => {
 
     // Filter by status
     if (statusFilter !== "all") {
-      filtered = filtered.filter(course => course.status === statusFilter);
+      filtered = filtered.filter((course) => course.status === statusFilter);
     }
 
     // Filter by department
     if (departmentFilter !== "all") {
-      filtered = filtered.filter(course => {
+      filtered = filtered.filter((course) => {
         const creatorProfile = profiles[course.creator_id];
         return creatorProfile?.degree_level === departmentFilter;
       });
@@ -118,12 +133,12 @@ export const CoursesListing = () => {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(course => {
+      filtered = filtered.filter((course) => {
         const creatorProfile = profiles[course.creator_id];
-        const creatorName = creatorProfile 
+        const creatorName = creatorProfile
           ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.toLowerCase()
-          : '';
-        
+          : "";
+
         return (
           course.title.toLowerCase().includes(query) ||
           course.description?.toLowerCase().includes(query) ||
@@ -140,12 +155,19 @@ export const CoursesListing = () => {
       filtered.sort((a, b) => {
         const aProfile = profiles[a.creator_id];
         const bProfile = profiles[b.creator_id];
-        const aIndex = departmentHierarchy.indexOf(aProfile?.degree_level || 'Other');
-        const bIndex = departmentHierarchy.indexOf(bProfile?.degree_level || 'Other');
+        const aIndex = departmentHierarchy.indexOf(
+          aProfile?.degree_level || "Other"
+        );
+        const bIndex = departmentHierarchy.indexOf(
+          bProfile?.degree_level || "Other"
+        );
         return aIndex - bIndex;
       });
     } else if (sortBy === "newest") {
-      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      filtered.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     }
 
     setFilteredCourses(filtered);
@@ -157,19 +179,19 @@ export const CoursesListing = () => {
 
   const getCreatorName = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile 
-      ? `${profile.first_name} ${profile.last_name}`.trim() || 'Unknown Creator'
-      : 'Unknown Creator';
+    return profile
+      ? `${profile.first_name} ${profile.last_name}`.trim() || "Unknown Creator"
+      : "Unknown Creator";
   };
 
   const getCreatorCategory = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile?.degree_level || 'Not specified';
+    return profile?.degree_level || "Not specified";
   };
 
   const getCreatorSpecialty = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile?.medical_specialty || 'General';
+    return profile?.medical_specialty || "General";
   };
 
   if (isLoading) {
@@ -195,15 +217,22 @@ export const CoursesListing = () => {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              
-              <Link to="/e-learning" className="flex items-center space-x-2">
+
+              {/* <Link to="/e-learning" className="flex items-center space-x-2">
                 <BookOpen className="h-8 w-8 text-blue-600" />
-                <h1 className="text-2xl font-bold text-gray-900">All Courses</h1>
-              </Link>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  All Courses
+                </h1>
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
             </div>
             <Button
               variant="outline"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="hover:bg-gray-100"
               title="Go to home page"
             >
@@ -219,17 +248,18 @@ export const CoursesListing = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Browse All Courses</h2>
             <div className="text-sm text-gray-600">
-              {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+              {filteredCourses.length} course
+              {filteredCourses.length !== 1 ? "s" : ""} found
             </div>
           </div>
 
           {/* Filters and Search */}
           <div className="space-y-4">
-            <CourseSearchBar 
+            <CourseSearchBar
               onSearch={setSearchQuery}
               onFilterChange={setStatusFilter}
             />
-            
+
             <div className="flex flex-wrap gap-4">
               <Select onValueChange={setSortBy} defaultValue="duration">
                 <SelectTrigger className="w-[200px]">
@@ -237,8 +267,12 @@ export const CoursesListing = () => {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="duration">Duration (Short to Long)</SelectItem>
-                  <SelectItem value="department">Department Hierarchy</SelectItem>
+                  <SelectItem value="duration">
+                    Duration (Short to Long)
+                  </SelectItem>
+                  <SelectItem value="department">
+                    Department Hierarchy
+                  </SelectItem>
                   <SelectItem value="newest">Newest First</SelectItem>
                 </SelectContent>
               </Select>
@@ -249,8 +283,10 @@ export const CoursesListing = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
-                  {departmentHierarchy.map(dept => (
-                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  {departmentHierarchy.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -262,21 +298,20 @@ export const CoursesListing = () => {
               <CardContent className="text-center py-12">
                 <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {searchQuery ? 'No courses found' : 'No courses available'}
+                  {searchQuery ? "No courses found" : "No courses available"}
                 </h3>
                 <p className="text-gray-600">
-                  {searchQuery 
-                    ? 'Try adjusting your search criteria or filters.'
-                    : 'Check back later for new courses!'
-                  }
+                  {searchQuery
+                    ? "Try adjusting your search criteria or filters."
+                    : "Check back later for new courses!"}
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => (
-                <Card 
-                  key={course.id} 
+                <Card
+                  key={course.id}
                   className="hover:shadow-lg transition-shadow cursor-pointer"
                   onClick={() => handleCourseClick(course.id)}
                 >
@@ -284,24 +319,30 @@ export const CoursesListing = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex flex-wrap gap-1">
                         <Badge variant="default">Published</Badge>
-                        <Badge variant="outline">{getCreatorCategory(course.creator_id)}</Badge>
+                        <Badge variant="outline">
+                          {getCreatorCategory(course.creator_id)}
+                        </Badge>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 text-yellow-400 fill-current" />
                         <span className="text-sm font-medium">4.8</span>
                       </div>
                     </div>
-                    <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                    <CardTitle className="text-lg line-clamp-2">
+                      {course.title}
+                    </CardTitle>
                     <div className="text-sm text-gray-600 space-y-1">
                       <p>By {getCreatorName(course.creator_id)}</p>
-                      <p className="text-xs">Specialty: {getCreatorSpecialty(course.creator_id)}</p>
+                      <p className="text-xs">
+                        Specialty: {getCreatorSpecialty(course.creator_id)}
+                      </p>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                      {course.description || 'No description available.'}
+                      {course.description || "No description available."}
                     </p>
-                    
+
                     <div className="grid grid-cols-2 gap-3 mb-4">
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Clock className="h-4 w-4" />
@@ -317,24 +358,33 @@ export const CoursesListing = () => {
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Award className="h-4 w-4" />
-                        <span>{course.online_hours + course.offline_hours}h total</span>
+                        <span>
+                          {course.online_hours + course.offline_hours}h total
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex space-x-1">
-                        <Badge variant="secondary">{getCreatorSpecialty(course.creator_id)}</Badge>
+                        <Badge variant="secondary">
+                          {getCreatorSpecialty(course.creator_id)}
+                        </Badge>
                         {course.has_project && (
                           <Badge variant="outline">Project</Badge>
                         )}
                       </div>
-                      <div className="text-lg font-bold text-blue-600">$49.99</div>
+                      <div className="text-lg font-bold text-blue-600">
+                        ₹49.99
+                      </div>
                     </div>
 
-                    <Button className="w-full" onClick={(e) => {
-                      e.stopPropagation();
-                      handleCourseClick(course.id);
-                    }}>
+                    <Button
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCourseClick(course.id);
+                      }}
+                    >
                       View Course
                     </Button>
                   </CardContent>
@@ -344,6 +394,7 @@ export const CoursesListing = () => {
           )}
         </div>
       </main>
+      <Footer/>
     </div>
   );
 };

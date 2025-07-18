@@ -1103,7 +1103,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
+import logo from "@/image/thefuturemed_logo (1).jpg";
+import Footer from "@/footer/Footer";
 
 
 const Myjob = () => {
@@ -1188,29 +1189,55 @@ const Myjob = () => {
       <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Button variant="outline" onClick={handleBackNavigation} className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">
+            <Button
+              variant="outline"
+              onClick={handleBackNavigation}
+              className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
-            <Link to="/" className="flex items-center space-x-2">
+            {/* <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-400" />
               <h1 className="text-2xl font-bold text-white">MedPortal</h1>
-            </Link>
+            </Link> */}
+            <div className="flex items-center space-x-2">
+              {/* <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+              <Link to="/">
+                <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+              </Link>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">Welcome, {user.email}</span>
-                <Button variant="outline" onClick={() => navigate('/profile')} className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">
+                <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
+                  Welcome, {user.email}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/profile")}
+                  className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                >
                   <User className="mr-2 h-4 w-4" /> Profile
                 </Button>
-                <Button variant="outline" onClick={handleSignOut} className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">
+                <Button
+                  variant="outline"
+                  onClick={handleSignOut}
+                  className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                >
                   Sign Out
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/register">
-                  <Button variant="outline" className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">Register</Button>
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                  >
+                    Register
+                  </Button>
                 </Link>
                 <Link to="/">
                   <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
@@ -1219,7 +1246,11 @@ const Myjob = () => {
                 </Link>
               </>
             )}
-            <Button variant="outline" onClick={() => navigate('/')} className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">
+            <Button
+              variant="outline"
+              onClick={() => navigate("/")}
+              className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+            >
               <Home className="mr-2 h-4 w-4" /> Home
             </Button>
           </div>
@@ -1231,11 +1262,21 @@ const Myjob = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input placeholder="Search jobs, companies, keywords..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
+              <Input
+                placeholder="Search jobs, companies, keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
             <div className="relative">
               <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input placeholder="Location" value={locationFilter} onChange={(e) => setLocationFilter(e.target.value)} className="pl-10" />
+              <Input
+                placeholder="Location"
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="pl-10"
+              />
             </div>
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
               <Search className="mr-2 h-4 w-4" /> Search Jobs
@@ -1257,37 +1298,47 @@ const Myjob = () => {
                     {job.organization_name}
                   </CardDescription>
 
-
                   <CardDescription>{job.organization_name}</CardDescription>
-
-
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                <div className="flex items-center"><MapPin className="mr-1 h-4 w-4" />{job.google_location}</div>
-                <div className="flex items-center"><Briefcase className="mr-1 h-4 w-4" />{job.organization_type}</div>
-                <div className="flex items-center"><DollarSign className="mr-1 h-4 w-4" />{job.salary}</div>
+                <div className="flex items-center">
+                  <MapPin className="mr-1 h-4 w-4" />
+                  {job.google_location}
+                </div>
+                <div className="flex items-center">
+                  <Briefcase className="mr-1 h-4 w-4" />
+                  {job.organization_type}
+                </div>
+                <div className="flex items-center">
+                  <DollarSign className="mr-1 h-4 w-4" />
+                  {job.salary}
+                </div>
 
-                 <div className="flex items-center">
-                    <Clock className="mr-1 h-4 w-4" />
-                    Posted on{" "}
-                    {new Date(job.updated_at).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </div>
+                <div className="flex items-center">
+                  <Clock className="mr-1 h-4 w-4" />
+                  Posted on{" "}
+                  {new Date(job.updated_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
 
-
-                <div className="flex items-center"><Clock className="mr-1 h-4 w-4" />{new Date(job.updated_at).toLocaleDateString()}</div>
-
-
+                <div className="flex items-center">
+                  <Clock className="mr-1 h-4 w-4" />
+                  {new Date(job.updated_at).toLocaleDateString()}
+                </div>
               </div>
               <p className="mt-2 text-gray-700">{job.description}</p>
               <div className="flex gap-2 mt-4">
-                <Button variant="ghost" size="sm" onClick={() => fetchApplicants(job.id)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fetchApplicants(job.id)}
+                >
                   View Applicants
                 </Button>
               </div>
@@ -1299,7 +1350,10 @@ const Myjob = () => {
       {/* Modal for Applicants */}
       {selectedJobId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-3xl p-6 max-h-[80vh] overflow-y-auto relative" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+          <div
+            className="bg-white rounded-lg w-full max-w-3xl p-6 max-h-[80vh] overflow-y-auto relative"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             <button
               className="absolute top-4 right-4"
               onClick={() => setSelectedJobId(null)}
@@ -1311,7 +1365,10 @@ const Myjob = () => {
               <p>Loading applicants...</p>
             ) : applicants.length > 0 ? (
               applicants.map((seeker) => (
-                <Card key={seeker.id} className="hover:shadow-lg transition-shadow mb-4">
+                <Card
+                  key={seeker.id}
+                  className="hover:shadow-lg transition-shadow mb-4"
+                >
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="space-y-2">
@@ -1345,23 +1402,37 @@ const Myjob = () => {
 
                       {/* Contact */}
                       <div className="space-y-2">
-                        <h4 className="font-medium text-gray-900">Contact Information:</h4>
+                        <h4 className="font-medium text-gray-900">
+                          Contact Information:
+                        </h4>
                         <p className="text-sm text-gray-600">
-                          Email: {hasSubscription ? seeker.email : "***@***.com"}
-                          {!hasSubscription && <Lock className="inline h-3 w-3 ml-1 text-amber-500" />}
+                          Email:{" "}
+                          {hasSubscription ? seeker.email : "***@***.com"}
+                          {!hasSubscription && (
+                            <Lock className="inline h-3 w-3 ml-1 text-amber-500" />
+                          )}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Phone: {hasSubscription ? seeker.phone : "+1 (***) ***-****"}
-                          {!hasSubscription && <Lock className="inline h-3 w-3 ml-1 text-amber-500" />}
+                          Phone:{" "}
+                          {hasSubscription ? seeker.phone : "+1 (***) ***-****"}
+                          {!hasSubscription && (
+                            <Lock className="inline h-3 w-3 ml-1 text-amber-500" />
+                          )}
                         </p>
                       </div>
 
                       {/* Skills */}
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Key Skills:</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Key Skills:
+                        </h4>
                         <div className="flex flex-wrap gap-2">
                           {(seeker.skills || []).map((skill, idx) => (
-                            <Badge key={idx} variant="secondary" className="bg-green-100 text-green-800">
+                            <Badge
+                              key={idx}
+                              variant="secondary"
+                              className="bg-green-100 text-green-800"
+                            >
                               {skill}
                             </Badge>
                           ))}
@@ -1370,27 +1441,35 @@ const Myjob = () => {
 
                       {/* Availability */}
                       <div className="bg-gray-50 p-3 rounded-md">
-                        <span className="font-medium text-gray-900">Availability: </span>
-                        <span className="text-gray-700">{seeker.availability}</span>
+                        <span className="font-medium text-gray-900">
+                          Availability:{" "}
+                        </span>
+                        <span className="text-gray-700">
+                          {seeker.availability}
+                        </span>
                       </div>
 
                       {/* Actions */}
                       <div className="flex gap-3 pt-4">
-                        <Button className="bg-blue-600 hover:bg-blue-700">Subscribe to Contact</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">
+                          Subscribe to Contact
+                        </Button>
                         <Button variant="outline">Save Candidate</Button>
-                        <Button variant="ghost" size="sm">View Full Profile</Button>
+                        <Button variant="ghost" size="sm">
+                          View Full Profile
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))
-
             ) : (
               <p>No applicants for this job yet.</p>
             )}
           </div>
         </div>
       )}
+      <Footer/>
     </div>
   );
 };

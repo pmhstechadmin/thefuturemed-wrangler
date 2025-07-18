@@ -27,7 +27,26 @@ interface Profile {
   first_name: string;
   last_name: string;
 }
-
+// const removeImagesFromHtml = (html: string) => {
+//   return html.replace(/<img[^>]*>/g, ""); // Removes all <img> tags
+// };
+const resizeImagesInHtml = (html: string): string => {
+  return html.replace(/<img([^>]*)>/g, (match, group1) => {
+    // Check if style already exists
+    if (/style\s*=/.test(group1)) {
+      // Append width style to existing style attribute
+      return `<img${group1.replace(
+        /style\s*=\s*(['"])(.*?)\1/,
+        (s, quote, styleContent) => {
+          return `style=${quote}${styleContent};width:100px;${quote}`;
+        }
+      )}>`;
+    } else {
+      // Add new style attribute with width
+      return `<img${group1} style="width:100px;">`;
+    }
+  });
+};
 export const PublishedCourses = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -131,11 +150,12 @@ export const PublishedCourses = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">All Courses</h2>
         <div className="text-sm text-gray-600">
-          {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+          {filteredCourses.length} course
+          {filteredCourses.length !== 1 ? "s" : ""} found
         </div>
       </div>
 
-      <CourseSearchBar 
+      <CourseSearchBar
         onSearch={setSearchQuery}
         onFilterChange={setStatusFilter}
       />
@@ -145,27 +165,30 @@ export const PublishedCourses = () => {
           <CardContent className="text-center py-12">
             <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchQuery ? 'No courses found' : 'No courses available'}
+              {searchQuery ? "No courses found" : "No courses available"}
             </h3>
             <p className="text-gray-600">
-              {searchQuery 
-                ? 'Try adjusting your search criteria or filters.'
-                : 'Be the first to create and publish a course!'
-              }
+              {searchQuery
+                ? "Try adjusting your search criteria or filters."
+                : "Be the first to create and publish a course!"}
             </p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
-            <Card 
-              key={course.id} 
+            <Card
+              key={course.id}
               className="hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => handleCourseClick(course.id)}
             >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start mb-2">
-                  <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={
+                      course.status === "published" ? "default" : "secondary"
+                    }
+                  >
                     {course.status}
                   </Badge>
                   <div className="flex items-center space-x-1">
@@ -173,14 +196,33 @@ export const PublishedCourses = () => {
                     <span className="text-sm font-medium">4.8</span>
                   </div>
                 </div>
-                <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                <p className="text-sm text-gray-600">By {getCreatorName(course.creator_id)}</p>
+                <CardTitle className="text-lg line-clamp-2">
+                  {course.title}
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  By {getCreatorName(course.creator_id)}
+                </p>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                {/* <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                   {course.description || 'No description available.'}
-                </p>
-                
+                </p> */}
+                {course.description ? (
+                  <div
+                    className="prose max-w-none text-gray-800"
+                    dangerouslySetInnerHTML={{
+                      __html: resizeImagesInHtml(course.description),
+                    }}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: removeImagesFromHtml(course.description),
+                    // }}
+                  />
+                ) : (
+                  <p className="text-gray-700">
+                    No description available for this course.
+                  </p>
+                )}
+
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
                     <Clock className="h-4 w-4" />
@@ -196,7 +238,9 @@ export const PublishedCourses = () => {
                   </div>
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
                     <Award className="h-4 w-4" />
-                    <span>{course.online_hours + course.offline_hours}h total</span>
+                    <span>
+                      {course.online_hours + course.offline_hours}h total
+                    </span>
                   </div>
                 </div>
 
@@ -207,13 +251,17 @@ export const PublishedCourses = () => {
                       <Badge variant="outline">Project</Badge>
                     )}
                   </div>
-                  <div className="text-lg font-bold text-blue-600">Free</div>
+                  <div className="text-lg font-bold text-blue-600">Paid</div>
+                  {/* <div className="text-lg font-bold text-blue-600">Free</div> */}
                 </div>
 
-                <Button className="w-full" onClick={(e) => {
-                  e.stopPropagation();
-                  handleCourseClick(course.id);
-                }}>
+                <Button
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCourseClick(course.id);
+                  }}
+                >
                   View Course
                 </Button>
               </CardContent>

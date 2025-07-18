@@ -11,6 +11,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
+import Footer from "@/footer/Footer";
 
 
 const Index = () => {
@@ -79,7 +80,7 @@ const Index = () => {
             <div className="flex items-center space-x-2">
               {/* <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
-              <Link to="/" >
+              <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
               </Link>
             </div>
@@ -87,10 +88,11 @@ const Index = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
-                to="/products"
+                to="/dashboard"
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50"
               >
-                Products
+                Dashboard
+                {/* Products */}
               </Link>
               <Link
                 to="/community"
@@ -128,7 +130,7 @@ const Index = () => {
                   <Button
                     variant="outline"
                     className="text-white bg-gray-800 hover:bg-gray-700 border border-white/30"
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                   >
                     <User className="mr-2 h-4 w-4" />
                     Profile
@@ -154,8 +156,6 @@ const Index = () => {
                   Sign In / Register
                 </Button>
               )}
-
-
             </div>
 
             {/* Mobile menu button */}
@@ -179,10 +179,11 @@ const Index = () => {
             <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded-lg shadow-sm">
               <div className="flex flex-col space-y-3">
                 <Link
-                  to="/products"
+                  to="/dashboard"
                   className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50"
                 >
-                  Products
+                  Dashboard
+                  {/* Products */}
                 </Link>
                 <Link
                   to="/community"
@@ -214,13 +215,50 @@ const Index = () => {
                 >
                   Calendar
                 </Link>
-                <Button
+                {/* <Button
                   onClick={() => setShowAuthModal(true)}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Sign In / Register
-                </Button>
+                </Button> */}
+
+                {user ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="text-blue border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm justify-center mt-2"
+                      onClick={() => {
+                        navigate("/profile");
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </Button>
+                    <Button
+                      className="bg-red-600 hover:bg-red-700 text-white justify-center"
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        setUser(null);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2"
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Sign In / Register
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -250,7 +288,7 @@ const Index = () => {
             asChild
             className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
           >
-            <Link to="/products">Explore Products</Link>
+            <Link to="/dashboard">Explore Products</Link>
           </Button>
         </div>
       </section>
@@ -383,129 +421,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                {/* <Shield className="h-6 w-6" />
-                <span className="text-xl font-bold">MedPortal</span> */}
-                <Link to="/" >
-                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
-                </Link>
-              </div>
-              <p className="text-gray-400">
-                Empowering medical professionals through technology and
-                community.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Platform</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    to="/products"
-                    className="hover:text-white transition-colors"
-                  >
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/community"
-                    className="hover:text-white transition-colors"
-                  >
-                    Community
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/e-learning"
-                    className="hover:text-white transition-colors"
-                  >
-                    E-Learning
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/e-seminar"
-                    className="hover:text-white transition-colors"
-                  >
-                    E-Seminars
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/jobs"
-                    className="hover:text-white transition-colors"
-                  >
-                    Jobs
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    API
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    to="/privacy-policy"
-                    className="hover:text-white transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/terms-of-service"
-                    className="hover:text-white transition-colors"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/data-usage-policy"
-                    className="hover:text-white transition-colors"
-                  >
-                    Data Usage Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 MedPortal. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-
+      <Footer />
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}

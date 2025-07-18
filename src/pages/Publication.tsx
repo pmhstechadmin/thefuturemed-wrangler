@@ -7,6 +7,8 @@ import { Shield, ArrowLeft, FileText, Upload, Eye, Send } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CaseStudyForm from '@/components/publication/CaseStudyForm';
 import MyPublications from '@/components/publication/MyPublications';
+import logo from "@/image/thefuturemed_logo (1).jpg";
+import Footer from '@/footer/Footer';
 
 const Publication = () => {
   const navigate = useNavigate();
@@ -34,14 +36,22 @@ const Publication = () => {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <Link to="/" className="flex items-center space-x-2">
+              {/* <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-blue-400" />
                 <h1 className="text-2xl font-bold text-white">MedPortal</h1>
-              </Link>
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/products">
-                <Button variant="outline" className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm">
+                <Button
+                  variant="outline"
+                  className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                >
                   All Products
                 </Button>
               </Link>
@@ -64,14 +74,14 @@ const Publication = () => {
               Medical Publications
             </h2>
           </motion.div>
-          <motion.p 
+          <motion.p
             className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Submit and share your medical case studies, research findings, and clinical observations 
-            with the global medical community.
+            Submit and share your medical case studies, research findings, and
+            clinical observations with the global medical community.
           </motion.p>
         </div>
       </div>
@@ -85,21 +95,27 @@ const Publication = () => {
         >
           <Tabs defaultValue="submit" className="w-full">
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 bg-black/40 border border-white/20">
-              <TabsTrigger value="submit" className="text-white data-[state=active]:bg-purple-600">
+              <TabsTrigger
+                value="submit"
+                className="text-white data-[state=active]:bg-purple-600"
+              >
                 <Upload className="mr-2 h-4 w-4" />
                 Submit Case Study
               </TabsTrigger>
-              <TabsTrigger value="my-publications" className="text-white data-[state=active]:bg-purple-600">
+              <TabsTrigger
+                value="my-publications"
+                className="text-white data-[state=active]:bg-purple-600"
+              >
                 <Eye className="mr-2 h-4 w-4" />
                 My Publications
               </TabsTrigger>
             </TabsList>
-            
+
             <div className="mt-8">
               <TabsContent value="submit">
                 <CaseStudyForm />
               </TabsContent>
-              
+
               <TabsContent value="my-publications">
                 <MyPublications />
               </TabsContent>
@@ -112,7 +128,7 @@ const Publication = () => {
       <div className="bg-black/20 backdrop-blur-sm border-t border-white/10 py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div 
+            <motion.div
               className="text-center text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -120,9 +136,12 @@ const Publication = () => {
             >
               <FileText className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Case Studies</h3>
-              <p className="text-gray-300">Share detailed case studies with comprehensive analysis and outcomes</p>
+              <p className="text-gray-300">
+                Share detailed case studies with comprehensive analysis and
+                outcomes
+              </p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="text-center text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,9 +149,11 @@ const Publication = () => {
             >
               <Upload className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Easy Submission</h3>
-              <p className="text-gray-300">Simple form-based submission with PDF upload support</p>
+              <p className="text-gray-300">
+                Simple form-based submission with PDF upload support
+              </p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="text-center text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -140,11 +161,14 @@ const Publication = () => {
             >
               <Eye className="h-12 w-12 text-purple-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Preview & Edit</h3>
-              <p className="text-gray-300">Preview your submission and make edits before final submission</p>
+              <p className="text-gray-300">
+                Preview your submission and make edits before final submission
+              </p>
             </motion.div>
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

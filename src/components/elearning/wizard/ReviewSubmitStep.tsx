@@ -93,12 +93,14 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
         for (const content of module.content) {
           console.log('Creating content:', content.title);
           const { error: contentError } = await supabase
-            .from('module_content')
+            .from("module_content")
             .insert({
               module_id: moduleData.id,
               content_type: content.type,
               content_title: content.title,
               content_text: content.content,
+              content_url: content.url, // Added missing field
+              file_size: content.file_size,
               // Note: File uploads would need additional handling with Supabase Storage
             });
 

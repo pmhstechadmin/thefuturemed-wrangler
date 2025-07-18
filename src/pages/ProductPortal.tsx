@@ -10,6 +10,8 @@ import ProductCard from '@/components/ProductCard';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import AuthModal from '@/components/AuthModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import logo from "@/image/thefuturemed_logo (1).jpg";
+import Footer from '@/footer/Footer';
 
 const products = [
   {
@@ -186,25 +188,30 @@ const checkUser = async () => {
       } else if (productId === 'e-learning') {
         console.log('Navigating to e-learning...');
         navigate('/e-learning');
-      } else if (productId === 'e-conferences') {
-        console.log('E-conferences coming soon...');
+      } else if (productId === "ai-medic-agents") {
+        console.log("Navigating to ai-medic-agents...");
+        window.open("https://ai-assistant.medorbis.ai/", "_blank");
+      } else if (productId === "e-conferences") {
+        console.log("E-conferences coming soon...");
         toast({
           title: "Coming Soon",
           description: "E-Conferences will be available soon!",
         });
-      } else if (productId === 'publication') {
-        console.log('Navigating to publication...');
-        navigate('/publication');
-      } else if (productId === 'medical-jobs') {
-        console.log('Navigating to medical jobs...');
-        navigate('/jobs');
-        } else if (productId === 'medical-blogs') {
-        console.log('Navigating to medical jobs...');
-        navigate('/blog-portal');
+      } else if (productId === "publication") {
+        console.log("Navigating to publication...");
+        navigate("/publication");
+      } else if (productId === "medical-jobs") {
+        console.log("Navigating to medical jobs...");
+        navigate("/jobs");
+      } else if (productId === "medical-blogs") {
+        console.log("Navigating to medical jobs...");
+        navigate("/blog-portal");
       } else {
         toast({
           title: "Coming Soon",
-          description: `${products.find(p => p.id === productId)?.name} will be available soon!`,
+          description: `${
+            products.find((p) => p.id === productId)?.name
+          } will be available soon!`,
         });
       }
     } catch (error) {
@@ -338,12 +345,17 @@ const checkUser = async () => {
                 <ArrowLeft className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Back</span>
               </Button>
-              <Link to="/" className="flex items-center space-x-2">
+              {/* <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
                 <h1 className="text-xl sm:text-2xl font-bold text-white">
                   MedPortal
                 </h1>
-              </Link>
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
             </div>
 
             {/* Right Section - Navigation Items */}
@@ -504,9 +516,6 @@ const checkUser = async () => {
           onSuccess={handleAuthSuccess}
         />
       </header>
-
-      //////
-
       {/* Hero Section */}
       <div className="relative pt-16 pb-8">
         <div className="container mx-auto px-4 text-center">
@@ -534,7 +543,6 @@ const checkUser = async () => {
           </motion.p>
         </div>
       </div>
-
       {/* Product Showcase */}
       <div className="container mx-auto px-4 pb-16">
         <motion.div
@@ -619,12 +627,13 @@ const checkUser = async () => {
           </motion.div>
         )}
       </div>
-
       {/* Instructions */}
       <div className="fixed bottom-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 text-white text-sm border border-white/20 shadow-xl">
         <p>🖱️ Click cards to explore • 📱 Switch between grid and list view</p>
       </div>
+      <Footer/>
     </div>
+    
   );
 };
 

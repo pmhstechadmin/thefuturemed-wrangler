@@ -20,6 +20,27 @@ interface Course {
   offline_hours: number;
   has_project: boolean;
 }
+// const removeImagesFromHtml = (html: string) => {
+//   return html.replace(/<img[^>]*>/g, ""); // Removes all <img> tags
+// };
+
+const resizeImagesInHtml = (html: string): string => {
+  return html.replace(/<img([^>]*)>/g, (match, group1) => {
+    // Check if style already exists
+    if (/style\s*=/.test(group1)) {
+      // Append width style to existing style attribute
+      return `<img${group1.replace(
+        /style\s*=\s*(['"])(.*?)\1/,
+        (s, quote, styleContent) => {
+          return `style=${quote}${styleContent};width:100px;${quote}`;
+        }
+      )}>`;
+    } else {
+      // Add new style attribute with width
+      return `<img${group1} style="width:100px;">`;
+    }
+  });
+};
 
 export const MyCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -163,9 +184,24 @@ export const MyCourses = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                {/* <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                   {course.description}
-                </p>
+                </p> */}
+                {course.description ? (
+                  <div
+                    className="prose max-w-none text-gray-800"
+                    dangerouslySetInnerHTML={{
+                      __html: resizeImagesInHtml(course.description),
+                    }}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: removeImagesFromHtml(course.description),
+                    // }}
+                  />
+                ) : (
+                  <p className="text-gray-700">
+                    No description available for this course.
+                  </p>
+                )}
 
                 <div className="space-y-2 text-xs text-gray-500 mb-4">
                   <div className="flex justify-between">

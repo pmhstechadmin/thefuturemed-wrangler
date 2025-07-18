@@ -859,6 +859,8 @@ export const EditSubmitStep = ({
               content_type: content.type,
               content_title: content.title,
               content_text: content.content,
+              content_url: content.url, // Added missing field
+              file_size: content.file_size,
             });
 
           if (contentError) throw contentError;
