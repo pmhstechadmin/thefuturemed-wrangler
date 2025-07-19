@@ -75,6 +75,7 @@
     "razorpay": "^2.9.6",
     "react": "^18.3.1",
     "react-color": "^2.19.3",
+    "react-datepicker": "^8.4.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
@@ -100,7 +101,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+<<<<<<< HEAD
     "@tailwindcss/typography": "^0.5.16",
+=======
+    "@tailwindcss/typography": "^0.5.15",
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     "@types/mixpanel-browser": "^2.60.0",
     "@types/next": "^9.0.0",
     "@types/node": "^22.5.5",

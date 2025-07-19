@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -173,6 +174,19 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
             </header>
+=======
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Footer from "@/footer/Footer";
+import Header from "@/footer/Header";
+
+const PrivacyPolicy = () => {
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      {/* Header */}
+      <Header/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -333,6 +347,7 @@ const PrivacyPolicy = () => {
           </Card>
         </div>
       </main>
+<<<<<<< HEAD
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
@@ -464,6 +479,9 @@ const PrivacyPolicy = () => {
           </div>
         </div>
       </footer>
+=======
+      <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

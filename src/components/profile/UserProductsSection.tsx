@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 // import { useState, useEffect } from "react";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Button } from "@/components/ui/button";
@@ -18,7 +21,10 @@
 //   DollarSign,
 //   TrendingUp,
 // } from "lucide-react";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 // import { useState, useEffect } from 'react';
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,14 +34,14 @@
 // import { useNavigate } from 'react-router-dom';
 // import { supabase } from '@/integrations/supabase/client';
 // import { useToast } from '@/hooks/use-toast';
-// import { 
-//   FileText, 
-//   Users, 
-//   Calendar, 
-//   BookOpen, 
-//   Briefcase, 
-//   Edit, 
-//   Eye, 
+// import {
+//   FileText,
+//   Users,
+//   Calendar,
+//   BookOpen,
+//   Briefcase,
+//   Edit,
+//   Eye,
 //   DollarSign,
 //   TrendingUp,
 //   Save,
@@ -161,7 +167,7 @@
 //     );
 //   }
 
-//   const totalProducts = products.seminars.length + products.courses.length + 
+//   const totalProducts = products.seminars.length + products.courses.length +
 //                        products.publications.length + products.jobPostings.length;
 
 //   return (
@@ -201,9 +207,9 @@
 //                     <Calendar className="h-5 w-5 text-blue-600" />
 //                     Seminars ({products.seminars.length})
 //                   </h3>
-//                   <Button 
-//                     onClick={() => handleNavigateToProduct('seminars')} 
-//                     variant="outline" 
+//                   <Button
+//                     onClick={() => handleNavigateToProduct('seminars')}
+//                     variant="outline"
 //                     size="sm"
 //                   >
 //                     Manage Seminars
@@ -217,17 +223,17 @@
 //                         <div className="flex items-center justify-between text-xs text-gray-600">
 //                           <span>{new Date(seminar.date).toLocaleDateString()}</span>
 //                           <div className="flex gap-1">
-//                             <Button 
+//                             <Button
 //                               onClick={() => handleNavigateToProduct('seminar-detail', seminar.id)}
-//                               size="sm" 
+//                               size="sm"
 //                               variant="ghost"
 //                               className="h-6 px-2"
 //                             >
 //                               <Eye className="h-3 w-3" />
 //                             </Button>
-//                             <Button 
+//                             <Button
 //                               onClick={() => handleNavigateToProduct('seminars')}
-//                               size="sm" 
+//                               size="sm"
 //                               variant="ghost"
 //                               className="h-6 px-2"
 //                             >
@@ -240,9 +246,9 @@
 //                   ))}
 //                 </div>
 //                 {products.seminars.length > 4 && (
-//                   <Button 
-//                     onClick={() => handleNavigateToProduct('seminars')} 
-//                     variant="link" 
+//                   <Button
+//                     onClick={() => handleNavigateToProduct('seminars')}
+//                     variant="link"
 //                     className="mt-2"
 //                   >
 //                     View all {products.seminars.length} seminars
@@ -261,9 +267,9 @@
 //                       <BookOpen className="h-5 w-5 text-green-600" />
 //                       Courses ({products.courses.length})
 //                     </h3>
-//                     <Button 
-//                       onClick={() => handleNavigateToProduct('courses')} 
-//                       variant="outline" 
+//                     <Button
+//                       onClick={() => handleNavigateToProduct('courses')}
+//                       variant="outline"
 //                       size="sm"
 //                     >
 //                       Manage Courses
@@ -281,17 +287,17 @@
 //                             <span>{course.duration_months} months</span>
 //                           </div>
 //                           <div className="flex justify-end gap-1">
-//                             <Button 
+//                             <Button
 //                               onClick={() => handleNavigateToProduct('course-detail', course.id)}
-//                               size="sm" 
+//                               size="sm"
 //                               variant="ghost"
 //                               className="h-6 px-2"
 //                             >
 //                               <Eye className="h-3 w-3" />
 //                             </Button>
-//                             <Button 
+//                             <Button
 //                               onClick={() => handleNavigateToProduct('courses')}
-//                               size="sm" 
+//                               size="sm"
 //                               variant="ghost"
 //                               className="h-6 px-2"
 //                             >
@@ -303,9 +309,9 @@
 //                     ))}
 //                   </div>
 //                   {products.courses.length > 4 && (
-//                     <Button 
-//                       onClick={() => handleNavigateToProduct('courses')} 
-//                       variant="link" 
+//                     <Button
+//                       onClick={() => handleNavigateToProduct('courses')}
+//                       variant="link"
 //                       className="mt-2"
 //                     >
 //                       View all {products.courses.length} courses
@@ -325,9 +331,9 @@
 //                       <FileText className="h-5 w-5 text-purple-600" />
 //                       Publications ({products.publications.length})
 //                     </h3>
-//                     <Button 
-//                       onClick={() => handleNavigateToProduct('publications')} 
-//                       variant="outline" 
+//                     <Button
+//                       onClick={() => handleNavigateToProduct('publications')}
+//                       variant="outline"
 //                       size="sm"
 //                     >
 //                       Manage Publications
@@ -369,9 +375,9 @@
 //                       <Briefcase className="h-5 w-5 text-orange-600" />
 //                       Job Postings ({products.jobPostings.length})
 //                     </h3>
-//                     <Button 
-//                       onClick={() => handleNavigateToProduct('jobs')} 
-//                       variant="outline" 
+//                     <Button
+//                       onClick={() => handleNavigateToProduct('jobs')}
+//                       variant="outline"
 //                       size="sm"
 //                     >
 //                       Manage Jobs
@@ -388,10 +394,10 @@
 //                               <Button size="sm" variant="ghost" className="h-6 px-2">
 //                                 <Eye className="h-3 w-3" />
 //                               </Button>
-//                               <Button 
+//                               <Button
 //                                 onClick={() => handleNavigateToProduct('jobs')}
-//                                 size="sm" 
-//                                 variant="ghost" 
+//                                 size="sm"
+//                                 variant="ghost"
 //                                 className="h-6 px-2"
 //                               >
 //                                 <Edit className="h-3 w-3" />
@@ -403,9 +409,9 @@
 //                     ))}
 //                   </div>
 //                   {products.jobPostings.length > 4 && (
-//                     <Button 
-//                       onClick={() => handleNavigateToProduct('jobs')} 
-//                       variant="link" 
+//                     <Button
+//                       onClick={() => handleNavigateToProduct('jobs')}
+//                       variant="link"
 //                       className="mt-2"
 //                     >
 //                       View all {products.jobPostings.length} job postings
@@ -414,9 +420,6 @@
 //                 </div>
 //               </>
 //             )}
-
-
-            
 
 //             {/* Quick Actions */}
 //             <Separator />
@@ -456,38 +459,33 @@
 //   );
 // };
 
-
-
-
-
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { 
-  FileText, 
-  Users, 
-  Calendar, 
-  BookOpen, 
-  Briefcase, 
-  Edit, 
-  Eye, 
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import {
+  FileText,
+  Users,
+  Calendar,
+  BookOpen,
+  Briefcase,
+  Edit,
+  Eye,
   DollarSign,
   TrendingUp,
   Save,
-} from 'lucide-react';
-
+} from "lucide-react";
 
 interface UserProducts {
   seminars: any[];
   courses: any[];
   publications: any[];
   jobPostings: any[];
-   blogs: any[];
+  blogs: any[];
 }
 
 interface UserProductsSectionProps {
@@ -501,8 +499,7 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
     publications: [],
     jobPostings: [],
 
-     blogs: []
-
+    blogs: [],
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -544,12 +541,12 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
       if (jobProvidersError) throw jobProvidersError;
 
       // Fetch user's blogs
-const { data: blogs, error: blogsError } = await supabase
-  .from('blog')
-  .select('*')
-  .eq('user_id', userId);
+      const { data: blogs, error: blogsError } = await supabase
+        .from("blog")
+        .select("*")
+        .eq("user_id", userId);
 
-if (blogsError) throw blogsError;
+      if (blogsError) throw blogsError;
 
       // For now, publications will be empty since we don't have the table yet
       // This will be updated when the publications table is created
@@ -561,8 +558,7 @@ if (blogsError) throw blogsError;
         publications,
         jobPostings: jobProviders || [],
 
-         blogs: blogs || []
-
+        blogs: blogs || [],
       });
     } catch (error) {
       console.error("Error fetching user products:", error);
@@ -594,6 +590,7 @@ if (blogsError) throw blogsError;
          case "myjob":
         navigate("/my-job");
         break;
+<<<<<<< HEAD
       
 
         
@@ -618,6 +615,29 @@ if (blogsError) throw blogsError;
         break;
       case 'course-detail':
 
+=======
+
+      case "saved-job":
+        navigate("/saved-job");
+        break;
+      case "saved-candidates":
+        navigate("/saved-candidates");
+
+        break;
+      //   case 'saved-job':
+      // navigate('/saved-job');
+      // break;
+      //  case 'saved-candidates':
+      // navigate('/saved-candidates');
+      // break;
+      case "seminar-detail":
+        if (id) navigate(`/seminar/${id}`);
+        break;
+      case "blogs":
+        navigate("/my-blogs");
+        break;
+      case "course-detail":
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         if (id) navigate(`/course/${id}`);
         break;
       default:
@@ -954,66 +974,72 @@ if (blogsError) throw blogsError;
               </>
             )}
 
-{/* 3333333333333333333333333333333333333333 */}
-              {products.blogs.length > 0 && (
-  <>
-    <Separator />
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <FileText className="h-5 w-5 text-teal-600" />
-          Blogs ({products.blogs.length})
-        </h3>
-        <Button 
-          onClick={() => handleNavigateToProduct('blogs')} 
-          variant="outline" 
-          size="sm"
-        >
-          Manage Blogs
-        </Button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {products.blogs.slice(0, 4).map((blog) => (
-          <Card key={blog.id} className="bg-teal-50 border-teal-200">
-            <CardContent className="p-4">
-              <h4 className="font-medium text-sm mb-2">{blog.title}</h4>
-              <div className="flex items-center justify-between text-xs text-gray-600">
-                <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                <div className="flex gap-1">
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-6 px-2"
-                  >
-                    <Eye className="h-3 w-3" />
-                  </Button>
-                  <Button 
-                    onClick={() => handleNavigateToProduct('blogs')}
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-6 px-2"
-                  >
-                    <Edit className="h-3 w-3" />
-                  </Button>
+            {/* 3333333333333333333333333333333333333333 */}
+            {products.blogs.length > 0 && (
+              <>
+                <Separator />
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-teal-600" />
+                      Blogs ({products.blogs.length})
+                    </h3>
+                    <Button
+                      onClick={() => handleNavigateToProduct("blogs")}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Manage Blogs
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {products.blogs.slice(0, 4).map((blog) => (
+                      <Card
+                        key={blog.id}
+                        className="bg-teal-50 border-teal-200"
+                      >
+                        <CardContent className="p-4">
+                          <h4 className="font-medium text-sm mb-2">
+                            {blog.title}
+                          </h4>
+                          <div className="flex items-center justify-between text-xs text-gray-600">
+                            <span>
+                              {new Date(blog.created_at).toLocaleDateString()}
+                            </span>
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 px-2"
+                              >
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                onClick={() => handleNavigateToProduct("blogs")}
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 px-2"
+                              >
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  {products.blogs.length > 4 && (
+                    <Button
+                      onClick={() => handleNavigateToProduct("blogs")}
+                      variant="link"
+                      className="mt-2"
+                    >
+                      View all {products.blogs.length} blogs
+                    </Button>
+                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      {products.blogs.length > 4 && (
-        <Button 
-          onClick={() => handleNavigateToProduct('blogs')} 
-          variant="link" 
-          className="mt-2"
-        >
-          View all {products.blogs.length} blogs
-        </Button>
-      )}
-    </div>
-  </>
-)}
-
+              </>
+            )}
 
             {/* Quick Actions */}
             <Separator />
@@ -1050,13 +1076,27 @@ if (blogsError) throw blogsError;
                   size="sm"
                 >
                   <Briefcase className="h-4 w-4 mr-2" />
+<<<<<<< HEAD
                   My profile
                 </Button> 
                 <Button onClick={() => handleNavigateToProduct('saved-job')} variant="outline" size="sm">
+=======
+                  Post Job Opening
+                </Button>
+                <Button
+                  onClick={() => handleNavigateToProduct("saved-job")}
+                  variant="outline"
+                  size="sm"
+                >
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   <Save className="h-4 w-4 mr-2" />
                   Saved Jobs
                 </Button>
-                <Button onClick={() => handleNavigateToProduct('saved-candidates')} variant="outline" size="sm">
+                <Button
+                  onClick={() => handleNavigateToProduct("saved-candidates")}
+                  variant="outline"
+                  size="sm"
+                >
                   <Save className="h-4 w-4 mr-2" />
                   Saved Candidates
                 </Button>

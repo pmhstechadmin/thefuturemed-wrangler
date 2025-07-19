@@ -797,7 +797,11 @@
 // //         .eq("user_id", user.id);
 
 
+<<<<<<< HEAD
 
+=======
+       
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 
 
@@ -1574,10 +1578,14 @@ export const JobSeekerProfiles = () => {
         error: userError,
       } = await supabase.auth.getUser();
 
+<<<<<<< HEAD
       if (userError || !user) {
         console.warn("❌ Failed to get user or user is null", userError);
         return;
       }
+=======
+      if (userError || !user) return;
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
       console.log("✅ Logged-in User ID:", user.id);
 
@@ -1587,6 +1595,7 @@ export const JobSeekerProfiles = () => {
         .neq("user_id", user.id);
      
 
+<<<<<<< HEAD
       if (error || !seekers) {
         console.error("❌ Error fetching job seekers:", error);
         return;
@@ -1605,6 +1614,9 @@ export const JobSeekerProfiles = () => {
 
       console.log("📦 Job Seekers with Names:", seekersWithNames);
       setJobSeeker(seekersWithNames);
+=======
+      if (!error) setJobSeeker(data);
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     };
 
     fetchJobSeekerProfile();
@@ -1761,7 +1773,11 @@ const fetchProfileData = async (userId: string): Promise<string> => {
                 <div className="space-y-2">
                   <CardTitle className="text-lg sm:text-xl text-blue-600 flex items-center gap-2">
                     <User className="h-4 w-4 sm:h-5 sm:w-5" />
+<<<<<<< HEAD
                     {seeker.fullName}
+=======
+                    {seeker.name}
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   </CardTitle>
                   <CardDescription className="text-base sm:text-lg font-medium text-gray-900">
                     {seeker.qualification}

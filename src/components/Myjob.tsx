@@ -1057,9 +1057,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, CircleSlash } from "lucide-react";
+=======
+import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 
 const Myjob = () => {
@@ -1310,6 +1314,7 @@ const Myjob = () => {
         </div>
       </header>
 
+<<<<<<< HEAD
       <div className="container mx-auto px-4 py-6">
   <div className="flex flex-col md:flex-row items-center justify-between gap-4">
     
@@ -1332,6 +1337,33 @@ const Myjob = () => {
             <Search className="h-3 w-3 mr-1" />
             View Jobs
           </Button> */}
+=======
+      <Card>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search jobs, companies, keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Location"
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700">
+              <Search className="mr-2 h-4 w-4" /> Search Jobs
+            </Button>
+          </div>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         </CardContent>
       </Card>
     </div>
@@ -1367,6 +1399,7 @@ const Myjob = () => {
                     <Building className="h-4 w-4" />
                     {job.organization_name}
                   </CardDescription>
+<<<<<<< HEAD
                   <div className="flex items-center gap-x-4 text-gray-500">
                     <div className="flex items-center">
                       <MapPin className="mr-1 h-4 w-4" />
@@ -1489,8 +1522,39 @@ const Myjob = () => {
                   </Button>
 
 
+=======
 
+                  <CardDescription>{job.organization_name}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex items-center">
+                  <MapPin className="mr-1 h-4 w-4" />
+                  {job.google_location}
+                </div>
+                <div className="flex items-center">
+                  <Briefcase className="mr-1 h-4 w-4" />
+                  {job.organization_type}
+                </div>
+                <div className="flex items-center">
+                  <DollarSign className="mr-1 h-4 w-4" />
+                  {job.salary}
+                </div>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
+                <div className="flex items-center">
+                  <Clock className="mr-1 h-4 w-4" />
+                  Posted on{" "}
+                  {new Date(job.updated_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+
+<<<<<<< HEAD
                   {/* <Button
                     variant="destructive"
                     onClick={() => handleDeleteJob(job)} // Pass specific job
@@ -1501,6 +1565,22 @@ const Myjob = () => {
 
 
                 </div>
+=======
+                <div className="flex items-center">
+                  <Clock className="mr-1 h-4 w-4" />
+                  {new Date(job.updated_at).toLocaleDateString()}
+                </div>
+              </div>
+              <p className="mt-2 text-gray-700">{job.description}</p>
+              <div className="flex gap-2 mt-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fetchApplicants(job.id)}
+                >
+                  View Applicants
+                </Button>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               </div>
             </CardContent>
           </Card>
@@ -1615,6 +1695,7 @@ const Myjob = () => {
                         <Button className="bg-blue-600 hover:bg-blue-700">
                           Subscribe to Contact
                         </Button>
+<<<<<<< HEAD
                         <Button
                           variant="outline"
                           className="flex-1 min-w-[120px]"
@@ -1623,6 +1704,12 @@ const Myjob = () => {
                           Save Candidate
                         </Button>
 
+=======
+                        <Button variant="outline">Save Candidate</Button>
+                        <Button variant="ghost" size="sm">
+                          View Full Profile
+                        </Button>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                       </div>
                     </div>
                   </CardContent>
@@ -1634,6 +1721,7 @@ const Myjob = () => {
           </div>
         </div>
       )}
+<<<<<<< HEAD
 
       {/* edit job */}
       {editingJob && (
@@ -2028,6 +2116,9 @@ const Myjob = () => {
 
 
 
+=======
+      <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

@@ -172,6 +172,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Shield, UserPlus, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
+import Footer from '@/footer/Footer';
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState('');
@@ -337,6 +341,7 @@ const UpdatePassword = () => {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* FOOTER */}
       <footer className="bg-gray-900 text-white py-12 mt-10">
         <div className="container mx-auto px-4">
@@ -437,6 +442,9 @@ const UpdatePassword = () => {
           </div>
         </div>
       </footer>
+=======
+      <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

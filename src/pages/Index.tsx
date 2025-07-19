@@ -11,6 +11,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
+import Footer from "@/footer/Footer";
 
 
 const Index = () => {
@@ -87,10 +88,11 @@ const Index = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
-                to="/products"
+                to="/dashboard"
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50"
               >
-                Products
+                Dashboard
+                {/* Products */}
               </Link>
               <Link
                 to="/community"
@@ -177,10 +179,11 @@ const Index = () => {
             <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded-lg shadow-sm">
               <div className="flex flex-col space-y-3">
                 <Link
-                  to="/products"
+                  to="/dashboard"
                   className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50"
                 >
-                  Products
+                  Dashboard
+                  {/* Products */}
                 </Link>
                 <Link
                   to="/community"
@@ -285,7 +288,7 @@ const Index = () => {
             asChild
             className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
           >
-            <Link to="/products">Explore Products</Link>
+            <Link to="/dashboard">Explore Products</Link>
           </Button>
         </div>
       </section>
@@ -418,6 +421,7 @@ const Index = () => {
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
@@ -550,6 +554,9 @@ const Index = () => {
         </div>
       </footer>
 
+=======
+      <Footer />
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}

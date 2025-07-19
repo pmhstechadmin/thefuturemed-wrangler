@@ -1338,6 +1338,10 @@ import ProfilePictureUpload from "@/components/profile/ProfilePictureUpload";
 import { UserProductsSection } from "@/components/profile/UserProductsSection";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
+import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface Profile {
   id: string;
@@ -2028,6 +2032,10 @@ const Profile = () => {
           <Edit className="h-5 w-5" />
         </Button>
       </div>
+<<<<<<< HEAD
+=======
+      <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

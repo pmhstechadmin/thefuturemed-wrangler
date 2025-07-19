@@ -13,6 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+<<<<<<< HEAD
+=======
+import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const DataUsagePolicy = () => {
   const navigate = useNavigate();
@@ -429,6 +433,7 @@ const DataUsagePolicy = () => {
           </Card>
         </div>
       </main>
+<<<<<<< HEAD
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
@@ -560,6 +565,9 @@ const DataUsagePolicy = () => {
           </div>
         </div>
       </footer>
+=======
+      <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

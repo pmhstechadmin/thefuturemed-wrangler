@@ -3,7 +3,16 @@ import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Users, Award, Star, ArrowLeft, Filter, Home } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  Users,
+  Award,
+  Star,
+  ArrowLeft,
+  Filter,
+  Home,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseSearchBar } from "@/components/elearning/CourseSearchBar";
 import {
@@ -13,6 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import logo from "@/image/thefuturemed_logo (1).jpg";
+import Footer from "@/footer/Footer";
+
 
 interface Course {
   id: string;
@@ -37,13 +50,13 @@ interface Profile {
 }
 
 const departmentHierarchy = [
-  'Doctor',
-  'Resident',
-  'Medical Student',
-  'Nurse',
-  'Pharmacist',
-  'Technician',
-  'Other'
+  "Doctor",
+  "Resident",
+  "Medical Student",
+  "Nurse",
+  "Pharmacist",
+  "Technician",
+  "Other",
 ];
 
 export const CoursesListing = () => {
@@ -68,21 +81,23 @@ export const CoursesListing = () => {
   const fetchAllCourses = async () => {
     try {
       const { data: coursesData, error: coursesError } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('status', 'published')
-        .order('created_at', { ascending: false });
+        .from("courses")
+        .select("*")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
 
       if (coursesError) throw coursesError;
       setCourses(coursesData || []);
 
       // Fetch creator profiles
-      const creatorIds = [...new Set(coursesData?.map(course => course.creator_id) || [])];
+      const creatorIds = [
+        ...new Set(coursesData?.map((course) => course.creator_id) || []),
+      ];
       if (creatorIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name, medical_specialty, degree_level')
-          .in('id', creatorIds);
+          .from("profiles")
+          .select("id, first_name, last_name, medical_specialty, degree_level")
+          .in("id", creatorIds);
 
         if (!profilesError && profilesData) {
           const profilesMap = profilesData.reduce((acc, profile) => {
@@ -93,7 +108,7 @@ export const CoursesListing = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
     } finally {
       setIsLoading(false);
     }
@@ -104,12 +119,12 @@ export const CoursesListing = () => {
 
     // Filter by status
     if (statusFilter !== "all") {
-      filtered = filtered.filter(course => course.status === statusFilter);
+      filtered = filtered.filter((course) => course.status === statusFilter);
     }
 
     // Filter by department
     if (departmentFilter !== "all") {
-      filtered = filtered.filter(course => {
+      filtered = filtered.filter((course) => {
         const creatorProfile = profiles[course.creator_id];
         return creatorProfile?.degree_level === departmentFilter;
       });
@@ -118,12 +133,12 @@ export const CoursesListing = () => {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(course => {
+      filtered = filtered.filter((course) => {
         const creatorProfile = profiles[course.creator_id];
-        const creatorName = creatorProfile 
+        const creatorName = creatorProfile
           ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.toLowerCase()
-          : '';
-        
+          : "";
+
         return (
           course.title.toLowerCase().includes(query) ||
           course.description?.toLowerCase().includes(query) ||
@@ -140,12 +155,19 @@ export const CoursesListing = () => {
       filtered.sort((a, b) => {
         const aProfile = profiles[a.creator_id];
         const bProfile = profiles[b.creator_id];
-        const aIndex = departmentHierarchy.indexOf(aProfile?.degree_level || 'Other');
-        const bIndex = departmentHierarchy.indexOf(bProfile?.degree_level || 'Other');
+        const aIndex = departmentHierarchy.indexOf(
+          aProfile?.degree_level || "Other"
+        );
+        const bIndex = departmentHierarchy.indexOf(
+          bProfile?.degree_level || "Other"
+        );
         return aIndex - bIndex;
       });
     } else if (sortBy === "newest") {
-      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      filtered.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     }
 
     setFilteredCourses(filtered);
@@ -157,19 +179,19 @@ export const CoursesListing = () => {
 
   const getCreatorName = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile 
-      ? `${profile.first_name} ${profile.last_name}`.trim() || 'Unknown Creator'
-      : 'Unknown Creator';
+    return profile
+      ? `${profile.first_name} ${profile.last_name}`.trim() || "Unknown Creator"
+      : "Unknown Creator";
   };
 
   const getCreatorCategory = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile?.degree_level || 'Not specified';
+    return profile?.degree_level || "Not specified";
   };
 
   const getCreatorSpecialty = (creatorId: string) => {
     const profile = profiles[creatorId];
-    return profile?.medical_specialty || 'General';
+    return profile?.medical_specialty || "General";
   };
 
   if (isLoading) {
@@ -196,12 +218,25 @@ export const CoursesListing = () => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
 
+<<<<<<< HEAD
               <Link to="/e-learning" className="flex items-center space-x-2">
+=======
+              {/* <Link to="/e-learning" className="flex items-center space-x-2">
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                 <BookOpen className="h-8 w-8 text-blue-600" />
                 <h1 className="text-2xl font-bold text-gray-900">
                   All Courses
                 </h1>
+<<<<<<< HEAD
               </Link>
+=======
+              </Link> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
             </div>
             <Button
               variant="outline"
@@ -367,6 +402,7 @@ export const CoursesListing = () => {
           )}
         </div>
       </main>
+      <Footer/>
     </div>
   );
 };

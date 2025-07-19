@@ -43,8 +43,12 @@ import VideoMeeting from "./components/VideoMeeting";
 import { EditCoursePage } from "./components/elearning/EditCoursePage";
 import AboutPage from "./components/public page/AboutPage";
 import TrackPageView from "./Trackpage/TrackPageView";
+<<<<<<< HEAD
 import MyJobProfile from "./components/job-portal/MyJobProfile";
 import { JobSeekerForm } from "./components/job-portal/JobSeekerForm";
+=======
+import EditHostSeminar from "./pages/EditHostSeminar";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const queryClient = new QueryClient();
 
@@ -71,9 +75,13 @@ const App = () => {
             <Route path="/e-seminar" element={<ESeminar />} />
             <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
             <Route path="/host-seminar" element={<HostSeminar />} />
+            <Route
+              path="/e-seminar/edit/:seminarId"
+              element={<EditHostSeminar />}
+            />
             {/* <Route path="/meeting/:meetingId" element={<MeetingWrapper />} /> */}
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/products" element={<ProductPortal />} />
+            <Route path="/dashboard" element={<ProductPortal />} />
             <Route path="/product-portal" element={<ProductPortal />} />
             <Route path="/e-learning" element={<ELearning />} />
             <Route path="/courses" element={<CoursesListing />} />

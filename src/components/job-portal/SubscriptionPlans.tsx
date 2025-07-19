@@ -757,8 +757,8 @@
 // // // // // //               currency: plan.currency,
 // // // // // //               status: "succeeded",
 // // // // // //               razorpay_payment_id: response.razorpay_payment_id,
-// // // // // //               razorpay_order_id: response.razorpay_order_id,
-// // // // // //               razorpay_signature: response.razorpay_signature,
+// // // // //               razorpay_order_id: response.razorpay_order_id,
+// // // // //               razorpay_signature: response.razorpay_signature,
 // // // // // //             });
 
 // // // // // //             // Update order status
@@ -1188,8 +1188,8 @@
 // // // // //               currency: plan.currency,
 // // // // //               status: "succeeded",
 // // // // //               razorpay_payment_id: response.razorpay_payment_id,
-// // // // //               razorpay_order_id: response.razorpay_order_id,
-// // // // //               razorpay_signature: response.razorpay_signature,
+// // // //               razorpay_order_id: response.razorpay_order_id,
+// // // //               razorpay_signature: response.razorpay_signature,
 // // // // //             });
 
 // // // // //             // Update order status
@@ -1585,8 +1585,8 @@
 // // // //               currency: plan.currency,
 // // // //               status: "succeeded",
 // // // //               razorpay_payment_id: response.razorpay_payment_id,
-// // // //               razorpay_order_id: response.razorpay_order_id,
-// // // //               razorpay_signature: response.razorpay_signature,
+// // //               razorpay_order_id: response.razorpay_order_id,
+// // //               razorpay_signature: response.razorpay_signature,
 // // // //             });
 
 // // // //             await supabase
@@ -2001,8 +2001,8 @@
 // // //               status: "succeeded",
 // // //                payment_method: 'demo',
 // // //               razorpay_payment_id: response.razorpay_payment_id,
-// // //               razorpay_order_id: response.razorpay_order_id,
-// // //               razorpay_signature: response.razorpay_signature,
+// //               razorpay_order_id: response.razorpay_order_id,
+// //               razorpay_signature: response.razorpay_signature,
 // // //             });
 
 // // //             // Update order status
@@ -2433,8 +2433,8 @@
 // //               status: "succeeded",
 // //               payment_method: "demo",
 // //               razorpay_payment_id: response.razorpay_payment_id,
-// //               razorpay_order_id: response.razorpay_order_id,
-// //               razorpay_signature: response.razorpay_signature,
+//               razorpay_order_id: response.razorpay_order_id,
+//               razorpay_signature: response.razorpay_signature,
 // //             });
 
 // //             await supabase
@@ -2843,8 +2843,8 @@
 //               status: "succeeded",
 //               payment_method: "razorpay",
 //               razorpay_payment_id: response.razorpay_payment_id,
-//               razorpay_order_id: response.razorpay_order_id,
-//               razorpay_signature: response.razorpay_signature,
+              // razorpay_order_id: response.razorpay_order_id,
+              // razorpay_signature: response.razorpay_signature,
 //             });
 
 //             await supabase
@@ -3197,6 +3197,423 @@
 
 
 
+// import { useState, useEffect } from "react";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
+// import { useToast } from "@/hooks/use-toast";
+// import { supabase } from "@/integrations/supabase/client";
+// import { Check, Crown, Zap, Loader2 } from "lucide-react";
+
+// interface SubscriptionPlan {
+//   id: string;
+//   name: string;
+//   description: string;
+//   price: number;
+//   currency: string;
+//   billing_cycle: string;
+//   features: string[];
+//   active: boolean;
+//   created_at: string;
+// }
+
+// declare global {
+//   interface Window {
+//     Razorpay: any;
+//   }
+// }
+
+// export const SubscriptionPlans = () => {
+//   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [subscribing, setSubscribing] = useState<string | null>(null);
+//   const { toast } = useToast();
+
+//   useEffect(() => {
+//     fetchPlans();
+//   }, []);
+
+//   const fetchPlans = async () => {
+//     try {
+//       const { data, error } = await supabase
+//         .from("subscription_plans")
+//         .select("*")
+//         .eq("active", true)
+//         .order("price", { ascending: true });
+
+//       if (error) throw error;
+
+
+//       // const parsedPlans = (data || []).map((plan) => ({
+
+      
+//       // Parse features as string array
+
+//       // console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
+//       const parsedPlans = (data || []).map(plan => ({
+
+//         ...plan,
+//         features: Array.isArray(plan.features)
+//           ? plan.features
+//           : typeof plan.features === "string"
+//           ? JSON.parse(plan.features)
+//           : [],
+//       })) as SubscriptionPlan[];
+
+//       setPlans(parsedPlans);
+//     } catch (error) {
+//       console.error("Error fetching plans:", error);
+//       toast({
+//         title: "Error",
+//         description: "Failed to load subscription plans.",
+//         variant: "destructive",
+//       });
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const loadRazorpayScript = (): Promise<boolean> => {
+//     return new Promise((resolve) => {
+//       if (window.Razorpay) return resolve(true);
+
+//       const script = document.createElement("script");
+//       script.src = "https://checkout.razorpay.com/v1/checkout.js";
+//       script.onload = () => resolve(true);
+//       script.onerror = () => resolve(false);
+//       document.body.appendChild(script);
+//     });
+//   };
+
+//   const getBillingCycleDisplay = (cycle: string) => {
+//     switch (cycle) {
+//       case "monthly":
+//         return "/month";
+//       case "quarterly":
+//         return "/3 months";
+//       case "annually":
+//         return "/year";
+//       default:
+//         return `/${cycle}`;
+//     }
+//   };
+
+//   const getPlanIcon = (planName: string) => {
+//     if (planName.toLowerCase().includes("premium")) {
+//       return <Crown className="h-5 w-5 text-yellow-500" />;
+//     }
+//     return <Zap className="h-5 w-5 text-blue-500" />;
+//   };
+
+//   const calculateEndDate = (startDate: Date, billingCycle: string) => {
+//     const endDate = new Date(startDate);
+//     switch (billingCycle) {
+//       case "monthly":
+//         endDate.setMonth(endDate.getMonth() + 1);
+//         break;
+//       case "quarterly":
+//         endDate.setMonth(endDate.getMonth() + 3);
+//         break;
+//       case "annually":
+//         endDate.setFullYear(endDate.getFullYear() + 1);
+//         break;
+//     }
+//     return endDate;
+//   };
+
+//   const handleSubscribe = async (plan: SubscriptionPlan) => {
+//     try {
+//       setSubscribing(plan.id);
+
+//       const {
+//         data: { user },
+//         error: authError,
+//       } = await supabase.auth.getUser();
+
+//       if (!user || authError) {
+//         toast({
+//           title: "Authentication Required",
+//           description: "Please sign in to subscribe to a plan.",
+//           variant: "destructive",
+//         });
+//         setSubscribing(null);
+//         return;
+//       }
+
+//       const { data: provider, error: providerError } = await supabase
+//         .from("job_providers")
+//         .select("id")
+//         .eq("user_id", user.id)
+//         .maybeSingle();
+
+//       if (!provider || providerError) {
+//         toast({
+//           title: "Profile Required",
+//           description: "Please create your job provider profile first.",
+//           variant: "destructive",
+//         });
+//         setSubscribing(null);
+//         return;
+//       }
+
+//       if (plan.price === 0) {
+//         const startDate = new Date();
+//         const endDate = calculateEndDate(startDate, plan.billing_cycle);
+
+//         const { error: subError } = await supabase
+//           .from("provider_subscriptions")
+//           .insert({
+//             provider_id: provider.id,
+//             plan_id: plan.id,
+//             status: "active",
+//             payment_status: "active",
+//             start_date: startDate.toISOString(),
+//             end_date: endDate.toISOString(),
+//             stripe_customer_id: `cus_demo_${user.id}`,
+//             stripe_subscription_id: `sub_demo_${Date.now()}`,
+//           });
+
+//         if (subError) throw subError;
+
+//         toast({
+//           title: "Subscription Activated!",
+//           description: `Your ${plan.name} plan is now active!`,
+//         });
+//         setSubscribing(null);
+//         return;
+//       }
+
+//       const razorpayLoaded = await loadRazorpayScript();
+//       if (!razorpayLoaded) throw new Error("Failed to load Razorpay script");
+
+//       // FIX: Changed column name from 'plan_id' to 'subscription_plan_id'
+//       const { data: order, error: orderError } = await supabase
+//         .from("orders")
+//         .insert({
+//           user_id: user.id,
+//           // subscription_plan_id: plan.id, // Corrected column name
+//           amount: plan.price * 100,
+//           currency: plan.currency,
+//           status: "created",
+//           payment_method: "razorpay",
+//         })
+//         .select()
+//         .single();
+
+//       if (orderError || !order) {
+//         throw new Error(orderError?.message || "Failed to create order");
+//       }
+
+//       const options = {
+//         key: "rzp_test_eK57VjQhXHjIGR", // Replace with your actual Razorpay key
+//         amount: (plan.price * 100).toString(),
+//         currency: plan.currency,
+//         name: "Job Portal Subscription",
+//         description: `${plan.name} Plan`,
+//         // order_id: order.id,
+//         handler: async (response: any) => {
+//           try {
+//             const startDate = new Date();
+//             const endDate = calculateEndDate(startDate, plan.billing_cycle);
+
+//             const { data: subscription, error: subError } = await supabase
+//               .from("provider_subscriptions")
+//               .insert({
+//                 provider_id: provider.id,
+//                 plan_id: plan.id,
+//                 status: "active",
+//                 payment_status: "active",
+//                 start_date: startDate.toISOString(),
+//                 end_date: endDate.toISOString(),
+//                 razorpay_payment_id: response.razorpay_payment_id,
+//               })
+//               .select()
+//               .single();
+
+//             if (subError || !subscription) throw subError;
+
+//             // FIX: Changed column name from 'plan_id' to 'subscription_plan_id'
+//             await supabase.from("payments").insert({
+//               user_id: user.id,
+//               // subscription_plan_id: plan.id, // Corrected column name
+//               subscription_id: subscription.id,
+//               amount: plan.price,
+//               currency: plan.currency,
+//               status: "succeeded",
+//               payment_method: "razorpay",
+//               razorpay_payment_id: response.razorpay_payment_id,
+              // razorpay_order_id: response.razorpay_order_id,
+              // razorpay_signature: response.razorpay_signature,
+//             });
+
+//             await supabase
+//               .from("orders")
+//               .update({ status: "paid" ,
+//                razorpay_payment_id: response.razorpay_payment_id ,
+              //  razorpay_signature: response.razorpay_signature})
+//               .eq("id", order.id);
+
+
+//             toast({
+//               title: "Payment Successful!",
+//               description: `Your ${plan.name} subscription is now active!`,
+//             });
+            
+//           } catch (error: any) {
+//             console.error("Payment processing error:", error);
+//             toast({
+//               title: "Payment Failed",
+//               description: error.message || "Please contact support.",
+//               variant: "destructive",
+//             });
+//           } finally {
+//             setSubscribing(null);
+//           }
+//         },
+//         prefill: {
+//           name: user.user_metadata?.full_name || "User",
+//           email: user.email || "",
+//           contact: user.phone || "",
+//         },
+//         theme: {
+//           color: "#2563eb",
+//         },
+//         modal: {
+//           ondismiss: () => {
+//             toast({
+//               title: "Payment Cancelled",
+//               description: "You cancelled the payment process.",
+//             });
+//             setSubscribing(null);
+//           },
+//         },
+//       };
+
+//       const rzp = new window.Razorpay(options);
+
+//       rzp.on("payment.failed", (response: any) => {
+//         toast({
+//           title: "Payment Failed",
+//           description: response.error.description,
+//           variant: "destructive",
+//         });
+//         setSubscribing(null);
+//       });
+
+//       rzp.open();
+//     } catch (error: any) {
+//       console.error("Subscription error:", error);
+//       toast({
+//         title: "Error",
+//         description: error.message || "Subscription failed",
+//         variant: "destructive",
+//       });
+//       setSubscribing(null);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center h-64">
+//         <Loader2 className="h-8 w-8 animate-spin" />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="space-y-6 max-w-6xl mx-auto p-4">
+//       <div className="text-center">
+//         <h2 className="text-3xl font-bold text-gray-900 mb-4">
+//           Choose Your Plan
+//         </h2>
+//         <p className="text-gray-600 max-w-2xl mx-auto">
+//           Subscribe to access premium features. Choose the plan that best fits
+//           your needs.
+//         </p>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {plans.map((plan) => (
+//           <Card
+//             key={plan.id}
+//             className={`relative hover:shadow-lg transition-shadow ${
+//               plan.name.toLowerCase().includes("premium")
+//                 ? "border-yellow-200 bg-yellow-50"
+//                 : ""
+//             }`}
+//           >
+//             {plan.name.toLowerCase().includes("premium") && (
+//               <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-yellow-500">
+//                 Most Popular
+//               </Badge>
+//             )}
+//             <CardHeader className="text-center">
+//               <div className="flex justify-center mb-2">
+//                 {getPlanIcon(plan.name)}
+//               </div>
+//               <CardTitle className="text-xl">{plan.name}</CardTitle>
+//               <CardDescription>{plan.description}</CardDescription>
+//               <div className="mt-4">
+//                 <span className="text-3xl font-bold">
+//                   {plan.price > 0 ? `₹${plan.price}` : "Free"}
+//                 </span>
+//                 <span className="text-gray-500">
+//                   {plan.price > 0 && getBillingCycleDisplay(plan.billing_cycle)}
+//                 </span>
+//               </div>
+//             </CardHeader>
+//             <CardContent>
+//               <ul className="space-y-2">
+//                 {plan.features.map((feature, index) => (
+//                   <li key={index} className="flex items-center gap-2">
+//                     <Check className="h-4 w-4 text-green-500" />
+//                     <span className="text-sm">{feature}</span>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </CardContent>
+//             <CardFooter>
+//               <Button
+//                 className="w-full"
+//                 onClick={() => handleSubscribe(plan)}
+//                 disabled={subscribing === plan.id}
+//                 variant={
+//                   plan.name.toLowerCase().includes("premium")
+//                     ? "default"
+//                     : "outline"
+//                 }
+//               >
+//                 {subscribing === plan.id ? (
+//                   <>
+//                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+//                     Processing...
+//                   </>
+//                 ) : plan.price > 0 ? (
+//                   "Subscribe Now"
+//                 ) : (
+//                   "Activate Free Plan"
+//                 )}
+//               </Button>
+//             </CardFooter>
+//           </Card>
+//         ))}
+//       </div>
+
+//       <div className="text-center text-sm text-gray-500 pt-4 border-t">
+//         <p>All plans include access to our platform and customer support</p>
+//         <p>Cancel anytime. 7-day money-back guarantee for paid plans</p>
+//       </div>
+//     </div>
+//   );
+// };
+
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -3250,6 +3667,7 @@ export const SubscriptionPlans = () => {
 
       if (error) throw error;
 
+<<<<<<< HEAD
 
       // const parsedPlans = (data || []).map((plan) => ({
 
@@ -3259,12 +3677,17 @@ export const SubscriptionPlans = () => {
       // console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
       const parsedPlans = (data || []).map(plan => ({
 
+=======
+      const parsedPlans = (data || []).map((plan) => ({
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         ...plan,
         features: Array.isArray(plan.features)
           ? plan.features
           : typeof plan.features === "string"
           ? JSON.parse(plan.features)
           : [],
+        // Force INR currency for all plans
+        currency: "INR",
       })) as SubscriptionPlan[];
 
       setPlans(parsedPlans);
@@ -3282,12 +3705,36 @@ export const SubscriptionPlans = () => {
 
   const loadRazorpayScript = (): Promise<boolean> => {
     return new Promise((resolve) => {
+      // Check if already loaded
       if (window.Razorpay) return resolve(true);
+
+      // Check if running in a browser environment
+      if (typeof window === "undefined") {
+        console.error("Razorpay cannot be loaded in non-browser environment");
+        return resolve(false);
+      }
 
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
+      script.async = true;
+
+      // Add error handling for script loading
+      script.onload = () => {
+        if (window.Razorpay) {
+          resolve(true);
+        } else {
+          console.error(
+            "Razorpay script loaded but window.Razorpay not available"
+          );
+          resolve(false);
+        }
+      };
+
+      script.onerror = () => {
+        console.error("Failed to load Razorpay script");
+        resolve(false);
+      };
+
       document.body.appendChild(script);
     });
   };
@@ -3390,17 +3837,21 @@ export const SubscriptionPlans = () => {
         return;
       }
 
+      // Ensure Razorpay is properly loaded
       const razorpayLoaded = await loadRazorpayScript();
-      if (!razorpayLoaded) throw new Error("Failed to load Razorpay script");
+      if (!razorpayLoaded) {
+        throw new Error(
+          "Payment service is currently unavailable. Please try again later."
+        );
+      }
 
-      // FIX: Changed column name from 'plan_id' to 'subscription_plan_id'
+      // Create order in database
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           user_id: user.id,
-          // subscription_plan_id: plan.id, // Corrected column name
-          amount: plan.price * 100,
-          currency: plan.currency,
+          amount: plan.price * 100, // Razorpay expects amount in paise
+          currency: "INR", // Force INR currency
           status: "created",
           payment_method: "razorpay",
         })
@@ -3412,11 +3863,12 @@ export const SubscriptionPlans = () => {
       }
 
       const options = {
-        key: "rzp_test_eK57VjQhXHjIGR", // Replace with your actual Razorpay key
-        amount: (plan.price * 100).toString(),
-        currency: plan.currency,
+        key: "rzp_test_eK57VjQhXHjIGR", // Use from environment variables
+        amount: (plan.price * 100).toString(), // Amount in paise
+        currency: "INR", // Explicitly set to INR
         name: "Job Portal Subscription",
         description: `${plan.name} Plan`,
+        image: "https://your-logo-url.com/logo.png", // Add your logo
         // order_id: order.id,
         handler: async (response: any) => {
           try {
@@ -3433,39 +3885,40 @@ export const SubscriptionPlans = () => {
                 start_date: startDate.toISOString(),
                 end_date: endDate.toISOString(),
                 razorpay_payment_id: response.razorpay_payment_id,
+                // // razorpay_order_id: response.razorpay_order_id,
+                // // razorpay_signature: response.razorpay_signature,
               })
               .select()
               .single();
 
             if (subError || !subscription) throw subError;
 
-            // FIX: Changed column name from 'plan_id' to 'subscription_plan_id'
             await supabase.from("payments").insert({
               user_id: user.id,
-              // subscription_plan_id: plan.id, // Corrected column name
               subscription_id: subscription.id,
               amount: plan.price,
-              currency: plan.currency,
+              currency: "INR",
               status: "succeeded",
               payment_method: "razorpay",
               razorpay_payment_id: response.razorpay_payment_id,
-              // razorpay_order_id: response.razorpay_order_id,
-              // razorpay_signature: response.razorpay_signature,
+              // // razorpay_order_id: response.razorpay_order_id,
+              // // razorpay_signature: response.razorpay_signature,
             });
 
             await supabase
               .from("orders")
-              .update({ status: "paid" ,
-               razorpay_payment_id: response.razorpay_payment_id ,
-               razorpay_signature: response.razorpay_signature})
+              .update({
+                status: "paid",
+                razorpay_payment_id: response.razorpay_payment_id,
+                // // razorpay_order_id: response.razorpay_order_id,
+                // // razorpay_signature: response.razorpay_signature,
+              })
               .eq("id", order.id);
-
 
             toast({
               title: "Payment Successful!",
               description: `Your ${plan.name} subscription is now active!`,
             });
-            
           } catch (error: any) {
             console.error("Payment processing error:", error);
             toast({
@@ -3494,14 +3947,27 @@ export const SubscriptionPlans = () => {
             setSubscribing(null);
           },
         },
+        notes: {
+          plan: plan.name,
+          userId: user.id,
+        },
       };
+
+      // Verify Razorpay is available before creating instance
+      if (!window.Razorpay) {
+        throw new Error(
+          "Payment service is not available. Please refresh the page."
+        );
+      }
 
       const rzp = new window.Razorpay(options);
 
       rzp.on("payment.failed", (response: any) => {
+        console.error("Payment failed:", response.error);
         toast({
           title: "Payment Failed",
-          description: response.error.description,
+          description:
+            response.error.description || "Payment could not be processed",
           variant: "destructive",
         });
         setSubscribing(null);

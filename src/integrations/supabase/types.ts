@@ -704,6 +704,10 @@ export type Database = {
           time: string
           topic: string
           updated_at: string
+          host_country:string
+          host_timezone: string; // NEW: Store host's timezone
+  utc_start_time: string; // NEW: Store UTC timestamp
+          is_host_joined: boolean;
         }
         Insert: {
           created_at?: string

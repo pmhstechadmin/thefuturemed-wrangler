@@ -12,6 +12,10 @@ import { Shield, ArrowLeft, CheckCircle, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
+import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface FormData {
   firstName: string;
@@ -790,6 +794,7 @@ const Register = () => {
           </Card>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 };

@@ -2264,7 +2264,7 @@
 //           if (verifyError) {
 //             throw new Error("Payment verification failed");
 //           }
-//           const sessionId = response.razorpay_payment_id;
+//           Id = response.razorpay_payment_id;
 //           console.log("zzzzzzzzzzzzzzz", order.id);
 //           const { error: enrollmentError } = await supabase
 //             .from("course_enrollments")
@@ -2356,7 +2356,6 @@ declare global {
     Razorpay: any;
   }
 }
-
 
 export const EnrollmentButton = ({
   courseId,

@@ -5,12 +5,48 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CourseData } from "../CreateCourseWizard";
+import ImageResize from "quill-image-resize-module-react";
+import ReactQuill, { Quill } from "react-quill";
 
 interface BasicInfoStepProps {
   courseData: CourseData;
   updateCourseData: (updates: Partial<CourseData>) => void;
   onNext: () => void;
 }
+Quill.register("modules/imageResize", ImageResize);
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  imageResize: {
+    parchment: Quill.import("parchment"),
+  },
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+];
 
 export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInfoStepProps) => {
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,7 +102,7 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
           />
         </div>
 
-        <div>
+        {/* <div>
           <Label htmlFor="description">Course Description *</Label>
           <Textarea
             id="description"
@@ -74,7 +110,19 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
             onChange={(e) => updateCourseData({ description: e.target.value })}
             placeholder="Describe what students will learn in this course"
             rows={4}
+            modules={modules}
+            formats={formats}
             required
+          />
+        </div> */}
+        <div>
+          <Label htmlFor="description">Course Description *</Label>
+          <ReactQuill
+            theme="snow"
+            value={courseData.description}
+            onChange={(value) => updateCourseData({ description: value })}
+            modules={modules}
+            formats={formats}
           />
         </div>
 
@@ -86,8 +134,10 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               type="number"
               min="1"
               max="24"
-              value={courseData.duration_months || ''}
-              onChange={(e) => handleNumberInput('duration_months', e.target.value)}
+              value={courseData.duration_months || ""}
+              onChange={(e) =>
+                handleNumberInput("duration_months", e.target.value)
+              }
               placeholder="Enter duration"
               required
             />
@@ -99,8 +149,10 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               id="online_hours"
               type="number"
               min="0"
-              value={courseData.online_hours || ''}
-              onChange={(e) => handleNumberInput('online_hours', e.target.value)}
+              value={courseData.online_hours || ""}
+              onChange={(e) =>
+                handleNumberInput("online_hours", e.target.value)
+              }
               placeholder="Enter online hours"
             />
           </div>
@@ -111,8 +163,10 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
               id="offline_hours"
               type="number"
               min="0"
-              value={courseData.offline_hours || ''}
-              onChange={(e) => handleNumberInput('offline_hours', e.target.value)}
+              value={courseData.offline_hours || ""}
+              onChange={(e) =>
+                handleNumberInput("offline_hours", e.target.value)
+              }
               placeholder="Enter offline hours"
             />
           </div>
@@ -125,8 +179,10 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
             type="number"
             min="1"
             max="20"
-            value={courseData.number_of_modules || ''}
-            onChange={(e) => handleNumberInput('number_of_modules', e.target.value)}
+            value={courseData.number_of_modules || ""}
+            onChange={(e) =>
+              handleNumberInput("number_of_modules", e.target.value)
+            }
             placeholder="Enter number of modules"
             required
           />
@@ -136,9 +192,13 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
           <Checkbox
             id="has_project"
             checked={courseData.has_project}
-            onCheckedChange={(checked) => updateCourseData({ has_project: !!checked })}
+            onCheckedChange={(checked) =>
+              updateCourseData({ has_project: !!checked })
+            }
           />
-          <Label htmlFor="has_project">This course includes a final project</Label>
+          <Label htmlFor="has_project">
+            This course includes a final project
+          </Label>
         </div>
 
         {courseData.has_project && (
@@ -147,7 +207,9 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
             <Textarea
               id="project_description"
               value={courseData.project_description}
-              onChange={(e) => updateCourseData({ project_description: e.target.value })}
+              onChange={(e) =>
+                updateCourseData({ project_description: e.target.value })
+              }
               placeholder="Describe the final project requirements"
               rows={3}
             />
@@ -156,8 +218,8 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
       </div>
 
       <div className="flex justify-end">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           onClick={handleNextClick}
           disabled={!courseData.title || !courseData.description}
           className="bg-blue-600 hover:bg-blue-700"

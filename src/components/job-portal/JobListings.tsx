@@ -1514,6 +1514,7 @@ export const JobListings = () => {
     fetchApplications();
   }, [selectedJobId]);
 
+<<<<<<< HEAD
  const filteredJobs = jobs.filter((job) => {
   const org = job.organization_name || "";
   const manager = job.manager_name || "";
@@ -1548,6 +1549,29 @@ const salary = job.salary_range || "";
   return matchesSearch && matchesLocation;
 });
 
+=======
+  const filteredJobs = jobs.filter((job) => {
+    const org = job.organization_name || "";
+    const manager = job.manager_name || "";
+    const location = job.google_location || "";
+    const orgType = job.organization_type || "";
+    const email = job.manager_email || "";
+    const contact = job.manager_contact || "";
+
+    const matchesSearch =
+      org.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      orgType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesLocation =
+      locationFilter === "" ||
+      location.toLowerCase().includes(locationFilter.toLowerCase());
+
+    return matchesSearch && matchesLocation;
+  });
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
   const handleApplyOnBehalf = async (seekerId) => {
     const selectedSeeker = jobSeekers.find((seeker) => seeker.id === seekerId);
@@ -1614,6 +1638,7 @@ const salary = job.salary_range || "";
     }
 
     if (existing.length > 0) {
+<<<<<<< HEAD
   toast({
     title: "Already Saved",
     description: "⚠️ You have already saved this job.",
@@ -1622,6 +1647,11 @@ const salary = job.salary_range || "";
   return;
 }
 
+=======
+      alert("⚠️ You already saved this job.");
+      return;
+    }
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
     const { data: insertedData, error } = await supabase
       .from("save_jobs")
@@ -1638,11 +1668,15 @@ const salary = job.salary_range || "";
       console.error("Error saving job:", error);
       alert("Failed to save job.");
     } else {
+<<<<<<< HEAD
        toast({
     title: "Job Saved",
     description: "✅ The job has been saved successfully!",
     variant: "default", // or "success" if you have custom variants
   });
+=======
+      alert("✅ Job saved successfully!");
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     }
   };
 
@@ -1691,6 +1725,7 @@ const salary = job.salary_range || "";
       </div>
 
       {/* Job Listings Grid */}
+<<<<<<< HEAD
      
 
       <div className="grid gap-6">
@@ -1785,6 +1820,92 @@ const salary = job.salary_range || "";
                       <p className="mt-2 text-gray-700">{job.description}</p>
       
       <div className="flex flex-wrap gap-3 pt-4">
+=======
+      <div className="grid gap-4 sm:gap-6">
+        {filteredJobs.map((job) => (
+          <Card
+            key={job.id}
+            className="hover:shadow-lg transition-shadow border-0 sm:border"
+          >
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div className="space-y-2">
+                  <CardTitle className="text-lg sm:text-xl text-blue-600 hover:text-blue-700 cursor-pointer">
+                    {job.title}
+                  </CardTitle>
+                  <CardDescription className="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
+                    <Building className="h-4 w-4" />
+                    {job.organization_name}
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="self-start sm:self-auto"
+                  onClick={() => {
+                    setSelectedJobId(job.id);
+                    setSelectedSeekerId(null);
+                  }}
+                >
+                  Apply Now
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 pt-0">
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <MapPin className="mr-1 h-4 w-4" />
+                    <span className="truncate max-w-[120px] sm:max-w-none">
+                      {job.google_location}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Briefcase className="mr-1 h-4 w-4" />
+                    {job.organization_type}
+                  </div>
+                  <div className="flex items-center">
+                    <DollarSign className="mr-1 h-4 w-4" />
+                    {job.salary}
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="mr-1 h-4 w-4" />
+                    Posted{" "}
+                    {new Date(job.updated_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </div>
+                </div>
+
+                <p className="text-gray-700 leading-relaxed line-clamp-3">
+                  {job.description}
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {Array.isArray(job.tags) &&
+                    job.tags.slice(0, 3).map((tag, index) => (
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="bg-blue-100 text-blue-800"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  {job.tags?.length > 3 && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 text-blue-800"
+                    >
+                      +{job.tags.length - 3}
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 pt-4">
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   <Button
                     className="bg-blue-600 hover:bg-blue-700 flex-1 min-w-[120px]"
                     onClick={() => {
@@ -1994,8 +2115,153 @@ const salary = job.salary_range || "";
                 </div>
                 
               </div>
+<<<<<<< HEAD
 
 
+=======
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Modals */}
+      {selectedJobId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-lg">
+            <button
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
+              onClick={() => {
+                setSelectedJobId(null);
+                setSelectedSeekerId(null);
+              }}
+              aria-label="Close modal"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">
+              Job Seeker Profiles
+            </h2>
+
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+              {jobSeekers.map((seeker) => (
+                <Card
+                  key={seeker.id}
+                  className={`${
+                    selectedSeekerId === seeker.id
+                      ? "border-2 border-blue-600"
+                      : "border"
+                  }`}
+                >
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-base sm:text-lg">
+                      {seeker.highest_qualification}
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base">
+                      {seeker.specialization}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0 space-y-2 text-sm sm:text-base">
+                    <p>
+                      <strong>Skills:</strong>{" "}
+                      {Array.isArray(seeker.skills)
+                        ? seeker.skills.slice(0, 5).join(", ")
+                        : "N/A"}
+                    </p>
+                    <p>
+                      <strong>Experience:</strong>{" "}
+                      {seeker.years_of_experience || "N/A"} years
+                    </p>
+                    <p>
+                      <strong>Preferred Location:</strong>{" "}
+                      {seeker.preferred_location}
+                    </p>
+                    <p>
+                      <strong>Availability:</strong> {seeker.availability}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {seeker.email}
+                    </p>
+                    <p>
+                      <strong>Phone:</strong> {seeker.phone}
+                    </p>
+
+                    {appliedSeekerIds.includes(seeker.id) ? (
+                      <Button
+                        className="mt-3 bg-gray-400 cursor-not-allowed w-full"
+                        disabled
+                      >
+                        Applied
+                      </Button>
+                    ) : (
+                      <Button
+                        className="mt-3 bg-green-600 hover:bg-green-700 w-full"
+                        onClick={() => handleApplyOnBehalf(seeker.id)}
+                      >
+                        Apply Here
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {viewedJob && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-lg">
+            <button
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
+              onClick={() => setViewedJob(null)}
+              aria-label="Close modal"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">
+              {viewedJob.title}
+            </h2>
+            <p className="text-gray-600 mb-4">{viewedJob.description}</p>
+
+            <div className="space-y-3 text-sm sm:text-base">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <p className="font-medium">Organization:</p>
+                  <p>{viewedJob.organization_name}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Manager:</p>
+                  <p>{viewedJob.manager_name}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Location:</p>
+                  <p>{viewedJob.google_location}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Type:</p>
+                  <p>{viewedJob.organization_type}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Salary:</p>
+                  <p>{viewedJob.salary}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Email:</p>
+                  <p>{viewedJob.manager_email}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Contact:</p>
+                  <p>{viewedJob.manager_contact}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Last Updated:</p>
+                  <p>{new Date(viewedJob.updated_at).toLocaleString()}</p>
+                </div>
+              </div>
+
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               {Array.isArray(viewedJob.tags) && viewedJob.tags.length > 0 && (
                 <div className="pt-4">
                   <p className="font-medium mb-2">Tags:</p>
