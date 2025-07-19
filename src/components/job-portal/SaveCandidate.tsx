@@ -73,9 +73,30 @@ const SaveCandidate = () => {
     fetchSavedCandidates();
   }, []);
 
-  const handleSaveCandidate = async (id: string) => {
-    console.log("Already saved, or logic can be extended");
-  };
+  const handleSaveCandidate = async (jobSeekerId: string) => {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) return;
+
+  // Delete the saved entry
+  const { error: deleteError } = await supabase
+    .from("save_profiles")
+    .delete()
+    .match({ user_id: user.id, job_seekers_id: jobSeekerId });
+
+  if (deleteError) {
+    console.error("Failed to unsave candidate:", deleteError);
+    return;
+  }
+
+  // Update the local state to remove the unsaved profile
+  setSavedProfiles((prev) =>
+    prev.filter((seeker) => seeker.id !== jobSeekerId)
+  );
+};
 
   const setSelectedSeeker = (seeker: any) => {
     console.log("Viewing full profile:", seeker);
@@ -324,11 +345,16 @@ const SaveCandidate = () => {
                   <Button className="bg-blue-600 hover:bg-blue-700">
                     {hasSubscription ? "Contact Now" : "Subscribe to Contact"}
                   </Button>
+<<<<<<< HEAD
+                  <Button variant="outline" onClick={() => handleSaveCandidate(seeker.id)}>
+                    Unsave
+=======
                   <Button
                     variant="outline"
                     onClick={() => handleSaveCandidate(seeker.id)}
                   >
                     Saved
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   </Button>
                   <Button
                     variant="ghost"

@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+import { useState, useEffect } from "react";
+=======
 // import { useState, useEffect } from "react";
 // import { Button } from "@/components/ui/button";
 // import { Calendar } from "@/components/ui/calendar";
@@ -757,6 +760,7 @@
 // export default ESeminar;
 
 import { useState, useEffect, useRef } from "react";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -808,7 +812,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface Seminar {
   id: string;
@@ -926,6 +933,28 @@ const ESeminar = () => {
   const handleSeminarClick = (seminar: Seminar) => {
     navigate(`/seminar/${seminar.id}`);
   };
+<<<<<<< HEAD
+
+  // const handleSeminarClick = (seminar: Seminar) => {
+  //   const seminarUrl = `${window.location.origin}/seminar/${seminar.id}`;
+  //   const newWindow = window.open(
+  //     seminarUrl,
+  //     "_blank",
+  //     "width=1200,height=800,scrollbars=yes,resizable=yes"
+  //   );
+
+  //   if (!newWindow) {
+  //     toast({
+  //       title: "Popup Blocked",
+  //       description:
+  //         "Please allow popups for this site to view seminar details.",
+  //       variant: "destructive",
+  //     });
+  //     navigate(`/seminar/${seminar.id}`);
+  //   }
+  // };
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
   const handleRescheduleClick = (seminar: Seminar) => {
     if (!user || user.id !== seminar.host_id) {
@@ -1054,7 +1083,19 @@ const ESeminar = () => {
                 <ArrowLeft className="h-4 w-4 md:mr-2" />
                 <span className="hidden md:inline">Back</span>
               </Button>
+<<<<<<< HEAD
+              {/* <Link to="/" className="flex items-center space-x-2">
+                <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
+                <h1 className="text-xl md:text-2xl font-bold text-white">
+                  MedPortal
+                </h1>
+              </Link> */}
               <div className="flex items-center space-x-2">
+                {/* <Shield className="h-8 w-8 text-blue-600" />
+                                                <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+=======
+              <div className="flex items-center space-x-2">
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>

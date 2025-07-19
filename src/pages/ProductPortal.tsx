@@ -11,7 +11,10 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import AuthModal from '@/components/AuthModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from '@/footer/Footer';
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const products = [
   {
@@ -516,6 +519,10 @@ const checkUser = async () => {
           onSuccess={handleAuthSuccess}
         />
       </header>
+<<<<<<< HEAD
+      //////
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       {/* Hero Section */}
       <div className="relative pt-16 pb-8">
         <div className="container mx-auto px-4 text-center">
@@ -631,7 +638,11 @@ const checkUser = async () => {
       <div className="fixed bottom-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 text-white text-sm border border-white/20 shadow-xl">
         <p>🖱️ Click cards to explore • 📱 Switch between grid and list view</p>
       </div>
+<<<<<<< HEAD
+      
+=======
       <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
     
   );

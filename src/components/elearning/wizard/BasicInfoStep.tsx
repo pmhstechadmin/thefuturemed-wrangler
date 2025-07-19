@@ -67,6 +67,7 @@ export const BasicInfoStep = ({ courseData, updateCourseData, onNext }: BasicInf
 
   const handleNextClick = () => {
     // Ensure required fields have minimum values
+     console.log("🚀 Final Basic Infoaaaaaaaa:", courseData);
     const updates: Partial<CourseData> = {};
     
     if (!courseData.duration_months || courseData.duration_months < 1) {

@@ -504,7 +504,10 @@ import { JobSeekerProfiles } from "@/components/job-portal/JobSeekerProfiles";
 import PaymentHistory from "@/components/job-portal/PaymentHistory ";
 // import PaymentHistory from "@/components/job-portal/PaymentHistory";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from "@/footer/Footer";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const JobPortal = () => {
   const navigate = useNavigate();
@@ -573,16 +576,34 @@ const JobPortal = () => {
     },
     {
       value: "job-provider",
+<<<<<<< HEAD
+      label: "Create Jobs",
+=======
       label: "Job Provider",
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       icon: <Building className="h-4 w-4" />,
     },
     {
       value: "job-seeker",
+<<<<<<< HEAD
+      label: "Create Job Seekers Profile",
+=======
       label: "Job Seeker",
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       icon: <User className="h-4 w-4" />,
     },
     {
       value: "job-seekers-form",
+<<<<<<< HEAD
+      label: " Find Candidates",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    // {
+    //   value: "candidates",
+    //   label: "Find Candidates",
+    //   icon: <Users className="h-4 w-4" />,
+    // },
+=======
       label: "Job Seekers Profile",
       icon: <CreditCard className="h-4 w-4" />,
     },
@@ -591,6 +612,7 @@ const JobPortal = () => {
       label: "Find Candidates",
       icon: <Users className="h-4 w-4" />,
     },
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     {
       value: "subscription",
       label: "Subscription",

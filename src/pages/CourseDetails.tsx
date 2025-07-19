@@ -22,8 +22,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { EnrollmentButton } from "@/components/elearning/EnrollmentButton";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from "@/footer/Footer";
 import Header from "@/footer/Header";
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface Course {
   id: string;
@@ -239,12 +242,20 @@ const CourseDetails = () => {
               <ArrowLeft className="h-4 w-4" />
             </Button>
 
+<<<<<<< HEAD
+            {/* <Link to="/e-learning" className="flex items-center space-x-2">
+=======
             <Link to="/e-learning" className="flex items-center space-x-2">
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               <BookOpen className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">
                 MedPortal E-Learning
               </h1>
+<<<<<<< HEAD
+            </Link> */}
+=======
             </Link>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
             <div className="flex items-center space-x-2">
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -295,6 +306,12 @@ const CourseDetails = () => {
                 <CardTitle>Course Description</CardTitle>
               </CardHeader>
               <CardContent>
+<<<<<<< HEAD
+                <p className="text-gray-700 leading-relaxed">
+                  {course.description ||
+                    "No description available for this course."}
+                </p>
+=======
                 {/* <p className="text-gray-700 leading-relaxed">
                   {course.description ||
                     "No description available for this course."}
@@ -309,6 +326,7 @@ const CourseDetails = () => {
                     No description available for this course.
                   </p>
                 )}
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               </CardContent>
             </Card>
 

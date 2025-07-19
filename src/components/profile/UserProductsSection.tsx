@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 // import { useState, useEffect } from "react";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Button } from "@/components/ui/button";
@@ -17,6 +21,10 @@
 //   DollarSign,
 //   TrendingUp,
 // } from "lucide-react";
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 // import { useState, useEffect } from 'react';
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -524,10 +532,11 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
       if (coursesError) throw coursesError;
 
       // Fetch user's job postings (if they're a job provider)
-      const { data: jobProviders, error: jobProvidersError } = await supabase
-        .from("")
-        .select("*")
-        .eq("user_id", userId);
+     const { data: jobProviders, error: jobProvidersError } = await supabase
+  .from("job_providers")
+  .select("*")
+  .eq("user_id", userId);
+
 
       if (jobProvidersError) throw jobProvidersError;
 
@@ -575,9 +584,38 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
         navigate("/publication");
         break;
 
-      case "jobs":
+      case "myprofile":
+        navigate("/my-job-profile");
+        break;
+         case "myjob":
         navigate("/my-job");
         break;
+<<<<<<< HEAD
+      
+
+        
+          case 'saved-job':
+        navigate('/saved-job');
+        break;
+         case 'saved-candidates':
+        navigate('/saved-candidates');
+
+        break;
+        //   case 'saved-job':
+        // navigate('/saved-job');
+        // break;
+        //  case 'saved-candidates':
+        // navigate('/saved-candidates');
+        // break;
+      case 'seminar-detail':
+        if (id) navigate(`/seminar/${id}`);
+        break;
+         case 'blogs':
+        navigate('/my-blogs');
+        break;
+      case 'course-detail':
+
+=======
 
       case "saved-job":
         navigate("/saved-job");
@@ -599,6 +637,7 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
         navigate("/my-blogs");
         break;
       case "course-detail":
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         if (id) navigate(`/course/${id}`);
         break;
       default:
@@ -878,10 +917,10 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <Briefcase className="h-5 w-5 text-orange-600" />
-                      Job Postings ({products.jobPostings.length})
+                      My job ({products.jobPostings.length})
                     </h3>
                     <Button
-                      onClick={() => handleNavigateToProduct("jobs")}
+                      onClick={() => handleNavigateToProduct("myjob")}
                       variant="outline"
                       size="sm"
                     >
@@ -1031,12 +1070,17 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
                   <FileText className="h-4 w-4 mr-2" />
                   Submit Publication
                 </Button>
-                <Button
-                  onClick={() => handleNavigateToProduct("jobs")}
+                 <Button
+                  onClick={() => handleNavigateToProduct("myprofile")}
                   variant="outline"
                   size="sm"
                 >
                   <Briefcase className="h-4 w-4 mr-2" />
+<<<<<<< HEAD
+                  My profile
+                </Button> 
+                <Button onClick={() => handleNavigateToProduct('saved-job')} variant="outline" size="sm">
+=======
                   Post Job Opening
                 </Button>
                 <Button
@@ -1044,6 +1088,7 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
                   variant="outline"
                   size="sm"
                 >
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   <Save className="h-4 w-4 mr-2" />
                   Saved Jobs
                 </Button>

@@ -54,7 +54,7 @@
 //   //   setIsSubmitting(true);
 //   //   try {
 //   //     const { data: { user } } = await supabase.auth.getUser();
-      
+
 //   //     if (!user) {
 //   //       toast({
 //   //         title: "Authentication Required",
@@ -103,7 +103,7 @@
 //   setIsSubmitting(true);
 //   try {
 //     const { data: { user } } = await supabase.auth.getUser();
-    
+
 //     if (!user) {
 //       toast({
 //         title: "Authentication Required",
@@ -275,7 +275,7 @@
 //             <FormField
 //               control={form.control}
 //               name="managerContact"
-//               rules={{ required: "Manager contact is required" }}
+//               rules={{ required: " is required" }}
 //               render={({ field }) => (
 //                 <FormItem>
 //                   <FormLabel className="flex items-center gap-2">
@@ -389,6 +389,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Building, MapPin, User, Mail, Phone, Lock } from "lucide-react";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import currencyCodes from "currency-codes";
+import getSymbolFromCurrency from "currency-symbol-map";
+
 
 interface JobProviderFormData {
   organizationName: string;
@@ -398,6 +403,18 @@ interface JobProviderFormData {
   managerContact: string;
   address: string;
   googleLocation: string;
+
+  managerContactCcode: string;
+  department: string;
+  number_of_vacancies: data.numberOfVacancies,
+  dutyHours: string; // ✅ new field
+  salaryRange: string; // ✅ new field
+  jobCountry: string; // ✅ new
+  jobState: string;
+  qualificationRequired: string;
+  employmentType: string;
+  contractDetails: string;
+  salary:string;
 }
 
 export const JobProviderForm = () => {
@@ -414,6 +431,26 @@ export const JobProviderForm = () => {
     { value: "partnership", label: "Partnership" },
     { value: "other", label: "Other" },
   ];
+
+  const employmentTypes = [
+    { value: "full_time", label: "Full-time" },
+    { value: "part_time", label: "Part-time" },
+    { value: "locum", label: "Locum" },
+
+  ];
+
+const currencyOptions = currencyCodes.data
+  .map((currency) => {
+    const symbol = getSymbolFromCurrency(currency.code);
+    return {
+      code: currency.code,
+      name: currency.currency,
+      symbol: symbol || currency.code,
+    };
+  })
+  .filter((currency, index, self) =>
+    index === self.findIndex(c => c.code === currency.code) // remove duplicates
+  );
 
   const onSubmit = async (data: JobProviderFormData) => {
     setIsSubmitting(true);
@@ -439,8 +476,21 @@ export const JobProviderForm = () => {
           manager_name: data.managerName,
           manager_email: data.managerEmail,
           manager_contact: data.managerContact,
+          manager_contact_ccode: data.managerContactCcode,
           address: data.address,
           google_location: data.googleLocation,
+
+          department: data.department,
+          number_of_vacancies: data.numberOfVacancies,
+          duty_hours: data.dutyHours,         // ✅ map correctly
+          salary_range: data.salaryRange,
+          job_country: data.jobCountry, // ✅ new
+          job_state: data.jobState,
+          qualification_required: data.qualificationRequired,
+          employment_type: data.employmentType, // ✅ new
+          contract_details: data.contractDetails,
+          salary_range_currency:data. salary,
+
         },
       ]);
 
@@ -475,6 +525,7 @@ export const JobProviderForm = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Organization Name */}
             <FormField
               control={form.control}
               name="organizationName"
@@ -490,6 +541,7 @@ export const JobProviderForm = () => {
               )}
             />
 
+            {/* Organization Type */}
             <FormField
               control={form.control}
               name="organizationType"
@@ -518,8 +570,43 @@ export const JobProviderForm = () => {
                 </FormItem>
               )}
             />
+
+            {/* Job Country */}
+            <FormField
+              control={form.control}
+              name="jobCountry"
+              rules={{ required: "Job country is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job Country</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. India" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Job State */}
+            <FormField
+              control={form.control}
+              name="jobState"
+              rules={{ required: "Job state is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job State</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. Karnataka" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
+
+
+
 
         {/* Manager Details */}
         <Card>
@@ -577,7 +664,6 @@ export const JobProviderForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="managerContact"
@@ -587,17 +673,35 @@ export const JobProviderForm = () => {
                   <FormLabel className="flex items-center gap-2">
                     <Phone className="h-4 w-4" /> Manager Contact
                     <Lock className="h-3 w-3 text-gray-400" />
-                    <span className="text-xs text-gray-500">
-                      (Hidden from public)
-                    </span>
+                    <span className="text-xs text-gray-500">(Hidden from public)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter contact number" {...field} />
+                    <PhoneInput
+                      country={'in'}
+                      value={field.value}
+                      onChange={(value, country) => {
+                        form.setValue('managerContact', value);
+                        form.setValue('managerContactCcode', `+${country.dialCode}`);
+                      }}
+                      inputStyle={{ width: '100%' }}
+                      dropdownStyle={{ zIndex: 9999 }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="managerContactCcode"
+              render={({ field }) => (
+                <input type="hidden" {...field} />
+              )}
+            />
+
+
+
           </CardContent>
         </Card>
 
@@ -605,10 +709,192 @@ export const JobProviderForm = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" /> Location Details
+              <MapPin className="h-4 w-4" /> Job Details
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+
+            {/* department */}
+            <FormField
+              control={form.control}
+              name="department"
+              rules={{ required: "Department is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Department</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter department name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Outside Card */}
+            <FormField
+              control={form.control}
+              name="qualificationRequired"
+              rules={{ required: "Qualification is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Qualification</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. B.Pharm, D.Pharm, M.Sc" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+
+
+
+            <FormField
+              control={form.control}
+              name="employmentType"
+              rules={{ required: "Employment type is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Employment Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select employment type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {employmentTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+
+
+
+            <FormField
+              control={form.control}
+              name="numberOfVacancies"
+              rules={{
+                required: "Number of vacancies is required",
+                min: { value: 1, message: "Must be at least 1" },
+                valueAsNumber: true,
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Vacancies</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter number of job openings"
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dutyHours"
+              rules={{ required: "Duty hours are required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Duty Hours</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. 9AM - 5PM, Mon to Fri" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+   <div className="grid grid-cols-2 gap-4">
+  {/* Currency Dropdown */}
+  <FormField
+    control={form.control}
+    name="salaryCurrency"
+    rules={{ required: "Currency is required" }}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Currency</FormLabel>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Currency" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {currencyOptions.map((currency) => (
+              <SelectItem key={currency.code} value={currency.code}>
+                {currency.symbol} {currency.code} - {currency.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  {/* Salary Range Input */}
+  <FormField
+    control={form.control}
+    name="salaryRange"
+    rules={{ required: "Salary range is required" }}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Salary Range</FormLabel>
+        <FormControl>
+          <Input placeholder="e.g. 15,000 - 25,000 / month" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+</div>
+
+
+
+
+
+            <FormField
+              control={form.control}
+              name="contractDetails"
+              rules={{ required: "Contract details are required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contract Details</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter contract terms, duration, notice period, etc."
+                      className="min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+
+
+
+
             <FormField
               control={form.control}
               name="address"
@@ -627,6 +913,8 @@ export const JobProviderForm = () => {
                 </FormItem>
               )}
             />
+
+
 
             <FormField
               control={form.control}

@@ -190,7 +190,10 @@ import { Button } from "@/components/ui/button";
 import { useNavigate,Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from '@/footer/Footer';
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const SaveJob = () => {
     const [savedJobs, setSavedJobs] = useState([]);
@@ -352,6 +355,35 @@ const SaveJob = () => {
 }, [selectedJobId, user]);
 
 
+<<<<<<< HEAD
+const handleUnsaveJob = async (jobId) => {
+  if (!user) return;
+
+  const { error } = await supabase
+    .from("save_jobs")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("job_providers_id", jobId);
+
+  if (error) {
+    console.error("❌ Error unsaving job:", error);
+    toast({
+      title: "Failed to Unsave",
+      description: "Something went wrong. Please try again.",
+      variant: "destructive",
+    });
+  } else {
+    toast({
+      title: "Job Unsaved",
+      description: "✅ The job has been removed from your saved list.",
+    });
+    setSavedJobs((prev) => prev.filter((job) => job.id !== jobId));
+  }
+};
+
+
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     return (
       <div className="p-4 space-y-4">
         <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
@@ -506,6 +538,18 @@ const SaveJob = () => {
                       >
                         Apply Now
                       </Button>
+<<<<<<< HEAD
+
+       <Button
+  className="bg-white text-blue-600 border border-blue-600 hover:bg-blue-600 hover:text-white"
+  onClick={() => handleUnsaveJob(job.id)}
+>
+  Unsave
+</Button>
+
+
+=======
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                     </div>
                   </div>
                 </CardContent>
@@ -588,7 +632,10 @@ const SaveJob = () => {
             </div>
           </div>
         )}
+<<<<<<< HEAD
+=======
         <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       </div>
     );
 };

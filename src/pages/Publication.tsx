@@ -8,7 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CaseStudyForm from '@/components/publication/CaseStudyForm';
 import MyPublications from '@/components/publication/MyPublications';
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from '@/footer/Footer';
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const Publication = () => {
   const navigate = useNavigate();

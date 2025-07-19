@@ -172,7 +172,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Shield, UserPlus, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from "@/image/thefuturemed_logo (1).jpg";
+<<<<<<< HEAD
+=======
 import Footer from '@/footer/Footer';
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const UpdatePassword = () => {
   const [password, setPassword] = useState('');
@@ -338,7 +341,110 @@ const UpdatePassword = () => {
         </div>
       </div>
 
+<<<<<<< HEAD
+      {/* FOOTER */}
+      <footer className="bg-gray-900 text-white py-12 mt-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              {/* <div className="flex items-center gap-2 mb-4">
+                <Shield className="h-6 w-6" />
+                <span className="text-xl font-bold">MedPortal</span>
+              </div> */}
+              <div className="flex items-center space-x-2">
+                <Link to="/">
+                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
+                </Link>
+              </div>
+              <p className="text-gray-400">
+                Empowering medical professionals through technology and
+                community.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Platform</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link to="/products" className="hover:text-white">
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/community" className="hover:text-white">
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/e-learning" className="hover:text-white">
+                    E-Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/e-seminar" className="hover:text-white">
+                    E-Seminars
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/jobs" className="hover:text-white">
+                    Jobs
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white">
+                    API
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link to="/privacy-policy" className="hover:text-white">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms-of-service" className="hover:text-white">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/data-usage-policy" className="hover:text-white">
+                    Data Usage Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 MedPortal. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+=======
       <Footer/>
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

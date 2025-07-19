@@ -3667,7 +3667,19 @@ export const SubscriptionPlans = () => {
 
       if (error) throw error;
 
+<<<<<<< HEAD
+
+      // const parsedPlans = (data || []).map((plan) => ({
+
+      
+      // Parse features as string array
+
+      // console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
+      const parsedPlans = (data || []).map(plan => ({
+
+=======
       const parsedPlans = (data || []).map((plan) => ({
+>>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         ...plan,
         features: Array.isArray(plan.features)
           ? plan.features
