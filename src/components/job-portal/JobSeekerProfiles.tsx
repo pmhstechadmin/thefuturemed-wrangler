@@ -797,7 +797,7 @@
 // //         .eq("user_id", user.id);
 
 
-       
+
 
 
 
@@ -1574,18 +1574,43 @@ export const JobSeekerProfiles = () => {
         error: userError,
       } = await supabase.auth.getUser();
 
-      if (userError || !user) return;
+      if (userError || !user) {
+        console.warn("❌ Failed to get user or user is null", userError);
+        return;
+      }
 
-      const { data, error } = await supabase
+      console.log("✅ Logged-in User ID:", user.id);
+
+      const { data: seekers, error } = await supabase
         .from("job_seekers")
         .select("*")
         .neq("user_id", user.id);
+     
 
-      if (!error) setJobSeeker(data);
+      if (error || !seekers) {
+        console.error("❌ Error fetching job seekers:", error);
+        return;
+      }
+
+      // 👇 Add full names using fetchProfileData
+      const seekersWithNames = await Promise.all(
+        seekers.map(async (seeker) => {
+          const fullName = await fetchProfileData(seeker.user_id);
+          return {
+            ...seeker,
+            fullName, // Add full name field
+          };
+        })
+      );
+
+      console.log("📦 Job Seekers with Names:", seekersWithNames);
+      setJobSeeker(seekersWithNames);
     };
 
     fetchJobSeekerProfile();
   }, []);
+
+
 
   const filteredSeekers = jobSeeker.filter((seeker) => {
     const term = searchTerm.toLowerCase();
@@ -1596,6 +1621,30 @@ export const JobSeekerProfiles = () => {
       (seeker.skills || "").toLowerCase().includes(term)
     );
   });
+
+
+  
+const fetchProfileData = async (userId: string): Promise<string> => {
+  console.log(`🔍 Fetching profile for userIdddddddddddddddddddd: ${userId}`); // add this
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("first_name, last_name")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error || !profile) {
+    console.error(`❌ Not found: ${userId}`, error);
+    return "Unknown Author";
+  }
+
+  console.log(`✅ Found profile for ${userId}: ${profile.first_name} ${profile.last_name}`);
+  return `${profile.first_name} ${profile.last_name}`;
+};
+
+
+
+
 
   const handleSaveCandidate = async (seekerId) => {
     const {
@@ -1712,7 +1761,7 @@ export const JobSeekerProfiles = () => {
                 <div className="space-y-2">
                   <CardTitle className="text-lg sm:text-xl text-blue-600 flex items-center gap-2">
                     <User className="h-4 w-4 sm:h-5 sm:w-5" />
-                    {seeker.name}
+                    {seeker.fullName}
                   </CardTitle>
                   <CardDescription className="text-base sm:text-lg font-medium text-gray-900">
                     {seeker.qualification}
