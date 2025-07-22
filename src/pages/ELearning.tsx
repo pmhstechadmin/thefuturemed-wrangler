@@ -212,10 +212,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const ELearning = () => {
   const [activeTab, setActiveTab] = useState<
@@ -358,11 +356,8 @@ const ELearning = () => {
       <main className="container mx-auto px-4 py-8 pb-20 md:pb-8">
         {activeTab === "browse" && (
           <div className="space-y-8">
-<<<<<<< HEAD
-            
-=======
+
             {/* Stats Cards - Responsive Grid */}
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card
                 className="hover:shadow-lg transition-shadow cursor-pointer"
@@ -490,10 +485,8 @@ const ELearning = () => {
           </Button>
         </div>
       </div>
-<<<<<<< HEAD
-=======
+
       <Footer/>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };

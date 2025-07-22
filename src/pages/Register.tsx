@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,10 +12,10 @@ import { Shield, ArrowLeft, CheckCircle, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+import { v4 as uuidv4 } from "uuid";
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+import mixpanel, { setMixpanelSessionId, trackSignup } from "@/utils/mixpanel";
+
 
 interface FormData {
   firstName: string;
@@ -61,7 +61,10 @@ const Register = () => {
   const updateFormData = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-
+useEffect(() => {
+  const sessionId = `auth_${uuidv4()}`;
+  setMixpanelSessionId(sessionId);
+}, []);
   const validateStep1 = () => {
     if (!formData.firstName.trim()) {
       toast({
@@ -218,8 +221,8 @@ const Register = () => {
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
-          }
-        }
+          },
+        },
       });
 
       if (authError) {
@@ -240,29 +243,35 @@ const Register = () => {
         });
         return;
       }
-
+      // Track successful signup
+      trackSignup(authData.user.id, {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+      });
       console.log("User created successfully:", authData.user.id);
 
       // Create the user profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          category: formData.category,
-          medical_specialty: formData.medicalSpecialty,
-          institution: formData.institution,
-          year_of_study: formData.category === "student" ? formData.yearOfStudy : null,
-          degree_level: formData.category === "professional" ? formData.degreeLevel : null,
-        });
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: authData.user.id,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        category: formData.category,
+        medical_specialty: formData.medicalSpecialty,
+        institution: formData.institution,
+        year_of_study:
+          formData.category === "student" ? formData.yearOfStudy : null,
+        degree_level:
+          formData.category === "professional" ? formData.degreeLevel : null,
+      });
 
       if (profileError) {
         console.error("Profile creation error:", profileError);
         toast({
           title: "Profile Creation Failed",
-          description: "Account created but profile setup failed. Please contact support.",
+          description:
+            "Account created but profile setup failed. Please contact support.",
           variant: "destructive",
         });
         return;
@@ -272,14 +281,14 @@ const Register = () => {
 
       toast({
         title: "Registration Successful!",
-        description: "Welcome to MedPortal. Please check your email to verify your account.",
+        description:
+          "Welcome to MedPortal. Please check your email to verify your account.",
       });
 
       // Redirect to login or products page
       setTimeout(() => {
-        navigate('/products');
+        navigate("/products");
       }, 2000);
-
     } catch (error) {
       console.error("Registration error:", error);
       toast({
@@ -766,18 +775,91 @@ const Register = () => {
               <div className="flex justify-between pt-6">
                 <Button
                   variant="outline"
-                  onClick={() => setStep((prev) => prev - 1)}
+                  onClick={() => {
+                    mixpanel.track("Clicked Previous", {
+                      step,
+                      session_id: mixpanel.get_property("session_id"),
+                      timestamp: new Date().toISOString(),
+                    });
+                    setStep((prev) => prev - 1);
+                  }}
+                  // onClick={() => setStep((prev) => prev - 1)}
                   disabled={step === 1 || loading}
                 >
                   Previous
                 </Button>
                 {step < 3 ? (
-                  <Button onClick={handleNext} disabled={loading}>
+                  // <Button
+                  //   onClick={() => {
+                  //     const stepName =
+                  //       step === 1
+                  //         ? "Step 1 - Personal Info Completed"
+                  //         : step === 2
+                  //         ? "Step 2 - Category & Specialty Completed"
+                  //         : step === 3
+                  //         ? "Step 3 - Legal Agreements Completed"
+                  //         : "Step Progressing";
+
+                  //     mixpanel.track(stepName, {
+                  //       // mixpanel.track("Clicked Next - Step ",sep, {
+                  //       stepNumber: step,
+                  //       timestamp: new Date().toISOString(),
+                  //     });
+
+                  //     handleNext();
+                  //   }}
+                  //   disabled={loading}
+                  // >
+                  //   Next
+                  // </Button>
+                  <Button
+                    onClick={() => {
+                      const stepName =
+                        step === 1
+                          ? "Step 1 - Personal Info Completed"
+                          : step === 2
+                          ? "Step 2 - Category & Specialty Completed"
+                          : step === 3
+                          ? "Step 3 - Legal Agreements Completed"
+                          : "Step Progressing";
+
+                      if (step === 1) {
+                        mixpanel.track("Step 1 - Personal Info Submitted", {
+                          first_name: formData.firstName,
+                          last_name: formData.lastName,
+                          email: formData.email,
+                          session_id: mixpanel.get_property("session_id"),
+                          // password: formData.password, // Avoid sending password in production!
+                          timestamp: new Date().toISOString(),
+                        });
+                      } else {
+                        mixpanel.track(stepName, {
+                          stepNumber: step,
+                          session_id: mixpanel.get_property("session_id"),
+                          timestamp: new Date().toISOString(),
+                        });
+                      }
+
+                      handleNext();
+                    }}
+                    disabled={loading}
+                  >
                     Next
                   </Button>
                 ) : (
+                  // <Button onClick={handleNext} disabled={loading}>
+                  //   Next
+                  // </Button>
                   <Button
-                    onClick={handleSubmit}
+                    // onClick={handleSubmit}
+                    onClick={() => {
+                      mixpanel.track("Step 3 - Legal Agreements Completed", {
+                        email: formData.email,
+                        session_id: mixpanel.get_property("session_id"),
+                        timestamp: new Date().toISOString(),
+                      });
+                      handleSubmit();
+                    }}
                     className="bg-green-600 hover:bg-green-700"
                     disabled={
                       loading ||
@@ -794,7 +876,7 @@ const Register = () => {
           </Card>
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -20,50 +20,56 @@ const HomepageAdsCarousel = () => {
   // Sample ads data for homepage
   const ads: Ad[] = [
     {
-      id: '1',
-      title: 'Welcome to MedPortal',
-      description: 'Your comprehensive platform for medical education and professional development.',
-      image: '/placeholder.svg',
-      buttonText: 'Get Started',
-      buttonLink: '/register',
-      backgroundColor: 'bg-gradient-to-r from-blue-600 to-blue-700'
+      id: "1",
+      title: "Welcome to TheFutureMed",
+      // title: 'Welcome to MedPortal',
+      description:
+        "Your comprehensive platform for medical education and professional development.",
+      image: "/placeholder.svg",
+      buttonText: "Get Started",
+      buttonLink: "/register",
+      backgroundColor: "bg-gradient-to-r from-blue-600 to-blue-700",
     },
     {
-      id: '2',
-      title: 'Medical Conference 2024',
-      description: 'Join the biggest medical conference of the year. Network with professionals worldwide.',
-      image: '/placeholder.svg',
-      buttonText: 'Register Now',
-      buttonLink: '/e-seminar',
-      backgroundColor: 'bg-gradient-to-r from-green-600 to-green-700'
+      id: "2",
+      title: "Medical Conference 2024",
+      description:
+        "Join the biggest medical conference of the year. Network with professionals worldwide.",
+      image: "/placeholder.svg",
+      buttonText: "Register Now",
+      buttonLink: "/e-seminar",
+      backgroundColor: "bg-gradient-to-r from-green-600 to-green-700",
     },
     {
-      id: '3',
-      title: 'Advanced E-Learning Courses',
-      description: 'Enhance your medical knowledge with our certified online courses.',
-      image: '/placeholder.svg',
-      buttonText: 'Explore Courses',
-      buttonLink: '/e-learning',
-      backgroundColor: 'bg-gradient-to-r from-purple-600 to-purple-700'
+      id: "3",
+      title: "Advanced E-Learning Courses",
+      description:
+        "Enhance your medical knowledge with our certified online courses.",
+      image: "/placeholder.svg",
+      buttonText: "Explore Courses",
+      buttonLink: "/e-learning",
+      backgroundColor: "bg-gradient-to-r from-purple-600 to-purple-700",
     },
     {
-      id: '4',
-      title: 'Latest Medical Equipment',
-      description: 'Discover cutting-edge medical equipment and pharmaceutical products.',
-      image: '/placeholder.svg',
-      buttonText: 'Browse Products',
-      buttonLink: '/products',
-      backgroundColor: 'bg-gradient-to-r from-orange-600 to-orange-700'
+      id: "4",
+      title: "Latest Medical Equipment",
+      description:
+        "Discover cutting-edge medical equipment and pharmaceutical products.",
+      image: "/placeholder.svg",
+      buttonText: "Browse Products",
+      buttonLink: "/products",
+      backgroundColor: "bg-gradient-to-r from-orange-600 to-orange-700",
     },
     {
-      id: '5',
-      title: 'Join Medical Communities',
-      description: 'Connect with healthcare professionals and join specialized medical communities.',
-      image: '/placeholder.svg',
-      buttonText: 'Join Community',
-      buttonLink: '/community',
-      backgroundColor: 'bg-gradient-to-r from-teal-600 to-teal-700'
-    }
+      id: "5",
+      title: "Join Medical Communities",
+      description:
+        "Connect with healthcare professionals and join specialized medical communities.",
+      image: "/placeholder.svg",
+      buttonText: "Join Community",
+      buttonLink: "/community",
+      backgroundColor: "bg-gradient-to-r from-teal-600 to-teal-700",
+    },
   ];
 
   // Auto-advance carousel every 6 seconds

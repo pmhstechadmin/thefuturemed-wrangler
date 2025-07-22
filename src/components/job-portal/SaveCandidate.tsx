@@ -345,16 +345,11 @@ const SaveCandidate = () => {
                   <Button className="bg-blue-600 hover:bg-blue-700">
                     {hasSubscription ? "Contact Now" : "Subscribe to Contact"}
                   </Button>
-<<<<<<< HEAD
-                  <Button variant="outline" onClick={() => handleSaveCandidate(seeker.id)}>
-                    Unsave
-=======
-                  <Button
+         <Button
                     variant="outline"
                     onClick={() => handleSaveCandidate(seeker.id)}
                   >
                     Saved
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   </Button>
                   <Button
                     variant="ghost"

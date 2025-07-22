@@ -27,12 +27,20 @@ const Footer = () => {
               <ul className="space-y-2 text-gray-400">
                 <li>
                   <Link
+                    to="/dashboard"
+                    className="hover:text-white transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                {/* <li>
+                  <Link
                     to="/products"
                     className="hover:text-white transition-colors"
                   >
                     Products
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/community"
@@ -70,17 +78,20 @@ const Footer = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
+                {/* <li>
                   <a href="#" className="hover:text-white transition-colors">
                     Help Center
                   </a>
-                </li>
+                </li> */}
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a
+                    href="/contact"
+                    className="hover:text-white transition-colors"
+                  >
                     Contact Us
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="#" className="hover:text-white transition-colors">
                     Documentation
                   </a>
@@ -89,7 +100,7 @@ const Footer = () => {
                   <a href="#" className="hover:text-white transition-colors">
                     API
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div>
@@ -132,7 +143,8 @@ const Footer = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 MedPortal. All rights reserved.</p>
+            <p>&copy; 2024 TheFutureMed. All rights reserved.</p>
+            {/* <p>&copy; 2024 MedPortal. All rights reserved.</p> */}
           </div>
         </div>
       </footer>

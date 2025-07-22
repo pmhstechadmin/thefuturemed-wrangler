@@ -1182,10 +1182,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
 
 interface Seminar {
   id: string;
@@ -1236,6 +1244,11 @@ const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(true);
   // NEW: State for current IST time
   const [currentISTTime, setCurrentISTTime] = useState("");
  const [userProfile, setUserProfile] = useState<any>(null);
+
+ const [meetingOptions, setMeetingOptions] = useState({
+   disableParticipantMic: false,
+   disableParticipantVideo: false,
+ });
   const handleBackNavigation = () => {
     navigate(-1);
   };
@@ -1710,15 +1723,13 @@ useEffect(() => {
                   <span className="hidden md:inline">Back</span>
                 </Button>
 
-<<<<<<< HEAD
                 {/* <Link to="/" className="flex items-center space-x-2">
                   <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                   <h1 className="text-xl md:text-2xl font-bold text-white">
                     MedPortal
                   </h1>
                 </Link> */}
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+
                 <div className="flex items-center space-x-2">
                   <Link to="/">
                     <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -1818,14 +1829,17 @@ useEffect(() => {
           apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
           meetingId={seminar.meeting_id}
           // name={user?.email || "Participant"}
-          name={
-            userProfile?.first_name && userProfile?.last_name
-              ? `${userProfile.first_name} ${userProfile.last_name}`
-              : user?.email || "Participant"
-          }
+          // name={
+          //   userProfile?.first_name && userProfile?.last_name
+          //     ? `${userProfile.first_name} ${userProfile.last_name}`
+          //     : user?.email || "Participant"
+          // }
+          name={getDisplayName()}
           onMeetingLeave={handleLeaveMeeting}
-          micEnabled={false}
-          webcamEnabled={false}
+          micEnabled={!meetingOptions.disableParticipantMic}
+          webcamEnabled={!meetingOptions.disableParticipantVideo}
+          // micEnabled={false}
+          // webcamEnabled={false}
           containerId="video-container"
           style={{ marginTop: "70px" }}
         />
@@ -1867,15 +1881,13 @@ useEffect(() => {
                 <span className="hidden md:inline">Back</span>
               </Button>
 
-<<<<<<< HEAD
               {/* <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                 <h1 className="text-xl md:text-2xl font-bold text-white">
                   MedPortal
                 </h1>
               </Link> */}
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+
               <div className="flex items-center space-x-2">
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -2190,7 +2202,10 @@ useEffect(() => {
 
           <CardContent>
             <div className="space-y-4">
-              {timeLeft && seminarStartTime &&seminar.host_country === "India" && timeLeft ?  (
+              {timeLeft &&
+              seminarStartTime &&
+              seminar.host_country === "India" &&
+              timeLeft ? (
                 <div className="bg-blue-600 text-white py-3 px-4 rounded-lg mb-6 flex flex-col md:flex-row items-center justify-between">
                   <div className="flex items-center mb-2 md:mb-0">
                     <Clock className="h-5 w-5 mr-2" />
@@ -2207,12 +2222,12 @@ useEffect(() => {
                     </span>
                   </div>
                 </div>
-              ): (
-                      <span className="font-semibold">
-                        Your Country: {seminar.host_country} — Please check the
-                        time difference manually. 
-                      </span>
-                    )}
+              ) : (
+                <span className="font-semibold">
+                  Your Country: {seminar.host_country} — Please check the time
+                  difference manually.
+                </span>
+              )}
             </div>
             <div className="space-y-4">
               {(seminar.meeting_id || isHost) && (
@@ -2231,7 +2246,7 @@ useEffect(() => {
                     </p>
                   )}
 
-                  <div className="flex justify-center">
+                  {/* <div className="flex justify-center">
                     <Button
                       onClick={handleJoinMeeting}
                       // disabled={creatingMeeting || (isHost && isSeminarPast)}
@@ -2255,12 +2270,97 @@ useEffect(() => {
                           // isSeminarPast ? (
                           "Meeting Expired"
                         ) : (
+                          {isHost && seminar?.is_host_joined && (
+                    <MeetingOptions
+                      isHost={isHost}
+                      isHostJoined={seminar?.is_host_joined}
+                      onOptionsChange={setMeetingOptions}
+                    />
+                  )}
                           "Start Meeting"
                         )
                       ) : (
                         "Join Meeting"
                       )}
                     </Button>
+                  </div> */}
+                  <div className="flex justify-center">
+                    {isHost ? (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            disabled={creatingMeeting || isJoinButtonDisabled}
+                            className={`px-8 py-3 text-lg bg-green-600 hover:bg-green-700`}
+                          >
+                            {isJoinButtonDisabled
+                              ? "Meeting Expired"
+                              : "Start Meeting"}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Meeting Options</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div className="flex items-center justify-between">
+                              <Label htmlFor="disable-mic">
+                                Disable Participants Mic
+                              </Label>
+                              <Switch
+                                id="disable-mic"
+                                checked={meetingOptions.disableParticipantMic}
+                                onCheckedChange={(checked) =>
+                                  setMeetingOptions((prev) => ({
+                                    ...prev,
+                                    disableParticipantMic: checked,
+                                  }))
+                                }
+                              />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <Label htmlFor="disable-video">
+                                Disable Participants Video
+                              </Label>
+                              <Switch
+                                id="disable-video"
+                                checked={meetingOptions.disableParticipantVideo}
+                                onCheckedChange={(checked) =>
+                                  setMeetingOptions((prev) => ({
+                                    ...prev,
+                                    disableParticipantVideo: checked,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <Button
+                              onClick={() => {
+                                handleJoinMeeting();
+                              }}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Start Meeting
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <Button
+                        onClick={handleJoinMeeting}
+                        disabled={creatingMeeting}
+                        className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
+                      >
+                        {creatingMeeting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Joining...
+                          </>
+                        ) : (
+                          "Join Meeting"
+                        )}
+                      </Button>
+                    )}
                   </div>
 
                   {/* NEW: Additional meeting info */}

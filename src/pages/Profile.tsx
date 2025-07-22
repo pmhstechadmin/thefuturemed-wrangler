@@ -1338,10 +1338,8 @@ import ProfilePictureUpload from "@/components/profile/ProfilePictureUpload";
 import { UserProductsSection } from "@/components/profile/UserProductsSection";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface Profile {
   id: string;
@@ -1604,11 +1602,11 @@ const Profile = () => {
             <div className="flex items-center space-x-2">
               <Button
                 variant="ghost"
-                onClick={() => navigate("/products")}
+                onClick={() => navigate("/dashboard")}
                 className="hover:bg-blue-50 p-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline ml-2">Back to Products</span>
+                <span className="hidden sm:inline ml-2">Back to Dashboard</span>
               </Button>
               {/* <div className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
@@ -2032,10 +2030,8 @@ const Profile = () => {
           <Edit className="h-5 w-5" />
         </Button>
       </div>
-<<<<<<< HEAD
-=======
-      <Footer/>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+
+      <Footer />
     </div>
   );
 };

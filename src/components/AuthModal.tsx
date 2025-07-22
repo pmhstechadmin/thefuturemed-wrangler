@@ -433,7 +433,7 @@
 
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -446,7 +446,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
+import { useNavigate } from "react-router-dom";
+import mixpanel, { setMixpanelSessionId, trackLoginFailure, trackLoginSuccess, trackSignup } from "@/utils/mixpanel";
+import { v4 as uuidv4 } from "uuid";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -461,7 +463,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
   const [email, setEmail] = useState("testuser@gmail.com");
   const [password, setPassword] = useState("TestUser@123");
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const resetForm = () => {
     setEmail("");
     setPassword("");
@@ -472,6 +474,10 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     setMode("login");
     onClose();
   };
+  useEffect(() => {
+    const sessionId = `auth_${uuidv4()}`;
+    setMixpanelSessionId(sessionId);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -485,6 +491,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         });
 
         if (error) {
+          trackLoginFailure(error);
           toast({
             title: "Login Failed",
             description: error.message,
@@ -494,6 +501,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         }
 
         if (data.user) {
+           const userData = {
+             id: data.user.id,
+             first_name: data.user.user_metadata?.first_name || "",
+             last_name: data.user.user_metadata?.last_name || "",
+             email: data.user.email || "",
+           };
+           trackLoginSuccess(data.user.id, userData);
           toast({
             title: "Success",
             description: "Signed in successfully!",
@@ -503,9 +517,15 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
           onClose();
         }
       } else if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password, options: {
+          data: {
+            first_name: '', // You might want to collect these during signup
+            last_name: ''
+          }
+        }});
 
         if (error) {
+          trackLoginFailure(error);
           toast({
             title: "Sign Up Failed",
             description: error.message,
@@ -515,6 +535,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         }
 
         if (data.user) {
+           trackSignup(data.user.id, {
+          first_name: data.user.user_metadata?.first_name || '',
+          last_name: data.user.user_metadata?.last_name || '',
+          email: data.user.email || ''
+        });
           toast({
             title: "Success",
             description: "Account created! Check your email to confirm.",
@@ -524,6 +549,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         }
       }
     } catch (error: any) {
+      trackLoginFailure(error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -577,7 +603,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         </DialogHeader>
 
         {mode === "forgot" ? (
-          <form onSubmit={(e) => { e.preventDefault(); handlePasswordReset(); }} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handlePasswordReset();
+            }}
+            className="space-y-4"
+          >
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -590,7 +622,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                 disabled={loading}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading || !email}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || !email}
+            >
               {loading ? "Sending..." : "Send Reset Link"}
             </Button>
             <Button
@@ -635,7 +671,19 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading || !email || !password}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || !email || !password}
+              onClick={() => {
+    // Track the submit action
+    mixpanel.track(mode === "login" ? "Login Attempt" : "Signup Attempt", {
+      email: email,
+      session_id: mixpanel.get_property("session_id"),
+      timestamp: new Date().toISOString(),
+    });
+  }}
+            >
               {loading
                 ? "Please wait..."
                 : mode === "login"
@@ -648,7 +696,16 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                 type="button"
                 variant="ghost"
                 className="w-full text-blue-600 hover:underline"
-                onClick={() => setMode("forgot")}
+                // onClick={() => setMode("forgot")}
+                onClick={() => {
+      // Track forgot password click
+      mixpanel.track("Forgot Password Click", {
+        email: email,
+        session_id: mixpanel.get_property("session_id"),
+        timestamp: new Date().toISOString(),
+      });
+      setMode("forgot");
+    }}
                 disabled={loading}
               >
                 Forgot Password?
@@ -659,7 +716,24 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               type="button"
               variant="ghost"
               className="w-full text-blue-600 hover:underline"
-              onClick={() => setMode(mode === "login" ? "signup" : "login")}
+              // onClick={() => setMode(mode === "login" ? "signup" : "login")}
+              // onClick={() => {
+              //   onClose(); // Close the modal
+              //   navigate("/register"); // Navigate to register page
+              // }}
+              onClick={() => {
+    // Track navigation action
+    mixpanel.track(
+      mode === "login" ? "Navigate to Signup" : "Navigate to Login",
+      {
+        from: "auth modal",
+        session_id: mixpanel.get_property("session_id"),
+        timestamp: new Date().toISOString(),
+      }
+    );
+    onClose();
+    navigate("/register");
+  }}
               disabled={loading}
             >
               {mode === "login"

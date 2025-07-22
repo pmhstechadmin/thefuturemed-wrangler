@@ -190,10 +190,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate,Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+
 import Footer from '@/footer/Footer';
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const SaveJob = () => {
     const [savedJobs, setSavedJobs] = useState([]);
@@ -355,7 +353,6 @@ const SaveJob = () => {
 }, [selectedJobId, user]);
 
 
-<<<<<<< HEAD
 const handleUnsaveJob = async (jobId) => {
   if (!user) return;
 
@@ -382,8 +379,6 @@ const handleUnsaveJob = async (jobId) => {
 };
 
 
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     return (
       <div className="p-4 space-y-4">
         <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
@@ -538,7 +533,7 @@ const handleUnsaveJob = async (jobId) => {
                       >
                         Apply Now
                       </Button>
-<<<<<<< HEAD
+
 
        <Button
   className="bg-white text-blue-600 border border-blue-600 hover:bg-blue-600 hover:text-white"
@@ -548,8 +543,7 @@ const handleUnsaveJob = async (jobId) => {
 </Button>
 
 
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+
                     </div>
                   </div>
                 </CardContent>
@@ -632,10 +626,8 @@ const handleUnsaveJob = async (jobId) => {
             </div>
           </div>
         )}
-<<<<<<< HEAD
-=======
+
         <Footer/>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       </div>
     );
 };

@@ -263,10 +263,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 import type { User as AuthUser } from "@supabase/supabase-js";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 interface Seminar {
   id: string;
@@ -310,14 +308,13 @@ const CalendarPage = () => {
   const fetchSeminarsForDate = async (date: Date) => {
     setLoading(true);
     try {
-<<<<<<< HEAD
-      const dateString = date.toISOString().split("T")[0];
 
-=======
+      
+
+
       // const dateString = date.toISOString().split("T")[0];
       const dateString = date.toLocaleDateString("en-CA");
       
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       const { data, error } = await supabase
         .from("seminars")
         .select("*")

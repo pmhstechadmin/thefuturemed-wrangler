@@ -74,13 +74,13 @@ const VideoMeeting = ({
             toggleParticipantWebcam: isHost,
             changeLayout: true,
             canCreatePoll: true,
+            endMeeting: true,
           },
 
           layout: {
             type: "SIDEBAR", // "SPOTLIGHT" | "SIDEBAR" | "GRID"
             priority: "PIN", // "SPEAKER" | "PIN",
             gridSize: 3,
-  
           },
 
           whiteboardEnabled: false,

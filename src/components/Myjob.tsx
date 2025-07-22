@@ -1,8 +1,3 @@
-
-
-
-
-
 // import { useEffect, useState } from "react";
 // import {
 //   Card,
@@ -89,7 +84,6 @@
 //     mode: "onChange",
 //   });
 
-
 //   const { toast } = useToast();
 //   const navigate = useNavigate();
 
@@ -109,7 +103,6 @@
 //       form.reset(editForm);
 //     }
 //   }, [editForm]);
-
 
 //   useEffect(() => {
 //     const checkUser = async () => {
@@ -131,8 +124,6 @@
 //     };
 //     if (user) fetchJobs();
 //   }, [user]);
-
-
 
 //   const filteredJobs = jobs.filter((job) => {
 //     const query = searchTerm.toLowerCase();
@@ -162,7 +153,6 @@
 //     return matchesSearch && matchesLocation;
 //   });
 
-
 //   const fetchApplicants = async (jobId) => {
 //     setSelectedJobId(jobId);
 //     setLoadingApplicants(true);
@@ -180,8 +170,6 @@
 //     setApplicants(seekers || []);
 //     setLoadingApplicants(false);
 //   };
-
-
 
 //   const handleSaveCandidate = async (seekerId) => {
 //     const {
@@ -228,11 +216,6 @@
 //       toast({ title: "Saved", description: "Candidate saved successfully." });
 //     }
 //   };
-
-
-
-
-
 
 //   return (
 //     <div className="space-y-6">
@@ -465,15 +448,12 @@
 //                     Delete Job
 //                   </Button> */}
 
-
-
 //                 </div>
 //               </div>
 //             </CardContent>
 //           </Card>
 //         ))}
 //       </div>
-
 
 //       {/* Modal for Applicants */}
 //       {selectedJobId && (
@@ -691,7 +671,6 @@
 //                                   )}
 //                                 />
 
-
 //                     <FormField
 //                       control={form.control}
 //                       name="job_country"
@@ -724,8 +703,6 @@
 //                   </CardContent>
 //                 </Card>
 
-
-
 //                 {/* Job Info */}
 //                 <Card>
 //                   <CardHeader>
@@ -734,8 +711,6 @@
 //                     </CardTitle>
 //                   </CardHeader>
 //                   <CardContent className="space-y-4">
-
-
 
 //                     <FormField
 //                       control={form.control}
@@ -904,13 +879,6 @@
 //                   </CardContent>
 //                 </Card>
 
-
-
-
-
-
-
-
 //                 {/* Manager Info */}
 //                 <Card>
 //                   <CardHeader>
@@ -989,24 +957,11 @@
 //         </div>
 //       )}
 
-
-
-
-
-
-
 //     </div>
 //   );
 // };
 
 // export default Myjob;
-
-
-
-
-
-
-
 
 import { useEffect, useState } from "react";
 import {
@@ -1015,7 +970,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-
 } from "@/components/ui/card";
 import {
   Search,
@@ -1033,7 +987,12 @@ import {
   Lock,
   GraduationCap,
   AlarmClock,
-  Mail, Phone, Locate, School, Users, FileEdit
+  Mail,
+  Phone,
+  Locate,
+  School,
+  Users,
+  FileEdit,
 } from "lucide-react";
 import {
   FormField,
@@ -1057,14 +1016,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, CircleSlash } from "lucide-react";
-=======
-import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
-
 
 const Myjob = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -1082,7 +1036,6 @@ const Myjob = () => {
     { value: "full_time", label: "Full-time" },
     { value: "part_time", label: "Part-time" },
     { value: "locum", label: "Locum" },
-
   ];
 
   const organizationTypes = [
@@ -1099,7 +1052,6 @@ const Myjob = () => {
     defaultValues: editForm, // start with empty or last selected job
     mode: "onChange",
   });
-
 
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -1121,10 +1073,11 @@ const Myjob = () => {
     }
   }, [editForm]);
 
-
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setUser(session?.user || null);
     };
     checkUser();
@@ -1132,7 +1085,9 @@ const Myjob = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
       const { data, error } = await supabase
         .from("job_providers")
@@ -1142,8 +1097,6 @@ const Myjob = () => {
     };
     if (user) fetchJobs();
   }, [user]);
-
-
 
   const filteredJobs = jobs.filter((job) => {
     const query = searchTerm.toLowerCase();
@@ -1168,11 +1121,11 @@ const Myjob = () => {
     );
 
     const matchesLocation =
-      !locationFilter || job.google_location?.toLowerCase().includes(locationQuery);
+      !locationFilter ||
+      job.google_location?.toLowerCase().includes(locationQuery);
 
     return matchesSearch && matchesLocation;
   });
-
 
   const fetchApplicants = async (jobId) => {
     setSelectedJobId(jobId);
@@ -1191,7 +1144,6 @@ const Myjob = () => {
     setApplicants(seekers || []);
     setLoadingApplicants(false);
   };
-
 
   const handleTogglePublish = async (jobId) => {
     const jobToUpdate = jobs.find((j) => j.id === jobId);
@@ -1224,20 +1176,16 @@ const Myjob = () => {
 
     // Update local job state
     setJobs((prev) =>
-      prev.map((j) =>
-        j.id === jobId ? { ...j, is_published: newStatus } : j
-      )
+      prev.map((j) => (j.id === jobId ? { ...j, is_published: newStatus } : j))
     );
 
     toast({
       title: newStatus ? "Published" : "Unpublished",
-      description: `Job successfully ${newStatus ? "published" : "unpublished"}.`,
+      description: `Job successfully ${
+        newStatus ? "published" : "unpublished"
+      }.`,
     });
   };
-
-
-
-
 
   return (
     <div className="space-y-6">
@@ -1314,21 +1262,23 @@ const Myjob = () => {
         </div>
       </header>
 
-<<<<<<< HEAD
       <div className="container mx-auto px-4 py-6">
-  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-    
-    {/* Left-aligned Card */}
-    <div className="w-full max-w-sm">
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Jobs Posted</CardTitle>
-          <Briefcase className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{jobs.length}</div>
-          <p className="text-xs text-muted-foreground">+5% from last month</p>
-          {/* <Button
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Left-aligned Card */}
+          <div className="w-full max-w-sm">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Jobs Posted
+                </CardTitle>
+                <Briefcase className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{jobs.length}</div>
+                <p className="text-xs text-muted-foreground">
+                  +5% from last month
+                </p>
+                {/* <Button
             variant="ghost"
             size="sm"
             className="mt-2 p-0 h-auto text-blue-600 hover:text-blue-700"
@@ -1337,51 +1287,20 @@ const Myjob = () => {
             <Search className="h-3 w-3 mr-1" />
             View Jobs
           </Button> */}
-=======
-      <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search jobs, companies, keywords..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Location"
-                value={locationFilter}
-                onChange={(e) => setLocationFilter(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              <Search className="mr-2 h-4 w-4" /> Search Jobs
-            </Button>
+              </CardContent>
+            </Card>
           </div>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
-        </CardContent>
-      </Card>
-    </div>
 
-    {/* Centered Title and Description */}
-    <div className="text-center flex-1">
-      <h2 className="text-2xl font-bold text-gray-800">My Posted Jobs</h2>
-      <p className="text-gray-600 text-sm mt-1">
-        Here are all the jobs you’ve posted. You can view applicants or edit job details.
-      </p>
-    </div>
-    
-  </div>
-</div>
-
-
-      
-
+          {/* Centered Title and Description */}
+          <div className="text-center flex-1">
+            <h2 className="text-2xl font-bold text-gray-800">My Posted Jobs</h2>
+            <p className="text-gray-600 text-sm mt-1">
+              Here are all the jobs you’ve posted. You can view applicants or
+              edit job details.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* job card */}
       <div className="grid gap-6">
@@ -1390,7 +1309,6 @@ const Myjob = () => {
             key={job.id}
             className="bg-white shadow-md border border-gray-200 rounded-lg transition hover:shadow-lg"
           >
-
             <CardHeader>
               <div className="flex justify-between">
                 <div>
@@ -1399,7 +1317,6 @@ const Myjob = () => {
                     <Building className="h-4 w-4" />
                     {job.organization_name}
                   </CardDescription>
-<<<<<<< HEAD
                   <div className="flex items-center gap-x-4 text-gray-500">
                     <div className="flex items-center">
                       <MapPin className="mr-1 h-4 w-4" />
@@ -1410,15 +1327,12 @@ const Myjob = () => {
                       {job.job_state}
                     </div>
                   </div>
-
-
                 </div>
               </div>
             </CardHeader>
 
             <CardContent>
               <div className="space-y-4 text-sm text-gray-700">
-
                 {/* 👤 Manager Info Section */}
                 <div className="border p-3 rounded-md bg-gray-50 space-y-2">
                   <h4 className="text-base font-semibold text-gray-800 mb-1 flex items-center gap-2">
@@ -1468,7 +1382,8 @@ const Myjob = () => {
                   </div>
                   <div className="flex items-center">
                     <Users className="mr-1 h-4 w-4" />
-                    {job.number_of_vacancies} Vacancy{job.number_of_vacancies > 1 ? 'ies' : 'y'}
+                    {job.number_of_vacancies} Vacancy
+                    {job.number_of_vacancies > 1 ? "ies" : "y"}
                   </div>
                   <div className="flex items-center">
                     <DollarSign className="mr-1 h-4 w-4" />
@@ -1521,72 +1436,18 @@ const Myjob = () => {
                     {job.is_published ? "Unpublish" : "Publish"}
                   </Button>
 
-
-=======
-
-                  <CardDescription>{job.organization_name}</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                <div className="flex items-center">
-                  <MapPin className="mr-1 h-4 w-4" />
-                  {job.google_location}
-                </div>
-                <div className="flex items-center">
-                  <Briefcase className="mr-1 h-4 w-4" />
-                  {job.organization_type}
-                </div>
-                <div className="flex items-center">
-                  <DollarSign className="mr-1 h-4 w-4" />
-                  {job.salary}
-                </div>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
-
-                <div className="flex items-center">
-                  <Clock className="mr-1 h-4 w-4" />
-                  Posted on{" "}
-                  {new Date(job.updated_at).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-
-<<<<<<< HEAD
                   {/* <Button
                     variant="destructive"
                     onClick={() => handleDeleteJob(job)} // Pass specific job
                   >
                     Delete Job
                   </Button> */}
-
-
-
                 </div>
-=======
-                <div className="flex items-center">
-                  <Clock className="mr-1 h-4 w-4" />
-                  {new Date(job.updated_at).toLocaleDateString()}
-                </div>
-              </div>
-              <p className="mt-2 text-gray-700">{job.description}</p>
-              <div className="flex gap-2 mt-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => fetchApplicants(job.id)}
-                >
-                  View Applicants
-                </Button>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
-
 
       {/* Modal for Applicants */}
       {selectedJobId && (
@@ -1695,7 +1556,6 @@ const Myjob = () => {
                         <Button className="bg-blue-600 hover:bg-blue-700">
                           Subscribe to Contact
                         </Button>
-<<<<<<< HEAD
                         <Button
                           variant="outline"
                           className="flex-1 min-w-[120px]"
@@ -1703,13 +1563,6 @@ const Myjob = () => {
                         >
                           Save Candidate
                         </Button>
-
-=======
-                        <Button variant="outline">Save Candidate</Button>
-                        <Button variant="ghost" size="sm">
-                          View Full Profile
-                        </Button>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                       </div>
                     </div>
                   </CardContent>
@@ -1721,7 +1574,6 @@ const Myjob = () => {
           </div>
         </div>
       )}
-<<<<<<< HEAD
 
       {/* edit job */}
       {editingJob && (
@@ -1734,7 +1586,9 @@ const Myjob = () => {
               <X className="h-5 w-5" />
             </button>
 
-            <h2 className="text-xl font-bold mb-4">Edit Job: {editingJob.title}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              Edit Job: {editingJob.title}
+            </h2>
 
             <Form {...form}>
               <form
@@ -1750,7 +1604,9 @@ const Myjob = () => {
                       description: "Job updated successfully.",
                     });
                     setJobs((prev) =>
-                      prev.map((j) => (j.id === editingJob.id ? { ...j, ...data } : j))
+                      prev.map((j) =>
+                        j.id === editingJob.id ? { ...j, ...data } : j
+                      )
                     );
                     setEditingJob(null);
                   } else {
@@ -1812,7 +1668,6 @@ const Myjob = () => {
                       )}
                     />
 
-
                     <FormField
                       control={form.control}
                       name="job_country"
@@ -1845,8 +1700,6 @@ const Myjob = () => {
                   </CardContent>
                 </Card>
 
-
-
                 {/* Job Info */}
                 <Card>
                   <CardHeader>
@@ -1855,9 +1708,6 @@ const Myjob = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-
-
-
                     <FormField
                       control={form.control}
                       name="department"
@@ -1878,7 +1728,10 @@ const Myjob = () => {
                         <FormItem>
                           <FormLabel>Qualification</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. B.Pharm, D.Pharm, M.Sc" {...field} />
+                            <Input
+                              placeholder="e.g. B.Pharm, D.Pharm, M.Sc"
+                              {...field}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -1929,7 +1782,9 @@ const Myjob = () => {
                               type="number"
                               placeholder="Enter number of job openings"
                               {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value, 10))
+                              }
                             />
                           </FormControl>
                           <FormMessage />
@@ -1944,7 +1799,10 @@ const Myjob = () => {
                         <FormItem>
                           <FormLabel>Duty Hours</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. 9AM - 5PM, Mon to Fri" {...field} />
+                            <Input
+                              placeholder="e.g. 9AM - 5PM, Mon to Fri"
+                              {...field}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -2025,13 +1883,6 @@ const Myjob = () => {
                   </CardContent>
                 </Card>
 
-
-
-
-
-
-
-
                 {/* Manager Info */}
                 <Card>
                   <CardHeader>
@@ -2099,7 +1950,11 @@ const Myjob = () => {
 
                 {/* Footer Buttons */}
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="ghost" type="button" onClick={() => setEditingJob(null)}>
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    onClick={() => setEditingJob(null)}
+                  >
                     Cancel
                   </Button>
                   <Button type="submit">Save Changes</Button>
@@ -2109,20 +1964,8 @@ const Myjob = () => {
           </div>
         </div>
       )}
-
-
-
-
-
-
-
-=======
-      <Footer/>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };
 
 export default Myjob;
-
-

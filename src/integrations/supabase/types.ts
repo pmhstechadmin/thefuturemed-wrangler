@@ -109,6 +109,16 @@ export type Database = {
           },
         ]
       }
+      ads: {
+        Row: {
+          id: string;
+          img_url: string;
+          redirect_url: string;
+          showorder?: number;
+          location: string;
+          status: boolean;
+        };
+      };
       course_enrollments: {
         Row: {
           amount: number | null

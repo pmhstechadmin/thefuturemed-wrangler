@@ -1,9 +1,3 @@
-
-
-
-
-
-
 // // import { useEffect, useState } from "react";
 // // import {
 // //   Card,
@@ -97,7 +91,6 @@
 // //         .from("job_applications")
 // //         .select("job_seekers_id")
 // //         .eq("job_providers_id", selectedJobId);
-
 
 // //       if (error) {
 // //         console.error("Error checking applications:", error);
@@ -371,10 +364,6 @@
 // //   );
 // // };
 
-
-
-
-
 // // import { useEffect, useState } from "react";
 // // import {
 // //   Card,
@@ -407,7 +396,6 @@
 // //   const [selectedSeekerId, setSelectedSeekerId] = useState(null);
 // //   const [appliedSeekerIds, setAppliedSeekerIds] = useState([]);
 // //   const [viewedJob, setViewedJob] = useState(null);
-
 
 // //   useEffect(() => {
 // //     const checkUser = async () => {
@@ -473,7 +461,6 @@
 // //         .select("job_seekers_id")
 // //         .eq("job_providers_id", selectedJobId);
 
-
 // //       if (error) {
 // //         console.error("Error checking applications:", error);
 // //       } else {
@@ -492,7 +479,6 @@
 // //     const orgType = job.organization_type || "";
 // //       const email = job.manager_email || "";
 // //   const contact = job.manager_contact || "";
-
 
 // //     const matchesSearch =
 // //       org.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -783,7 +769,6 @@
 // //   </div>
 // // )}
 
-
 // //       <div className="text-center">
 // //         <Button variant="outline" size="lg">
 // //           Load More Jobs
@@ -792,10 +777,6 @@
 // //     </div>
 // //   );
 // // };
-
-
-
-
 
 // import { useEffect, useState } from "react";
 // import {
@@ -830,7 +811,6 @@
 //   const [appliedSeekerIds, setAppliedSeekerIds] = useState([]);
 //   const [viewedJob, setViewedJob] = useState(null);
 
-
 //   useEffect(() => {
 //     const checkUser = async () => {
 //       const {
@@ -861,11 +841,9 @@
 
 //         console.log("✅ Fetched Jobszzzzzzzzz:", data);
 
-
 //         console.log("✅ Fetched Jobszzzzzzzzz:", data);
 
 //           console.log("✅ Fetched Jobszzzzzzzzz:", data);
-
 
 //         setJobs(data);
 //       }
@@ -903,7 +881,6 @@
 //         .select("job_seekers_id")
 //         .eq("job_providers_id", selectedJobId);
 
-
 //       if (error) {
 //         console.error("Error checking applications:", error);
 //       } else {
@@ -924,12 +901,6 @@
 //     const email = job.manager_email || "";
 //     const contact = job.manager_contact || "";
 
-
-    
-    
-
-
-
 //     const matchesSearch =
 //       org.toLowerCase().includes(searchTerm.toLowerCase()) ||
 //       manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -938,7 +909,6 @@
 //       email.toLowerCase().includes(searchTerm.toLowerCase()) ||
 //       contact.toLowerCase().includes(searchTerm.toLowerCase());
 
-
 //       orgType.toLowerCase().includes(searchTerm.toLowerCase()) ||
 //       email.toLowerCase().includes(searchTerm.toLowerCase()) ||
 //       contact.toLowerCase().includes(searchTerm.toLowerCase());
@@ -946,8 +916,6 @@
 //       orgType.toLowerCase().includes(searchTerm.toLowerCase())||
 //          email.toLowerCase().includes(searchTerm.toLowerCase()) ||
 //     contact.toLowerCase().includes(searchTerm.toLowerCase());
-
-
 
 //     const matchesLocation =
 //       locationFilter === "" ||
@@ -1007,8 +975,6 @@
 //     }
 //   };
 
-
-
 //   const handleSaveJob = async (job) => {
 //     if (!user) {
 //       alert("Please log in to save jobs.");
@@ -1059,9 +1025,6 @@
 //       alert("✅ Job saved successfully!");
 //     }
 //   };
-
-
-
 
 //   return (
 //     <div className="space-y-6">
@@ -1187,13 +1150,8 @@
 //                     Save Job
 //                   </Button>
 
-
-
-
-
 //                   <Button variant="outline">Save Job</Button>
 //                   {/* ########################################################################################## */}
-
 
 //                   <Button
 //                     variant="ghost"
@@ -1211,7 +1169,6 @@
 //       </div>
 //       {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
 
-
 //       {selectedJobId && (
 //         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 //           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative shadow-lg">
@@ -1300,8 +1257,6 @@
 //         </div>
 //       )}
 
-
-
 //       {selectedJobId && (
 //         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 //           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative shadow-lg">
@@ -1389,7 +1344,6 @@
 //           </div>
 //         </div>
 //       )}
-
 
 //       <div className="text-center">
 //         <Button variant="outline" size="lg">
@@ -1399,7 +1353,6 @@
 //     </div>
 //   );
 // };
-
 
 import { useEffect, useState } from "react";
 import {
@@ -1423,7 +1376,13 @@ import {
   Lock,
   GraduationCap,
   AlarmClock,
-  Mail, Phone, Locate, School, Users, FileEdit,User,
+  Mail,
+  Phone,
+  Locate,
+  School,
+  Users,
+  FileEdit,
+  User,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -1459,11 +1418,10 @@ export const JobListings = () => {
       if (!user) return;
 
       const { data, error } = await supabase
-  .from("job_providers")
-  .select("*")
-  .eq("is_published", true)  
-  .neq("user_id", user.id);
-        
+        .from("job_providers")
+        .select("*")
+        .eq("is_published", true)
+        .neq("user_id", user.id);
 
       if (error) {
         console.error("Error fetching jobs:", error);
@@ -1514,42 +1472,6 @@ export const JobListings = () => {
     fetchApplications();
   }, [selectedJobId]);
 
-<<<<<<< HEAD
- const filteredJobs = jobs.filter((job) => {
-  const org = job.organization_name || "";
-  const manager = job.manager_name || "";
-  const location = job.google_location || "";
-  const orgType = job.organization_type || "";
-  const email = job.manager_email || "";
-  const contact = job.manager_contact || "";
-  const department = job.department || "";
-  const qualification = job.qualification_required || "";
-  const employmentType = job.employment_type || "";
-  const jobState = job.job_state || "";
-  const jobCountry = job.job_country || "";
-const salary = job.salary_range || "";
-
-  const matchesSearch =
-    org.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    orgType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    qualification.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employmentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    jobState.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    jobCountry.toLowerCase().includes(searchTerm.toLowerCase())||
-    salary.toLowerCase().includes(searchTerm.toLowerCase());
-
-  const matchesLocation =
-    locationFilter === "" ||
-    location.toLowerCase().includes(locationFilter.toLowerCase());
-
-  return matchesSearch && matchesLocation;
-});
-
-=======
   const filteredJobs = jobs.filter((job) => {
     const org = job.organization_name || "";
     const manager = job.manager_name || "";
@@ -1557,13 +1479,25 @@ const salary = job.salary_range || "";
     const orgType = job.organization_type || "";
     const email = job.manager_email || "";
     const contact = job.manager_contact || "";
+    const department = job.department || "";
+    const qualification = job.qualification_required || "";
+    const employmentType = job.employment_type || "";
+    const jobState = job.job_state || "";
+    const jobCountry = job.job_country || "";
+    const salary = job.salary_range || "";
 
     const matchesSearch =
       org.toLowerCase().includes(searchTerm.toLowerCase()) ||
       manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
       orgType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.toLowerCase().includes(searchTerm.toLowerCase());
+      contact.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      qualification.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employmentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      jobState.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      jobCountry.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      salary.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesLocation =
       locationFilter === "" ||
@@ -1571,7 +1505,6 @@ const salary = job.salary_range || "";
 
     return matchesSearch && matchesLocation;
   });
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
   const handleApplyOnBehalf = async (seekerId) => {
     const selectedSeeker = jobSeekers.find((seeker) => seeker.id === seekerId);
@@ -1638,20 +1571,13 @@ const salary = job.salary_range || "";
     }
 
     if (existing.length > 0) {
-<<<<<<< HEAD
-  toast({
-    title: "Already Saved",
-    description: "⚠️ You have already saved this job.",
-    variant: "default", // Or "destructive", "success", etc.
-  });
-  return;
-}
-
-=======
-      alert("⚠️ You already saved this job.");
+      toast({
+        title: "Already Saved",
+        description: "⚠️ You have already saved this job.",
+        variant: "default", // Or "destructive", "success", etc.
+      });
       return;
     }
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
     const { data: insertedData, error } = await supabase
       .from("save_jobs")
@@ -1668,15 +1594,11 @@ const salary = job.salary_range || "";
       console.error("Error saving job:", error);
       alert("Failed to save job.");
     } else {
-<<<<<<< HEAD
-       toast({
-    title: "Job Saved",
-    description: "✅ The job has been saved successfully!",
-    variant: "default", // or "success" if you have custom variants
-  });
-=======
-      alert("✅ Job saved successfully!");
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+      toast({
+        title: "Job Saved",
+        description: "✅ The job has been saved successfully!",
+        variant: "default", // or "success" if you have custom variants
+      });
     }
   };
 
@@ -1725,187 +1647,99 @@ const salary = job.salary_range || "";
       </div>
 
       {/* Job Listings Grid */}
-<<<<<<< HEAD
-     
 
       <div className="grid gap-6">
-              {filteredJobs.map((job) => (
-                <Card key={job.id}>
-                  <CardHeader>
-                    <div className="flex justify-between">
-                      <div>
-                        <CardTitle>{job.title}</CardTitle>
-                        <CardDescription className="text-lg font-medium text-gray-900 flex items-center gap-2">
-                          <Building className="h-4 w-4" />
-                          {job.organization_name}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-      
-                  <CardContent>
-                    <div className="space-y-4 text-sm text-gray-700">
-      
-                      {/* 👤 Manager Info Section */}
-                      <div className="border p-3 rounded-md bg-gray-50 space-y-2">
-                        <h4 className="text-base font-semibold text-gray-800 mb-1 flex items-center gap-2">
-                          <User className="h-4 w-4" /> Manager Information
-                        </h4>
-                        <div className="flex flex-wrap gap-4 text-gray-600">
-                          <div className="flex items-center">
-                            <User className="mr-1 h-4 w-4" />
-                            {job.manager_name}
-                          </div>
-                          <div className="flex items-center">
-                            <Mail className="mr-1 h-4 w-4" />
-                            {job.manager_email}
-                          </div>
-                          <div className="flex items-center">
-                            <Phone className="mr-1 h-4 w-4" />
-                            {job.manager_contact_ccode} {job.manager_contact}
-                          </div>
-                          <div className="flex items-center">
-                            <Locate className="mr-1 h-4 w-4" />
-                            {job.address}
-                          </div>
-                        </div>
-                      </div>
-      
-                      {/* 🏢 Job Info Section */}
-                      <div className="flex flex-wrap gap-4 text-gray-600">
-                        <div className="flex items-center">
-                          <MapPin className="mr-1 h-4 w-4" />
-                          {job.google_location}
-                        </div>
-                        <div className="flex items-center">
-                          <Briefcase className="mr-1 h-4 w-4" />
-                          {job.organization_type}
-                        </div>
-                        <div className="flex items-center">
-                          <School className="mr-1 h-4 w-4" />
-                          {job.department}
-                        </div>
-                        <div className="flex items-center">
-                          <GraduationCap className="mr-1 h-4 w-4" />
-                          {job.qualification_required}
-                        </div>
-                        <div className="flex items-center">
-                          <AlarmClock className="mr-1 h-4 w-4" />
-                          {job.duty_hours}
-                        </div>
-                        <div className="flex items-center">
-                          <Users className="mr-1 h-4 w-4" />
-                          {job.number_of_vacancies} Vacancy{job.number_of_vacancies > 1 ? 'ies' : 'y'}
-                        </div>
-                        <div className="flex items-center">
-                          <DollarSign className="mr-1 h-4 w-4" />
-                          {job.salary_range}
-                        </div>
-                        <div className="flex items-center">
-                          <FileEdit className="mr-1 h-4 w-4" />
-                          {job.contract_details}
-                        </div>
-                        <div className="flex items-center">
-                          <Clock className="mr-1 h-4 w-4" />
-                          Posted on{" "}
-                          {new Date(job.updated_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </div>
-                      </div>
-      
-                      {/* 📄 Job Description */}
-                      <p className="mt-2 text-gray-700">{job.description}</p>
-      
-      <div className="flex flex-wrap gap-3 pt-4">
-=======
-      <div className="grid gap-4 sm:gap-6">
         {filteredJobs.map((job) => (
-          <Card
-            key={job.id}
-            className="hover:shadow-lg transition-shadow border-0 sm:border"
-          >
-            <CardHeader className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                <div className="space-y-2">
-                  <CardTitle className="text-lg sm:text-xl text-blue-600 hover:text-blue-700 cursor-pointer">
-                    {job.title}
-                  </CardTitle>
-                  <CardDescription className="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
+          <Card key={job.id}>
+            <CardHeader>
+              <div className="flex justify-between">
+                <div>
+                  <CardTitle>{job.title}</CardTitle>
+                  <CardDescription className="text-lg font-medium text-gray-900 flex items-center gap-2">
                     <Building className="h-4 w-4" />
                     {job.organization_name}
                   </CardDescription>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="self-start sm:self-auto"
-                  onClick={() => {
-                    setSelectedJobId(job.id);
-                    setSelectedSeekerId(null);
-                  }}
-                >
-                  Apply Now
-                </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6 pt-0">
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+
+            <CardContent>
+              <div className="space-y-4 text-sm text-gray-700">
+                {/* 👤 Manager Info Section */}
+                <div className="border p-3 rounded-md bg-gray-50 space-y-2">
+                  <h4 className="text-base font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                    <User className="h-4 w-4" /> Manager Information
+                  </h4>
+                  <div className="flex flex-wrap gap-4 text-gray-600">
+                    <div className="flex items-center">
+                      <User className="mr-1 h-4 w-4" />
+                      {job.manager_name}
+                    </div>
+                    <div className="flex items-center">
+                      <Mail className="mr-1 h-4 w-4" />
+                      {job.manager_email}
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="mr-1 h-4 w-4" />
+                      {job.manager_contact_ccode} {job.manager_contact}
+                    </div>
+                    <div className="flex items-center">
+                      <Locate className="mr-1 h-4 w-4" />
+                      {job.address}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 🏢 Job Info Section */}
+                <div className="flex flex-wrap gap-4 text-gray-600">
                   <div className="flex items-center">
                     <MapPin className="mr-1 h-4 w-4" />
-                    <span className="truncate max-w-[120px] sm:max-w-none">
-                      {job.google_location}
-                    </span>
+                    {job.google_location}
                   </div>
                   <div className="flex items-center">
                     <Briefcase className="mr-1 h-4 w-4" />
                     {job.organization_type}
                   </div>
                   <div className="flex items-center">
+                    <School className="mr-1 h-4 w-4" />
+                    {job.department}
+                  </div>
+                  <div className="flex items-center">
+                    <GraduationCap className="mr-1 h-4 w-4" />
+                    {job.qualification_required}
+                  </div>
+                  <div className="flex items-center">
+                    <AlarmClock className="mr-1 h-4 w-4" />
+                    {job.duty_hours}
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="mr-1 h-4 w-4" />
+                    {job.number_of_vacancies} Vacancy
+                    {job.number_of_vacancies > 1 ? "ies" : "y"}
+                  </div>
+                  <div className="flex items-center">
                     <DollarSign className="mr-1 h-4 w-4" />
-                    {job.salary}
+                    {job.salary_range}
+                  </div>
+                  <div className="flex items-center">
+                    <FileEdit className="mr-1 h-4 w-4" />
+                    {job.contract_details}
                   </div>
                   <div className="flex items-center">
                     <Clock className="mr-1 h-4 w-4" />
-                    Posted{" "}
+                    Posted on{" "}
                     {new Date(job.updated_at).toLocaleDateString("en-US", {
-                      month: "short",
+                      year: "numeric",
+                      month: "long",
                       day: "numeric",
                     })}
                   </div>
                 </div>
 
-                <p className="text-gray-700 leading-relaxed line-clamp-3">
-                  {job.description}
-                </p>
+                {/* 📄 Job Description */}
+                <p className="mt-2 text-gray-700">{job.description}</p>
 
-                <div className="flex flex-wrap gap-2">
-                  {Array.isArray(job.tags) &&
-                    job.tags.slice(0, 3).map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="bg-blue-100 text-blue-800"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  {job.tags?.length > 3 && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-100 text-blue-800"
-                    >
-                      +{job.tags.length - 3}
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Action Buttons */}
                 <div className="flex flex-wrap gap-3 pt-4">
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                   <Button
                     className="bg-blue-600 hover:bg-blue-700 flex-1 min-w-[120px]"
                     onClick={() => {
@@ -1933,192 +1767,7 @@ const salary = job.salary_range || "";
                     View Details
                   </Button>
                 </div>
-                     
-                      
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-      {/* Modals */}
-      {selectedJobId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-lg">
-            <button
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
-              onClick={() => {
-                setSelectedJobId(null);
-                setSelectedSeekerId(null);
-              }}
-              aria-label="Close modal"
-            >
-              <X className="h-6 w-6" />
-            </button>
-
-            <h2 className="text-xl sm:text-2xl font-bold mb-4">
-              Job Seeker Profiles
-            </h2>
-
-            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-              {jobSeekers.map((seeker) => (
-                <Card
-                  key={seeker.id}
-                  className={`${
-                    selectedSeekerId === seeker.id
-                      ? "border-2 border-blue-600"
-                      : "border"
-                  }`}
-                >
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-base sm:text-lg">
-                      {seeker.highest_qualification}
-                    </CardTitle>
-                    <CardDescription className="text-sm sm:text-base">
-                      {seeker.specialization}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0 space-y-2 text-sm sm:text-base">
-                    <p>
-                      <strong>Skills:</strong>{" "}
-                      {Array.isArray(seeker.skills)
-                        ? seeker.skills.slice(0, 5).join(", ")
-                        : "N/A"}
-                    </p>
-                    <p>
-                      <strong>Experience:</strong>{" "}
-                      {seeker.years_of_experience || "N/A"} years
-                    </p>
-                    <p>
-                      <strong>Preferred Location:</strong>{" "}
-                      {seeker.preferred_location}
-                    </p>
-                    <p>
-                      <strong>Availability:</strong> {seeker.availability}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {seeker.email}
-                    </p>
-                    <p>
-                      <strong>Phone:</strong> {seeker.phone}
-                    </p>
-
-                    {appliedSeekerIds.includes(seeker.id) ? (
-                      <Button
-                        className="mt-3 bg-gray-400 cursor-not-allowed w-full"
-                        disabled
-                      >
-                        Applied
-                      </Button>
-                    ) : (
-                      <Button
-                        className="mt-3 bg-green-600 hover:bg-green-700 w-full"
-                        onClick={() => handleApplyOnBehalf(seeker.id)}
-                      >
-                        Apply Here
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {viewedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-lg">
-            <button
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
-              onClick={() => setViewedJob(null)}
-              aria-label="Close modal"
-            >
-              <X className="h-6 w-6" />
-            </button>
-
-            <h2 className="text-xl sm:text-2xl font-bold mb-2">
-              {viewedJob.title}
-            </h2>
-            <p className="text-gray-600 mb-4">{viewedJob.description}</p>
-
-            <div className="space-y-3 text-sm sm:text-base">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <p className="font-medium">Organization:</p>
-                  <p>{viewedJob.organization_name}</p>
-                </div>
-                 <div>
-                  <p className="font-medium">Country:</p>
-                  <p>{viewedJob.job_country}</p>
-                </div>
-                 <div>
-                  <p className="font-medium">State:</p>
-                  <p>{viewedJob.job_state}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Manager:</p>
-                  <p>{viewedJob.manager_name}</p>
-                </div>
-                  <div>
-                  <p className="font-medium">Manager Email:</p>
-                  <p>{viewedJob.manager_email}</p>
-                </div>
-                  <div>
-                  <p className="font-medium">Manager Contact:</p>
-                  <p>+{viewedJob.manager_contact}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Location:</p>
-                  <p>{viewedJob.google_location}</p>
-                </div>
-                 <div>
-                  <p className="font-medium">Department:</p>
-                  <p>{viewedJob.department}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Type:</p>
-                  <p>{viewedJob.organization_type}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Salary:</p>
-                  <p>{viewedJob.salary_range_currency}{viewedJob.salary_range}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Duty Hours:</p>
-                  <p>{viewedJob.duty_hours}</p>
-                </div>
-                  <div>
-                  <p className="font-medium">Number of vacancies:</p>               
-                  <p>{viewedJob.number_of_vacancies}</p>
-                </div>
-                  <div>
-                  <p className="font-medium">Contract details:</p>
-                  <p>{viewedJob.contract_details}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Employement Type:</p>
-                  <p>{viewedJob.employment_type}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Email:</p>
-                  <p>{viewedJob.manager_email}</p>
-                </div>
-                
-                <div>
-                  <p className="font-medium">Contact:</p>
-                  <p>{viewedJob.manager_contact}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Last Updated:</p>
-                  <p>{new Date(viewedJob.updated_at).toLocaleString()}</p>
-                </div>
-                
               </div>
-<<<<<<< HEAD
-
-
-=======
             </CardContent>
           </Card>
         ))}
@@ -2232,12 +1881,32 @@ const salary = job.salary_range || "";
                   <p>{viewedJob.organization_name}</p>
                 </div>
                 <div>
+                  <p className="font-medium">Country:</p>
+                  <p>{viewedJob.job_country}</p>
+                </div>
+                <div>
+                  <p className="font-medium">State:</p>
+                  <p>{viewedJob.job_state}</p>
+                </div>
+                <div>
                   <p className="font-medium">Manager:</p>
                   <p>{viewedJob.manager_name}</p>
                 </div>
                 <div>
+                  <p className="font-medium">Manager Email:</p>
+                  <p>{viewedJob.manager_email}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Manager Contact:</p>
+                  <p>+{viewedJob.manager_contact}</p>
+                </div>
+                <div>
                   <p className="font-medium">Location:</p>
                   <p>{viewedJob.google_location}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Department:</p>
+                  <p>{viewedJob.department}</p>
                 </div>
                 <div>
                   <p className="font-medium">Type:</p>
@@ -2245,12 +1914,32 @@ const salary = job.salary_range || "";
                 </div>
                 <div>
                   <p className="font-medium">Salary:</p>
-                  <p>{viewedJob.salary}</p>
+                  <p>
+                    {viewedJob.salary_range_currency}
+                    {viewedJob.salary_range}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium">Duty Hours:</p>
+                  <p>{viewedJob.duty_hours}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Number of vacancies:</p>
+                  <p>{viewedJob.number_of_vacancies}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Contract details:</p>
+                  <p>{viewedJob.contract_details}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Employement Type:</p>
+                  <p>{viewedJob.employment_type}</p>
                 </div>
                 <div>
                   <p className="font-medium">Email:</p>
                   <p>{viewedJob.manager_email}</p>
                 </div>
+
                 <div>
                   <p className="font-medium">Contact:</p>
                   <p>{viewedJob.manager_contact}</p>
@@ -2261,7 +1950,6 @@ const salary = job.salary_range || "";
                 </div>
               </div>
 
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               {Array.isArray(viewedJob.tags) && viewedJob.tags.length > 0 && (
                 <div className="pt-4">
                   <p className="font-medium mb-2">Tags:</p>

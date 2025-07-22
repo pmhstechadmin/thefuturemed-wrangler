@@ -218,25 +218,24 @@ export const CoursesListing = () => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
 
-<<<<<<< HEAD
+
               <Link to="/e-learning" className="flex items-center space-x-2">
-=======
+
               {/* <Link to="/e-learning" className="flex items-center space-x-2">
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
+
                 <BookOpen className="h-8 w-8 text-blue-600" />
                 <h1 className="text-2xl font-bold text-gray-900">
                   All Courses
                 </h1>
-<<<<<<< HEAD
-              </Link>
-=======
-              </Link> */}
+
+                
+                </Link> */}
+                </Link>
               <div className="flex items-center space-x-2">
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>
               </div>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
             </div>
             <Button
               variant="outline"

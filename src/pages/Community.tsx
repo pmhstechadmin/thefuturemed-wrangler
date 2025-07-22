@@ -363,10 +363,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Shield, UserPlus, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
-=======
+
 import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const Community = () => {
   const navigate = useNavigate();

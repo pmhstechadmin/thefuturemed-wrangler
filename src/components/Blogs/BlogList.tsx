@@ -1,7 +1,3 @@
-
-
-
-
 // // import React, { useEffect, useState } from 'react';
 // // import { useNavigate, useParams, Link } from 'react-router-dom';
 // // import { supabase } from '@/integrations/supabase/client';
@@ -212,9 +208,7 @@
 // //           </div>
 // //         </div>
 
-
 // //       </div>
-
 
 // //     </div>
 // //   );
@@ -222,15 +216,10 @@
 
 // // export default BlogList;
 
-
-
-
-
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate, useParams, Link } from 'react-router-dom';
 // import { supabase } from '@/integrations/supabase/client';
 // import './BlogList.css';
-
 
 // import { Blog } from '../../types/blog';
 // import {
@@ -430,7 +419,6 @@
 //   )}
 // </div>
 
-
 //         {/* Right Column (1/3) */}
 //         <div className="max-h-[100% overflow-y-auto pr-2 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
 
@@ -472,9 +460,7 @@
 //           </div>
 //         </div>
 
-
 //       </div>
-
 
 //     </div>
 //   );
@@ -482,13 +468,6 @@
 
 // export default BlogList;
 
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -500,12 +479,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import logo from "@/image/thefuturemed_logo (1).jpg";
-<<<<<<< HEAD
 import "react-quill/dist/quill.snow.css";
-
-=======
-import Footer from "@/footer/Footer";
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
 
 const BlogList: React.FC = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -513,11 +487,8 @@ const BlogList: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-<<<<<<< HEAD
   const [profiles, setProfiles] = useState<{ [userId: string]: string }>({});
 
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
   const { toast } = useToast();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -572,7 +543,6 @@ const BlogList: React.FC = () => {
   useEffect(() => {
     const fetchBlogsAndAuthors = async () => {
       setLoading(true);
-<<<<<<< HEAD
 
       // Fetch blogs
       const { data: blogsData, error: blogsError } = await supabase
@@ -583,19 +553,10 @@ const BlogList: React.FC = () => {
 
       if (blogsError) {
         console.error("Error fetching blogs:", blogsError.message);
-=======
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError || !user) {
-        console.error("User not found:", userError?.message);
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
         setLoading(false);
         return;
       }
 
-<<<<<<< HEAD
       setBlogs(blogsData || []);
 
       // Extract unique user_ids
@@ -611,25 +572,14 @@ const BlogList: React.FC = () => {
         console.error("Error fetching profiles:", profileError.message);
         setLoading(false);
         return;
-=======
-      const { data, error } = await supabase
-        .from("blog")
-        .select("*")
-        .eq("is_published", true)
-        .neq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching blogs:", error.message);
-      } else {
-        setBlogs(data || []);
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       }
 
       // Convert array to map for quick lookup
       const profilesMap: { [userId: string]: string } = {};
       profileData?.forEach((profile) => {
-        profilesMap[profile.id] = `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim() || "Unknown Author";
+        profilesMap[profile.id] =
+          `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim() ||
+          "Unknown Author";
       });
 
       setProfiles(profilesMap);
@@ -639,10 +589,6 @@ const BlogList: React.FC = () => {
     fetchBlogsAndAuthors();
   }, []);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
   if (loading)
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -837,83 +783,26 @@ const BlogList: React.FC = () => {
               <div className="bg-white shadow rounded-lg p-4 md:p-6 space-y-4">
                 <h3 className="text-xl md:text-2xl font-bold">{blog.title}</h3>
 
-<<<<<<< HEAD
                 <div className="ql-editor max-w-none">
                   <div dangerouslySetInnerHTML={{ __html: blog.content }} />
                 </div>
 
-
                 {/* Author & Status at bottom */}
                 <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
                   <p>By {profiles[blog.user_id] || "Unknown Author"}</p>
-                  <p>Status: {blog.is_published ? "Published" : "Unpublished"}</p>
+                  <p>
+                    Status: {blog.is_published ? "Published" : "Unpublished"}
+                  </p>
                 </div>
               </div>
-
-=======
-                <div
-                  className="prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
-                />
-
-                <div className="text-sm text-gray-500">
-                  Status: {blog.is_published ? "Published" : "Unpublished"}
-                </div>
-
-                {/* Like Button */}
-                <div className="flex items-center space-x-3 mt-4">
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">
-                    👍 Like
-                  </button>
-                  <span className="text-sm text-gray-600">12 Likes</span>
-                </div>
-
-                {/* Comment Section */}
-                <div className="mt-6">
-                  <h4 className="text-md font-semibold mb-2">Comments</h4>
-                  <textarea
-                    placeholder="Write a comment..."
-                    className="w-full p-3 border rounded mb-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={3}
-                  />
-                  <button className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded">
-                    Post Comment
-                  </button>
-
-                  {/* Sample comments */}
-                  <div className="mt-4 space-y-3">
-                    <div className="border p-3 rounded bg-gray-50">
-                      <p className="text-sm">
-                        Great post! Very helpful information.
-                      </p>
-                      <span className="text-xs text-gray-500 block mt-1">
-                        – user@example.com
-                      </span>
-                    </div>
-                    <div className="border p-3 rounded bg-gray-50">
-                      <p className="text-sm">
-                        Thanks for sharing this valuable content.
-                      </p>
-                      <span className="text-xs text-gray-500 block mt-1">
-                        – another_user@example.com
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
             )}
           </div>
 
           {/* Blog List Sidebar (Full width on mobile, 1/3 on desktop) */}
           <div className="lg:col-span-1">
             <h2 className="text-xl font-semibold mb-4">Other Blogs</h2>
-<<<<<<< HEAD
             <div className="space-y-4 pr-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {/* changed */}
-=======
-            <div className="space-y-4 max-h-[calc(100vh-150px)] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
               {blogs.length === 0 ? (
                 <div className="bg-white shadow rounded-lg p-6 text-center">
                   <p className="text-gray-500">No other blogs available</p>
@@ -922,11 +811,7 @@ const BlogList: React.FC = () => {
                 blogs.map((blog) => (
                   <Card
                     key={blog.id}
-<<<<<<< HEAD
                     className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
-=======
-                    className="hover:shadow-lg transition-shadow cursor-pointer"
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                     onClick={() => navigate(`/blog-list/${blog.id}`)}
                   >
                     <CardHeader>
@@ -938,13 +823,12 @@ const BlogList: React.FC = () => {
                       </CardTitle>
                     </CardHeader>
 
-<<<<<<< HEAD
                     <CardContent className="flex flex-col flex-grow">
                       {/* ✅ Scrollable preview content area */}
-                      <div
-                        className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0"
-                      >
-                        <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+                      <div className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0">
+                        <div
+                          dangerouslySetInnerHTML={{ __html: blog.content }}
+                        />
                       </div>
 
                       {/* ✅ Footer content pushed to bottom */}
@@ -964,42 +848,14 @@ const BlogList: React.FC = () => {
                       </div>
                     </CardContent>
                   </Card>
-
-=======
-                    <CardContent>
-                      <div
-                        className="text-sm text-gray-600 line-clamp-3 mb-4"
-                        dangerouslySetInnerHTML={{ __html: blog.content }}
-                      />
-                      <Button
-                        className="w-full"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/blog-list/${blog.id}`);
-                        }}
-                      >
-                        View Blog
-                      </Button>
-                    </CardContent>
-                  </Card>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
                 ))
               )}
             </div>
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-=======
-      <Footer/>
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
     </div>
   );
 };
 
-<<<<<<< HEAD
 export default BlogList;
-
-=======
-export default BlogList;
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0

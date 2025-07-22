@@ -1,18 +1,36 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, Calendar, BookOpen, GraduationCap, Stethoscope, UserPlus, Menu, X, Briefcase } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Shield,
+  Users,
+  Calendar,
+  BookOpen,
+  GraduationCap,
+  Stethoscope,
+  UserPlus,
+  Menu,
+  X,
+  Briefcase,
+  LogIn,
+} from "lucide-react";
 import AuthModal from "@/components/AuthModal";
 import HomepageAdsCarousel from "@/components/HomepageAdsCarousel";
-import logo from "@/image/thefuturemed_logo__1_-removebg-preview.png"
-import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
-import { Layout, Grid3X3, User, Home, ArrowLeft } from 'lucide-react';
+import logo from "@/image/thefuturemed_logo__1_-removebg-preview.png";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { Layout, Grid3X3, User, Home, ArrowLeft } from "lucide-react";
 import Footer from "@/footer/Footer";
-
+import HomepageCarousel from "./HomepageCarousel";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -20,55 +38,53 @@ const Index = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-
-
+const [authMode, setAuthMode] = useState<"signin" >("signin");
   useEffect(() => {
     checkUser();
   }, []);
 
   const checkUser = async () => {
     try {
-      console.log('🔄 Checking user session...');
+      console.log("🔄 Checking user session...");
 
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
       if (error) {
-        console.error('❌ Error getting session:', error);
+        console.error("❌ Error getting session:", error);
       }
 
-      console.log('📦 Full session data:', session);
-      console.log('👤 User data:', session?.user);
+      console.log("📦 Full session data:", session);
+      console.log("👤 User data:", session?.user);
 
       setUser(session?.user || null);
     } catch (error) {
-      console.error('❗ Unexpected error checking user:', error);
+      console.error("❗ Unexpected error checking user:", error);
     } finally {
       setLoading(false);
-      console.log('✅ Done checking user. Loading set to false.');
+      console.log("✅ Done checking user. Loading set to false.");
     }
   };
   useEffect(() => {
     checkUser(); // check once on load
 
     // 👂 Listen for login/logout
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null); // ✅ Update user without refresh
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null); // ✅ Update user without refresh
+      }
+    );
 
     return () => {
       authListener.subscription.unsubscribe(); // cleanup listener
     };
   }, []);
 
-
-
-
-
-
   const handleAuthSuccess = () => {
     // Handle successful authentication - you can add any additional logic here
-    console.log('Authentication successful');
+    console.log("Authentication successful");
   };
 
   return (
@@ -130,7 +146,13 @@ const Index = () => {
                   <Button
                     variant="outline"
                     className="text-white bg-gray-800 hover:bg-gray-700 border border-white/30"
-                    onClick={() => navigate("/profile")}
+                    // onClick={() => navigate("/profile")}
+                    onClick={() => {
+                      mixpanelInstance.track("profile Button Clicked", {
+                        timestamp: new Date().toISOString(),
+                      });
+                      navigate("/profile");
+                    }}
                   >
                     <User className="mr-2 h-4 w-4" />
                     Profile
@@ -139,6 +161,9 @@ const Index = () => {
                   {/* Sign Out Button */}
                   <Button
                     onClick={async () => {
+                      mixpanelInstance.track("Sign Out Home Button Clicked", {
+                        timestamp: new Date().toISOString(),
+                      });
                       await supabase.auth.signOut();
                       setUser(null); // optional if you're listening for auth changes
                     }}
@@ -149,12 +174,51 @@ const Index = () => {
                 </div>
               ) : (
                 // Sign In / Register Button (shown when user is NOT logged in)
-                <Button
-                  onClick={() => setShowAuthModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
-                >
-                  Sign In / Register
-                </Button>
+                // <Button
+                //   onClick={() => setShowAuthModal(true)}
+                //   className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                // >
+                //   Sign In / Register
+                // </Button>
+                <div className="flex gap-3">
+                  {" "}
+                  {/* Container for both buttons with spacing */}
+                  {/* Sign In Button */}
+                  <Button
+                    onClick={() => {
+                      mixpanelInstance.track("Signin Home Button Clicked", {
+                        timestamp: new Date().toISOString(),
+                      });
+                      setShowAuthModal(true);
+                      setAuthMode("signin");
+                    }}
+                    // onClick={() => {
+                    //   setShowAuthModal(true);
+                    //   setAuthMode("signin"); // Track which form to show
+                    // }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 flex-1"
+                  >
+                    Sign In
+                  </Button>
+                  {/* Register Button */}
+                  <Button
+                    onClick={() => {
+                      mixpanelInstance.track("Register Home Button Clicked", {
+                        timestamp: new Date().toISOString(),
+                      });
+                      setShowAuthModal(true);
+                      navigate("/register");
+                    }}
+                    // onClick={() => {
+                    //   setShowAuthModal(true);
+                    //   navigate("/register");
+                    //   // Track which form to show
+                    // }}
+                    className="bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all duration-200 flex-1"
+                  >
+                    Register
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -229,6 +293,12 @@ const Index = () => {
                       variant="outline"
                       className="text-blue border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm justify-center mt-2"
                       onClick={() => {
+                        mixpanelInstance.track(
+                          "Profile Mobile view Home Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
                         navigate("/profile");
                         setIsMenuOpen(false);
                       }}
@@ -239,6 +309,12 @@ const Index = () => {
                     <Button
                       className="bg-red-600 hover:bg-red-700 text-white justify-center"
                       onClick={async () => {
+                        mixpanelInstance.track(
+                          "Sign Out Mobile view Home Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
                         await supabase.auth.signOut();
                         setUser(null);
                         setIsMenuOpen(false);
@@ -248,16 +324,54 @@ const Index = () => {
                     </Button>
                   </>
                 ) : (
-                  <Button
-                    onClick={() => {
-                      setShowAuthModal(true);
-                      setIsMenuOpen(false);
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2"
-                  >
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Sign In / Register
-                  </Button>
+                  // <Button
+                  //   onClick={() => {
+                  //     setShowAuthModal(true);
+                  //     setIsMenuOpen(false);
+                  //   }}
+                  //   className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2"
+                  // >
+                  //   <UserPlus className="mr-2 h-4 w-4" />
+                  //   Sign In / Register
+                  // </Button>
+                  <>
+                    <Button
+                      onClick={() => {
+                        mixpanelInstance.track(
+                          "SignIn Mobile view Home Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
+                        setShowAuthModal(true);
+                        setIsMenuOpen(false);
+                        setAuthMode("signin"); // Add this state to track auth mode
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2 ml-2"
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />{" "}
+                      {/* Changed icon to LogIn */}
+                      Sign In
+                    </Button>
+
+                    <Button
+                      onClick={() => {
+                        mixpanelInstance.track(
+                          "Register Mobile View Home Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
+                        setShowAuthModal(true);
+                        setIsMenuOpen(false);
+                        navigate("/register"); // Add this state to track auth mode
+                      }}
+                      className="bg-green-600 hover:bg-green-700 text-white justify-center mt-2 ml-2" /* Added ml-2 for margin */
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Register
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -265,10 +379,13 @@ const Index = () => {
         </div>
       </nav>
 
+      <HomepageCarousel />
+
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-          Welcome to <span className="text-blue-600">MedPortal</span>
+          Welcome to <span className="text-blue-600">TheFutureMed</span>
+          {/* Welcome to <span className="text-blue-600">MedPortal</span> */}
         </h2>
         <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
           Your comprehensive platform for medical education, community
@@ -277,7 +394,12 @@ const Index = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             size="lg"
-            onClick={() => setShowAuthModal(true)}
+            onClick={() => {
+              mixpanelInstance.track("Get Started Button Clicked", {
+                timestamp: new Date().toISOString(),
+              });
+              setShowAuthModal(true);
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-4 text-lg"
           >
             Get Started
@@ -285,10 +407,17 @@ const Index = () => {
           <Button
             size="lg"
             variant="outline"
-            asChild
+            onClick={() => {
+              mixpanelInstance.track("Dashboard Button Clicked", {
+                timestamp: new Date().toISOString(),
+              });
+              navigate("/dashboard");
+            }}
+            // asChild
             className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
           >
-            <Link to="/dashboard">Explore Products</Link>
+            Explore Dashboard
+            {/* <Link to="/dashboard">Explore Products</Link> */}
           </Button>
         </div>
       </section>
@@ -302,6 +431,35 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Card className="hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-200">
+            <CardHeader>
+              <Stethoscope className="h-12 w-12 text-blue-600 mb-4" />
+              <CardTitle className="text-xl">AI Medic Agents</CardTitle>
+              <CardDescription className="text-gray-600">
+                AI-powered medical assistance and diagnosis
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                asChild
+                className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
+              >
+                <a
+                  href="https://ai-assistant.medorbis.ai/?ref=thefuturemed&location=homepage&ad=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    mixpanelInstance.track("Try AI Assistant Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                >
+                  Try AI Assistant
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+          {/* <Card className="hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-200">
             <CardHeader>
               <Stethoscope className="h-12 w-12 text-blue-600 mb-4" />
               <CardTitle className="text-xl">Medical Products</CardTitle>
@@ -319,7 +477,7 @@ const Index = () => {
                 <Link to="/products">Browse Products</Link>
               </Button>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <Card className="hover:shadow-xl transition-all duration-300 border border-green-100 hover:border-green-200">
             <CardHeader>
@@ -336,7 +494,16 @@ const Index = () => {
                 asChild
                 className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-all duration-200"
               >
-                <Link to="/community">Join Community</Link>
+                <Link
+                  onClick={() => {
+                    mixpanelInstance.track(" Join Community Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                  to="/community"
+                >
+                  Join Community
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -355,7 +522,16 @@ const Index = () => {
                 asChild
                 className="w-full border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-200"
               >
-                <Link to="/e-seminar">View Seminars</Link>
+                <Link
+                  onClick={() => {
+                    mixpanelInstance.track(" Seminars Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                  to="/e-seminar"
+                >
+                  View Seminars
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -375,7 +551,16 @@ const Index = () => {
                 asChild
                 className="w-full border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white transition-all duration-200"
               >
-                <Link to="/e-learning">Start Learning</Link>
+                <Link
+                  onClick={() => {
+                    mixpanelInstance.track(" Learning Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                  to="/e-learning"
+                >
+                  Start Learning
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -395,7 +580,16 @@ const Index = () => {
                 asChild
                 className="w-full border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white transition-all duration-200"
               >
-                <Link to="/jobs">Browse Jobs</Link>
+                <Link
+                  onClick={() => {
+                    mixpanelInstance.track(" Jobs Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                  to="/jobs"
+                >
+                  Browse Jobs
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -414,149 +608,23 @@ const Index = () => {
                 asChild
                 className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200"
               >
-                <Link to="/calendar">View Calendar</Link>
+                <Link
+                  onClick={() => {
+                    mixpanelInstance.track(" Calendar Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
+                  to="/calendar"
+                >
+                  View Calendar
+                </Link>
               </Button>
             </CardContent>
           </Card>
         </div>
       </section>
 
-<<<<<<< HEAD
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                {/* <Shield className="h-6 w-6" />
-                <span className="text-xl font-bold">MedPortal</span> */}
-                <Link to="/">
-                  <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
-                </Link>
-              </div>
-              <p className="text-gray-400">
-                Empowering medical professionals through technology and
-                community.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Platform</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    to="/products"
-                    className="hover:text-white transition-colors"
-                  >
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/community"
-                    className="hover:text-white transition-colors"
-                  >
-                    Community
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/e-learning"
-                    className="hover:text-white transition-colors"
-                  >
-                    E-Learning
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/e-seminar"
-                    className="hover:text-white transition-colors"
-                  >
-                    E-Seminars
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/jobs"
-                    className="hover:text-white transition-colors"
-                  >
-                    Jobs
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    API
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    to="/privacy-policy"
-                    className="hover:text-white transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/about-us"
-                    className="hover:text-white transition-colors"
-                  >
-                    About Us
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/terms-of-service"
-                    className="hover:text-white transition-colors"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/data-usage-policy"
-                    className="hover:text-white transition-colors"
-                  >
-                    Data Usage Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 MedPortal. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-
-=======
       <Footer />
->>>>>>> 8c4c5c5addf49b5f79e7d037752dae9cad5d1ae0
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}

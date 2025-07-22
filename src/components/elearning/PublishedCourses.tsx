@@ -20,6 +20,10 @@ interface Course {
   created_at: string;
   creator_id: string;
   status: string;
+  project_description?: string;
+  resources_summary?: string;
+  is_paid: boolean; // true for paid, false for free
+  price?: number;
 }
 
 interface Profile {
@@ -251,7 +255,10 @@ export const PublishedCourses = () => {
                       <Badge variant="outline">Project</Badge>
                     )}
                   </div>
-                  <div className="text-lg font-bold text-blue-600">Paid</div>
+                  <div className="text-lg font-bold text-blue-600">
+                    {course.is_paid ? "Paid" : "Free"}
+                  </div>
+                  {/* <div className="text-lg font-bold text-blue-600">Paid</div> */}
                   {/* <div className="text-lg font-bold text-blue-600">Free</div> */}
                 </div>
 
