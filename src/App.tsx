@@ -308,18 +308,18 @@ import AboutPage from "./components/public page/AboutPage";
 import TrackPageView from "./Trackpage/TrackPageView";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Contact from "./pages/contact/Contact";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4YzgxYWE1Ny05ODY4LTQxN2EtOTFjMi04NTAwNjczNWJiNjIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTc1MDgzNDk4NCwiZXhwIjoxNzgyMzcwOTg0fQ.n2Srx_K36pcLwtvDEsCRkqfVDXwlIDoqFWyVpAwe2_0";
-
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SpeedInsights />
         <BrowserRouter>
           <TrackPageView />
           <Routes>
@@ -359,19 +359,7 @@ const App = () => {
             <Route path="/my-job" element={<Myjob />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/my-job-profile" element={<MyJobProfile />} />
-            <Route
-              path="/mee"
-              element={
-                <VideoMeeting4
-                  apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
-                  meetingId="your-meeting-id"
-                  name="John Doe"
-                  micEnabled={true}
-                  webcamEnabled={true}
-                  containerId={null}
-                />
-              }
-            />
+
             <Route path="/saved-job" element={<SaveJob />} />
             <Route path="/saved-candidates" element={<SaveCandidate />} />
             <Route path="/blog-list/:id" element={<BlogList />} />

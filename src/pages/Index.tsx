@@ -31,6 +31,7 @@ import { Layout, Grid3X3, User, Home, ArrowLeft } from "lucide-react";
 import Footer from "@/footer/Footer";
 import HomepageCarousel from "./HomepageCarousel";
 import { mixpanelInstance } from "@/utils/mixpanel";
+import YouTube from "react-youtube";
 
 const Index = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -621,6 +622,22 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
               </Button>
             </CardContent>
           </Card>
+        </div>
+        <div className="mt-12 text-center">
+          <div className="aspect-w-16 aspect-h-9 w-3/4  mx-auto">
+            <YouTube
+              videoId="Jh0HcfGHSTA" // Just the ID part of the URL
+              opts={{
+                width: "100%",
+                playerVars: {
+                  autoplay: 0, // Auto-play is off by default
+                },
+              }}
+              onReady={(event) => {
+                event.target.pauseVideo();
+              }}
+            />
+          </div>
         </div>
       </section>
 

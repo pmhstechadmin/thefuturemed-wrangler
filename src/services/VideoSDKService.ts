@@ -6,7 +6,7 @@ export const generateToken = async (): Promise<string> => {
   
   export const createMeeting = async (token: string): Promise<string> => {
     try {
-      const response = await fetch("https://api.videosdk.live/v2/rooms", {
+      const response = await fetch(`${import.meta.env.VITE_VIDEOSDK_API_ENOPOINT}/v2/rooms`, {
         method: "POST",
         headers: {
           Authorization: token,

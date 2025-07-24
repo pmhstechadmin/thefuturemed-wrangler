@@ -11,6 +11,19 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    // proxy: {
+    //   '/api': {
+    //     target: 'https://rxyfrjfgydldjdqelixe.supabase.co',
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ''),
+    //     // Add these headers if needed
+    //     headers: {
+    //       'Access-Control-Allow-Origin': '*',
+    //       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    //       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    //     }
+    //   }
+    // }
   },
   plugins: [
     react(),

@@ -1826,7 +1826,8 @@ useEffect(() => {
 
         <VideoMeeting
           isHost={isHost}
-          apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
+          apiKey={import.meta.env.VITE_VIDEOSDK_API_KEY}
+          // apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
           meetingId={seminar.meeting_id}
           // name={user?.email || "Participant"}
           // name={

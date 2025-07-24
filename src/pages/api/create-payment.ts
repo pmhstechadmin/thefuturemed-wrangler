@@ -189,6 +189,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
 import { createClient } from "@supabase/supabase-js";
+const Key_payment = import.meta.env.VITE_RAZORPAY_KEY_ID;
+const Key_secret = import.meta.env.VITE_RAZORPAY_KEY_SECRET;
 
 // Initialize Supabase (service role)
 const supabase = createClient(
@@ -198,8 +200,8 @@ const supabase = createClient(
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
-  key_id: "rzp_test_eK57VjQhXHjIGR",
-  key_secret:"MJpdeMCa9LPE7IAzYhchp8AF",
+  key_id: Key_payment,
+  key_secret:Key_secret,
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

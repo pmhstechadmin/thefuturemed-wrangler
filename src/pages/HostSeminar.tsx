@@ -414,10 +414,10 @@ const HostSeminar = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [user, setUser] = useState<AuthUser | null>(null);
-const [country, setCountry] = useState("");
-const [timezone, setTimezone] = useState("Asia/Kolkata");
-const [timezones, setTimezones] = useState<string[]>([]);
-
+  const [country, setCountry] = useState("");
+  const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [timezones, setTimezones] = useState<string[]>([]);
+  const supabaseAnonKey = import.meta.env.VITE_VIDEOSDK_TOKEN;
   useEffect(() => {
     checkUser();
   }, []);
@@ -427,83 +427,81 @@ const [timezones, setTimezones] = useState<string[]>([]);
     }
   }, [country]);
 
-   const fetchTimezonesForCountry = async (countryName: string) => {
-     try {
-       // In a real app, you would fetch timezones from an API
-       // This is a simplified implementation with common timezones
-       const commonTimezones: Record<string, string[]> = {
-         India: ["Asia/Kolkata"],
-         "United States": [
-           "America/New_York",
-           "America/Chicago",
-           "America/Denver",
-           "America/Los_Angeles",
-           "America/Phoenix",
-           "America/Anchorage",
-           "Pacific/Honolulu",
-         ],
-         "United Kingdom": ["Europe/London"],
-         Canada: [
-           "America/Toronto",
-           "America/Vancouver",
-           "America/Edmonton",
-           "America/Winnipeg",
-           "America/Halifax",
-           "America/St_Johns",
-         ],
-         Australia: [
-           "Australia/Sydney",
-           "Australia/Melbourne",
-           "Australia/Brisbane",
-           "Australia/Adelaide",
-           "Australia/Perth",
-           "Australia/Darwin",
-         ],
-         Germany: ["Europe/Berlin"],
-         France: ["Europe/Paris"],
-         Japan: ["Asia/Tokyo"],
-         China: ["Asia/Shanghai"],
-         Brazil: [
-           "America/Sao_Paulo",
-           "America/Manaus",
-           "America/Recife",
-           "America/Belem",
-           "America/Fortaleza",
-         ],
-       };
+  const fetchTimezonesForCountry = async (countryName: string) => {
+    try {
+      // In a real app, you would fetch timezones from an API
+      // This is a simplified implementation with common timezones
+      const commonTimezones: Record<string, string[]> = {
+        India: ["Asia/Kolkata"],
+        "United States": [
+          "America/New_York",
+          "America/Chicago",
+          "America/Denver",
+          "America/Los_Angeles",
+          "America/Phoenix",
+          "America/Anchorage",
+          "Pacific/Honolulu",
+        ],
+        "United Kingdom": ["Europe/London"],
+        Canada: [
+          "America/Toronto",
+          "America/Vancouver",
+          "America/Edmonton",
+          "America/Winnipeg",
+          "America/Halifax",
+          "America/St_Johns",
+        ],
+        Australia: [
+          "Australia/Sydney",
+          "Australia/Melbourne",
+          "Australia/Brisbane",
+          "Australia/Adelaide",
+          "Australia/Perth",
+          "Australia/Darwin",
+        ],
+        Germany: ["Europe/Berlin"],
+        France: ["Europe/Paris"],
+        Japan: ["Asia/Tokyo"],
+        China: ["Asia/Shanghai"],
+        Brazil: [
+          "America/Sao_Paulo",
+          "America/Manaus",
+          "America/Recife",
+          "America/Belem",
+          "America/Fortaleza",
+        ],
+      };
 
-       // Default to common timezones if country exists
-       if (commonTimezones[country]) {
-         setTimezones(commonTimezones[country]);
-       } else {
-         // For other countries, use a generic list
-         setTimezones([
-           "Europe/London",
-           "Europe/Paris",
-           "Asia/Tokyo",
-           "Australia/Sydney",
-           "America/New_York",
-           "America/Los_Angeles",
-           "Asia/Kolkata",
-           "Asia/Singapore",
-         ]);
-       }
-     } catch (error) {
-       console.error("Error fetching timezones:", error);
-       setTimezones(["UTC"]);
-     }
-   };
+      // Default to common timezones if country exists
+      if (commonTimezones[country]) {
+        setTimezones(commonTimezones[country]);
+      } else {
+        // For other countries, use a generic list
+        setTimezones([
+          "Europe/London",
+          "Europe/Paris",
+          "Asia/Tokyo",
+          "Australia/Sydney",
+          "America/New_York",
+          "America/Los_Angeles",
+          "Asia/Kolkata",
+          "Asia/Singapore",
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching timezones:", error);
+      setTimezones(["UTC"]);
+    }
+  };
 
-     const formatTimezoneLabel = (tz: string) => {
-       const offset =
-         new Date()
-           .toLocaleString("en-US", { timeZone: tz, timeZoneName: "short" })
-           .split(" ")
-           .pop() || "";
-       return `${tz.replace(/_/g, " ")} (${offset})`;
-     };
-
-  
+  const formatTimezoneLabel = (tz: string) => {
+    const offset =
+      new Date()
+        .toLocaleString("en-US", { timeZone: tz, timeZoneName: "short" })
+        .split(" ")
+        .pop() || "";
+    return `${tz.replace(/_/g, " ")} (${offset})`;
+  };
 
   const checkUser = async () => {
     try {
@@ -617,7 +615,7 @@ const [timezones, setTimezones] = useState<string[]>([]);
           description,
           date: formattedDate,
           time,
-          host_country: country
+          host_country: country,
         })
         .select()
         .single();
@@ -637,7 +635,201 @@ const [timezones, setTimezones] = useState<string[]>([]);
         .insert(speakersToInsert);
 
       if (speakersError) throw speakersError;
+      // Send email notification
+      // try {
+      //   const { data: emailData, error: emailError } =
+      //     await supabase.functions.invoke("send-email", {
+      //       body: {
+      //         // to_email: session.user.email,
+      //         to_email: "prasanthjg4@gmail.com", // Your fixed email address
+      //         cc_email: session.user.email,
+      //         host_name: hostName,
+      //         seminar_topic: topic,
+      //         seminar_date: formattedDate,
+      //         seminar_time: time,
+      //         speakers: validSpeakers,
+      //         seminar_description: description,
+      //       },
+      //     });
 
+      //   if (emailError) throw emailError;
+
+      //   console.log("Email sent successfully:", emailData);
+      // } catch (emailError) {
+      //   console.error("Error sending email:", emailError);
+      //   // Don't fail the whole operation if email fails
+      //   toast({
+      //     title: "Warning",
+      //     description: "Seminar created but email notification failed to send.",
+      //     variant: "default",
+      //   });
+      // }
+
+      //       try {
+      //   const { data: emailData, error: emailError } = await supabase.functions.invoke("send-email", {
+      //     body: {
+      //       email: session.user.email, // or your fixed email address
+      //       subject: `Seminar Invitation: ${topic}`,
+      //       message: `
+      //         You're invited to attend the following seminar:
+
+      //         Topic: ${topic}
+      //         Date: ${formattedDate}
+      //         Time: ${time}
+      //         Host: ${hostName}
+      //         Speakers: ${validSpeakers.join(', ')}
+
+      //         Description:
+      //         ${description}
+      //       `
+      //     }
+      //   });
+
+      //   if (emailError) throw emailError;
+
+      //   console.log("Email sent successfully:", emailData);
+      // } catch (emailError) {
+      //   console.error("Error sending email:", emailError);
+      //   // Don't fail the whole operation if email fails
+      //   toast({
+      //     title: "Warning",
+      //     description: "Seminar created but email notification failed to send.",
+      //     variant: "default",
+      //   });
+      // }
+      // try {
+      //   console.log("Sending Email Notification...");
+      //   const response = await fetch(
+      //     "https://rxyfrjfgydldjdqelixe.supabase.co/functions/v1/send-email",
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         Authorization: `Bearer ${supabaseAnonKey}`, // Replace with your actual anon key
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({
+      //         email: session.user.email,
+      //         subject: `Seminar Invitation: ${topic}`,
+      //         message: `You're invited to attend: ${topic} on ${formattedDate} at ${time}`,
+      //       }),
+      //     }
+      //   );
+
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   }
+
+      //   // const data = await response.json();
+      //   // console.log("Email sent successfully:", data);
+      //   // First try to read as text
+      //   const responseText = await response.text();
+      //   console.log("Email sent successfully:", responseText);
+      // const responseData = await response.json();
+
+      //   // Then optionally try to parse as JSON if needed
+      //   try {
+      //     const data = JSON.parse(responseText);
+      //     console.log("Parsed response:", data);
+      //   } catch (e) {
+      //     console.log("Response was not valid JSON");
+      //   }
+      // } catch (error) {
+      //   console.error("Error sending email:", error);
+      //   toast({
+      //     title: "Warning",
+      //     description: "Seminar created but email notification failed to send.",
+      //     variant: "default",
+      //   });
+      // }
+      try {
+        console.log("Sending Email Notification...");
+        const response = await fetch(
+          "https://rxyfrjfgydldjdqelixe.supabase.co/functions/v1/send-email",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${supabaseAnonKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: "prasanthjg4@gmail.com",
+              // email: session.user.email,
+              subject: `Seminar Invitation: ${topic}`,
+              message: `Dear Host,<br><br>
+You are scheduled to host the following seminar:<br><br>
+<strong>Topic:</strong> ${topic}<br>
+<strong>Date:</strong> ${formattedDate}<br>
+<strong>Time:</strong> ${time}<br>
+<strong>Speakers:</strong> ${validSpeakers.join(", ")}<br><br>
+
+<strong>Preparation Checklist:</strong><br>
+- Please arrive 15 minutes early to set up<br>
+- Test all audio/video equipment beforehand<br>
+- Review the seminar description:<br>
+${description}<br><br>
+
+<strong>Meeting Agenda:</strong><br>
+1. Introduction (5 mins)<br>
+2. Speaker presentations (${
+                validSpeakers.length > 1
+                  ? `${validSpeakers.length * 20} mins total`
+                  : "20 mins"
+              })<br>
+3. Q&A Session (15 mins)<br>
+4. Closing remarks (5 mins)<br><br>
+
+The attendees list and other details have been saved in host seminar.<br><br>
+
+Looking forward to a successful seminar!
+`,
+
+              // message: `You're invited to attend the following seminar:
+
+              //       Topic: ${topic}
+              //       Date: ${formattedDate}
+              //       Time: ${time}
+              //       Host: ${hostName}
+              //       Speakers: ${validSpeakers.join(', ')}
+
+              //       Description:
+              //       ${description}`,
+              // message: `You're invited to attend: ${topic} on ${formattedDate} at ${time}`,
+            }),
+          }
+        );
+
+        // First try to read as text
+        const responseText = await response.text();
+
+        if (!response.ok) {
+          throw new Error(responseText || "Failed to send email");
+        }
+
+        // Then try to parse as JSON if possible
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = { message: responseText };
+        }
+
+        console.log("Email sent successfully:", responseData);
+        toast({
+          title: "Success",
+          description:
+            responseData.message || "Email notification sent successfully!",
+          variant: "default",
+        });
+      } catch (error) {
+        console.error("Error sending email:", error);
+        toast({
+          title: "Warning",
+          description:
+            error.message ||
+            "Seminar created but email notification failed to send.",
+          variant: "destructive",
+        });
+      }
       toast({
         title: "Success",
         description: "Seminar created successfully!",

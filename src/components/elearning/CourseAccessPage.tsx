@@ -3838,7 +3838,17 @@ export const CourseAccessPage = () => {
             Back
           </Button>
           <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
-          <p className="text-gray-600 mt-2">{course.description}</p>
+          {/* <p className="text-gray-600 mt-2">{course.description}</p> */}
+          {course.description ? (
+            <div
+              className="prose max-w-none text-gray-800"
+              dangerouslySetInnerHTML={{ __html: course.description }}
+            />
+          ) : (
+            <p className="text-gray-700">
+              No description available for this course.
+            </p>
+          )}
         </div>
       </header>
 

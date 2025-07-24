@@ -52,6 +52,7 @@
     "@types/react-color": "^3.0.13",
     "@types/stripe": "^8.0.416",
     "@types/uuid": "^10.0.0",
+    "@vercel/speed-insights": "^1.2.0",
     "@videosdk.live/js-sdk": "^0.2.8",
     "@videosdk.live/react-sdk": "^0.3.11",
     "@videosdk.live/rtc-js-prebuilt": "^0.3.43",

@@ -39,6 +39,8 @@ interface Course {
   created_at: string;
   creator_id: string;
   status: string;
+  is_paid: boolean;
+  price?: number;
 }
 
 interface Profile {
@@ -218,10 +220,8 @@ export const CoursesListing = () => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
 
-
               <Link to="/e-learning" className="flex items-center space-x-2">
-
-              {/* <Link to="/e-learning" className="flex items-center space-x-2">
+                {/* <Link to="/e-learning" className="flex items-center space-x-2">
 
                 <BookOpen className="h-8 w-8 text-blue-600" />
                 <h1 className="text-2xl font-bold text-gray-900">
@@ -230,7 +230,7 @@ export const CoursesListing = () => {
 
                 
                 </Link> */}
-                </Link>
+              </Link>
               <div className="flex items-center space-x-2">
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -380,9 +380,21 @@ export const CoursesListing = () => {
                           <Badge variant="outline">Project</Badge>
                         )}
                       </div>
+                    
                       <div className="text-lg font-bold text-blue-600">
-                        ₹49.99
+                        {course.is_paid ? (
+                          course.price ? (
+                            `₹${course.price.toFixed(2)}`
+                          ) : (
+                            "₹49.99"
+                          )
+                        ) : (
+                          <span className="text-green-600">Free</span>
+                        )}
                       </div>
+                      {/* <div className="text-lg font-bold text-blue-600">
+                        ₹49.99
+                      </div> */}
                     </div>
 
                     <Button
@@ -401,7 +413,7 @@ export const CoursesListing = () => {
           )}
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -2843,8 +2843,8 @@
 //               status: "succeeded",
 //               payment_method: "razorpay",
 //               razorpay_payment_id: response.razorpay_payment_id,
-              // razorpay_order_id: response.razorpay_order_id,
-              // razorpay_signature: response.razorpay_signature,
+// razorpay_order_id: response.razorpay_order_id,
+// razorpay_signature: response.razorpay_signature,
 //             });
 
 //             await supabase
@@ -3043,14 +3043,14 @@
 //         .order('price', { ascending: true });
 
 //       if (error) throw error;
-      
+
 //       // Parse features as string array
 //       const parsedPlans = (data || []).map(plan => ({
 //         ...plan,
-//         features: Array.isArray(plan.features) ? plan.features : 
+//         features: Array.isArray(plan.features) ? plan.features :
 //                   typeof plan.features === 'string' ? JSON.parse(plan.features) : []
 //       })) as SubscriptionPlan[];
-      
+
 //       setPlans(parsedPlans);
 //     } catch (error) {
 //       console.error('Error fetching plans:', error);
@@ -3067,7 +3067,7 @@
 //   const handleSubscribe = async (planId: string) => {
 //     try {
 //       setSubscribing(planId);
-      
+
 //       const { data: { user } } = await supabase.auth.getUser();
 //       if (!user) {
 //         toast({
@@ -3092,7 +3092,7 @@
 //           title: "Subscription Created",
 //           description: "Your subscription has been activated successfully!",
 //         });
-        
+
 //         // Simulate redirect to payment
 //         window.location.href = data.url;
 //       }
@@ -3147,7 +3147,7 @@
 //                 Most Popular
 //               </Badge>
 //             )}
-            
+
 //             <CardHeader className="text-center">
 //               <div className="flex justify-center mb-2">
 //                 {getPlanIcon(plan.name)}
@@ -3159,7 +3159,7 @@
 //                 <span className="text-gray-500">{getBillingCycleDisplay(plan.billing_cycle)}</span>
 //               </div>
 //             </CardHeader>
-            
+
 //             <CardContent>
 //               <ul className="space-y-2">
 //                 {plan.features.map((feature, index) => (
@@ -3170,10 +3170,10 @@
 //                 ))}
 //               </ul>
 //             </CardContent>
-            
+
 //             <CardFooter>
-//               <Button 
-//                 className="w-full" 
+//               <Button
+//                 className="w-full"
 //                 onClick={() => handleSubscribe(plan.id)}
 //                 disabled={subscribing === plan.id}
 //                 variant={plan.name.toLowerCase().includes('premium') ? 'default' : 'outline'}
@@ -3192,10 +3192,6 @@
 //     </div>
 //   );
 // };
-
-
-
-
 
 // import { useState, useEffect } from "react";
 // import {
@@ -3250,10 +3246,8 @@
 
 //       if (error) throw error;
 
-
 //       // const parsedPlans = (data || []).map((plan) => ({
 
-      
 //       // Parse features as string array
 
 //       // console.log("Raw subscription plans dataaaaaaaaaaaa:", data);
@@ -3449,23 +3443,22 @@
 //               status: "succeeded",
 //               payment_method: "razorpay",
 //               razorpay_payment_id: response.razorpay_payment_id,
-              // razorpay_order_id: response.razorpay_order_id,
-              // razorpay_signature: response.razorpay_signature,
+// razorpay_order_id: response.razorpay_order_id,
+// razorpay_signature: response.razorpay_signature,
 //             });
 
 //             await supabase
 //               .from("orders")
 //               .update({ status: "paid" ,
 //                razorpay_payment_id: response.razorpay_payment_id ,
-              //  razorpay_signature: response.razorpay_signature})
+//  razorpay_signature: response.razorpay_signature})
 //               .eq("id", order.id);
-
 
 //             toast({
 //               title: "Payment Successful!",
 //               description: `Your ${plan.name} subscription is now active!`,
 //             });
-            
+
 //           } catch (error: any) {
 //             console.error("Payment processing error:", error);
 //             toast({
@@ -3652,6 +3645,7 @@ export const SubscriptionPlans = () => {
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState<string | null>(null);
   const { toast } = useToast();
+  const Key_payment = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
   useEffect(() => {
     fetchPlans();
@@ -3667,9 +3661,7 @@ export const SubscriptionPlans = () => {
 
       if (error) throw error;
 
-
       const parsedPlans = (data || []).map((plan) => ({
-
         ...plan,
         features: Array.isArray(plan.features)
           ? plan.features
@@ -3853,7 +3845,7 @@ export const SubscriptionPlans = () => {
       }
 
       const options = {
-        key: "rzp_test_eK57VjQhXHjIGR", // Use from environment variables
+        key: Key_payment, // Use from environment variables
         amount: (plan.price * 100).toString(), // Amount in paise
         currency: "INR", // Explicitly set to INR
         name: "Job Portal Subscription",

@@ -55,6 +55,9 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           privacy_policy_accepted: courseData.privacy_policy_accepted,
           copyright_agreement_accepted: courseData.copyright_agreement_accepted,
           resources_summary: courseData.resources_summary,
+          is_paid: courseData.is_paid,
+          price: courseData.is_paid ? courseData.price : 0,
+          // payment_method: courseData.is_paid ? courseData.payment_method : "free",
           status: 'draft'
         })
         .select()

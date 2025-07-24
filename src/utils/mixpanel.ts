@@ -143,14 +143,15 @@
 import mixpanel from 'mixpanel-browser';
 
 const isProd = process.env.NODE_ENV === 'production';
-
+const mixpanel_token = import.meta.env.VITE_MIXPANEL_ID;
+const mixpanel_api = import.meta.env.VITE_MIXPANEL_API_ID;
 // Initialize Mixpanel
-mixpanel.init('3f6a035015c6ab2d765e5bff2efe39df', {
+mixpanel.init(mixpanel_token, {
   debug: !isProd,
   track_pageview: true,
   persistence: 'localStorage',
   ignore_dnt: true,
-  api_host: 'https://api.mixpanel.com',
+  api_host: mixpanel_api,
 });
 export const setMixpanelSessionId = (sessionId: string) => {
   mixpanel.register({
