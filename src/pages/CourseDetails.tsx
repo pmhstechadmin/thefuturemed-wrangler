@@ -823,7 +823,11 @@ const checkEnrollmentStatus = async () => {
                 ) : (
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-blue-600 mb-2">
-                      {course?.is_paid ? "₹49.99" : "Free"}
+                      {course?.is_paid && course.price > 0
+                        ? `₹${(course.price || 0).toFixed(2)}`
+                        : "Free"}
+                      {/* {course?.is_paid ? `${course.price}` : "Free"} */}
+                      {/* {course?.is_paid ? "₹49.99" : "Free"} */}
                     </div>
                     <p className="text-sm text-gray-600">
                       {course?.is_paid
@@ -871,6 +875,7 @@ const checkEnrollmentStatus = async () => {
                     courseId={courseId!}
                     isEnrolled={isEnrolled}
                     isPaid={course.is_paid}
+                    price={course.price}
                     onEnrollmentChange={checkEnrollmentStatus}
                   />
                 ) : (

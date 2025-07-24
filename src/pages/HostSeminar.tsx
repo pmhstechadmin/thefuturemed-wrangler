@@ -1894,7 +1894,7 @@ export default HostSeminar;
 //                           id="price"
 //                           type="number"
 //                           value={price}
-//                           onChange={(e) => setPrice(e.target.value)}
+//                           onChange={(e) => set(e.target.value)}
 //                           placeholder="Enter price"
 //                           className="pl-8"
 //                           min="0"

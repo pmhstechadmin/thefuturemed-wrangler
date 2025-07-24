@@ -213,6 +213,14 @@ useEffect(() => {
     console.log("Starting registration process...");
 
     try {
+      if (!validateStep1() || !validateStep2() || !validateStep3()) {
+        toast({
+          title: "Validation Error",
+          description: "Please complete all required fields correctly",
+          variant: "destructive",
+        });
+        return;
+      }
       // Create the user account in Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -287,7 +295,8 @@ useEffect(() => {
 
       // Redirect to login or products page
       setTimeout(() => {
-        navigate("/products");
+        navigate("/");
+        // navigate("/products");
       }, 2000);
     } catch (error) {
       console.error("Registration error:", error);
@@ -295,7 +304,7 @@ useEffect(() => {
         title: "Registration Failed",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
-      });
+      }); 
     } finally {
       setLoading(false);
     }

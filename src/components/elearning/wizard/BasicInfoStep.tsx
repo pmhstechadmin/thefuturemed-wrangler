@@ -544,7 +544,7 @@ export const BasicInfoStep = ({
                 placeholder="Enter course price"
                 required={courseData.is_paid}
               />
-            {/* <Input id="price" type="number" value={250} readOnly /> */}
+            
              (Inclusive of GST)
           </div>
         )}

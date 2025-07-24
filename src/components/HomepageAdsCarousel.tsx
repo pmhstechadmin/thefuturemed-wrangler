@@ -57,7 +57,8 @@ const HomepageAdsCarousel = () => {
         "Discover cutting-edge medical equipment and pharmaceutical products.",
       image: "/placeholder.svg",
       buttonText: "Browse Products",
-      buttonLink: "/products",
+      buttonLink: "/dashboard",
+      // buttonLink: "/products",
       backgroundColor: "bg-gradient-to-r from-orange-600 to-orange-700",
     },
     {

@@ -380,14 +380,16 @@ export const CoursesListing = () => {
                           <Badge variant="outline">Project</Badge>
                         )}
                       </div>
-                    
+
                       <div className="text-lg font-bold text-blue-600">
-                        {course.is_paid ? (
-                          course.price ? (
-                            `₹${course.price.toFixed(2)}`
-                          ) : (
-                            "₹49.99"
-                          )
+                        {/* course.price ? ( `₹${course.price}` ) : ( "₹49.99" ) ) */}
+                        {/* {course.is_paid ? (
+                          `₹ ${course.price}`
+                        ) : (
+                          <span className="text-green-600">Free</span>
+                        )} */}
+                        {course.is_paid && course.price > 0 ? (
+                          `₹ ${(course.price).toFixed(2)}`
                         ) : (
                           <span className="text-green-600">Free</span>
                         )}

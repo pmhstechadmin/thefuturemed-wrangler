@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +17,7 @@ interface Props {
   courseId: string;
   isEnrolled: boolean;
   isPaid: boolean;
-  price?: number; // Add price prop
+  price: number;
   onEnrollmentChange: () => void;
 }
 
@@ -34,7 +33,7 @@ export const EnrollmentButton = ({
   courseId,
   isEnrolled,
   isPaid,
-  price = 4999, // Default price in paise (₹49.99)
+  price,
   onEnrollmentChange,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -101,11 +100,14 @@ export const EnrollmentButton = ({
     setIsLoading(true);
     try {
       // Check if user is logged in
+      console.log("Starting payment process with method:", method);
+      console.log("Course ID:", courseId);
+      console.log("Price:", price, "paise (₹" + (price / 100).toFixed(2) + ")");
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) throw new Error("Please log in to enroll");
-
+      console.log("User:", session.user.id);
       // Check for existing enrollment
       const { data: existingEnrollment } = await supabase
         .from("course_enrollments")
@@ -121,6 +123,7 @@ export const EnrollmentButton = ({
       }
 
       if (method !== "razorpay") {
+        console.log("Payment method not available:", method);
         toast({
           title: "Coming Soon",
           description: `${method} is not available yet.`,
@@ -132,7 +135,7 @@ export const EnrollmentButton = ({
       // Load Razorpay script
       const loaded = await loadRazorpayScript();
       if (!loaded) throw new Error("Failed to load payment processor");
-
+      console.log("Razorpay script loaded");
       // Create order
       const { data: order, error: orderError } = await supabase
         .from("orders")
@@ -150,11 +153,13 @@ export const EnrollmentButton = ({
       if (orderError || !order) {
         throw new Error(orderError?.message || "Failed to create order");
       }
+      console.log("Order created:", order.id);
 
       const options = {
         key: Key_payment,
         // key: "rzp_test_eK57VjQhXHjIGR",
-        amount: price.toString(),
+        amount: Math.round(price * 100).toString(),
+        // amount: price.toString(),
         currency: "INR",
         name: "TheFutemed",
         description: `Payment for course enrollment`,
@@ -209,6 +214,7 @@ export const EnrollmentButton = ({
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", function (response: any) {
+        console.error("Payment failed:", response.error);
         toast({
           title: "Payment Failed",
           description: response.error.description,
@@ -217,6 +223,7 @@ export const EnrollmentButton = ({
       });
       rzp.open();
     } catch (error: any) {
+      console.error("Payment process error:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -258,7 +265,8 @@ export const EnrollmentButton = ({
           ) : isPaid ? (
             <>
               <CreditCard className="mr-2 h-4 w-4" />
-              {`Enroll for ₹${(price / 100).toFixed(2)}`}
+              {`Enroll for ₹${price.toFixed(2)}`}
+              {/* {`Enroll for ₹${(price / 100).toFixed(2)}`} */}
             </>
           ) : (
             <>
@@ -285,6 +293,7 @@ export const EnrollmentButton = ({
           <PaymentMethodSelector
             onPaymentMethodSelect={handlePaidEnrollment}
             isLoading={isLoading}
+            price={price}
           />
         ) : (
           <div className="flex flex-col gap-4">

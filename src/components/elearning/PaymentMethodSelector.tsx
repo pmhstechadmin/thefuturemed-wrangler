@@ -64,11 +64,13 @@ import { CreditCard, Wallet, Building2 } from "lucide-react";
 interface PaymentMethodSelectorProps {
   onPaymentMethodSelect: (method: string) => void;
   isLoading: boolean;
+   price: number; 
 }
 
 export const PaymentMethodSelector = ({
   onPaymentMethodSelect,
   isLoading,
+  price,
 }: PaymentMethodSelectorProps) => {
   const [selectedMethod, setSelectedMethod] = useState("razorpay");
 

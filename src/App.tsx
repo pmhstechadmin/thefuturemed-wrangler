@@ -50,7 +50,7 @@
 // // const queryClient = new QueryClient();
 
 // // const App = () => {
-// //   const token =
+// //   const  =
 // //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI4YzgxYWE1Ny05ODY4LTQxN2EtOTFjMi04NTAwNjczNWJiNjIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTc1MDgzNDk4NCwiZXhwIjoxNzgyMzcwOTg0fQ.n2Srx_K36pcLwtvDEsCRkqfVDXwlIDoqFWyVpAwe2_0"; // Replace with generated token
 // //   const meetingId = "your-meeting-id";
 // //   return (
@@ -263,7 +263,6 @@
 
 // export default App;
 
-
 // src/App.tsx
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -309,11 +308,11 @@ import TrackPageView from "./Trackpage/TrackPageView";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Contact from "./pages/contact/Contact";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import Confirm from "./pages/Confirm";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -348,6 +347,7 @@ const App = () => {
               element={<CourseAccessPage />}
             />
             <Route path="/jobs" element={<JobPortal />} />
+            <Route path="/confirm-email" element={<Confirm />} />
             <Route path="/job-seekerform" element={<JobSeekerForm />} />
             <Route path="/job-portal" element={<JobPortal />} />
             <Route path="/publication" element={<Publication />} />
