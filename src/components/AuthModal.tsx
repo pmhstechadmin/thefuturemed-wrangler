@@ -880,7 +880,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
               last_name: "",
               // confirmationURL: `${window.location.origin}/confirm-email`, // For email confirmation
             },
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `https://pro-portal-register.vercel.app/`,
             // For email confirmation
           },
         });
@@ -940,7 +940,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/update-password`,
+      redirectTo: `https://pro-portal-register.vercel.app/update-password`,
+      // redirectTo: `${window.location.origin}/update-password`,
     });
 
     if (error) {
