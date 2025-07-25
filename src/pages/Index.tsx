@@ -403,7 +403,8 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
               mixpanelInstance.track("Get Started Button Clicked", {
                 timestamp: new Date().toISOString(),
               });
-              setShowAuthModal(true);
+              navigate("/profile");
+              // setShowAuthModal(true);
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-4 text-lg"
           >
@@ -417,6 +418,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                 timestamp: new Date().toISOString(),
               });
               navigate("/dashboard");
+              
             }}
             // asChild
             className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"

@@ -763,24 +763,14 @@ You are scheduled to host the following seminar:<br><br>
 <strong>Speakers:</strong> ${validSpeakers.join(", ")}<br><br>
 
 <strong>Preparation Checklist:</strong><br>
-- Please arrive 15 minutes early to set up<br>
+- Please Login 15 minutes early to set up<br>
 - Test all audio/video equipment beforehand<br>
 - Review the seminar description:<br>
 ${description}<br><br>
 
-<strong>Meeting Agenda:</strong><br>
-1. Introduction (5 mins)<br>
-2. Speaker presentations (${
-                validSpeakers.length > 1
-                  ? `${validSpeakers.length * 20} mins total`
-                  : "20 mins"
-              })<br>
-3. Q&A Session (15 mins)<br>
-4. Closing remarks (5 mins)<br><br>
-
 The attendees list and other details have been saved in host seminar.<br><br>
 
-Looking forward to a successful seminar!
+Looking forward to meet you at the seminar!
 `,
 
               // message: `You're invited to attend the following seminar:

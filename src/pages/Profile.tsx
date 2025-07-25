@@ -1478,7 +1478,6 @@ const Profile = () => {
             setProfile(updatedProfile);
           }
         } else {
-          
           setProfile(profileData);
         }
       }
@@ -1832,12 +1831,28 @@ const Profile = () => {
                       {profile?.email || "Not provided"}
                     </p>
                   </div>
-                  <div>
+                  {/* <div>
                     <label className="text-xs sm:text-sm font-medium text-gray-600">
                       Phone
                     </label>
                     <p className="text-gray-900 text-sm sm:text-base">
                       {profile?.phone || "Not provided"}
+                    </p>
+                  </div> */}
+                  <div>
+                    <label className="text-xs sm:text-sm font-medium text-gray-600">
+                      Phone
+                    </label>
+                    <p className="text-gray-900 text-sm sm:text-base">
+                      {profile?.phone ? (
+                        <div>
+                          {profile.phone.startsWith("+")
+                            ? profile.phone
+                            : `+${profile.phone}`}
+                        </div>
+                      ) : (
+                        "Not provided"
+                      )}
                     </p>
                   </div>
                   <div>

@@ -1282,7 +1282,7 @@ const ESeminar = () => {
                           >
                             {seminar.topic}
                           </h3>
-                          <Badge variant="secondary">
+                          <Badge variant="secondary" className="text-sm bg-blue-100 text-800">
                             {formatTime(seminar.time)}
                           </Badge>
                         </div>

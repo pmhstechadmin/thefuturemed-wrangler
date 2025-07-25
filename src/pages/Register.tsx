@@ -1,21 +1,48 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, ArrowLeft, CheckCircle, ExternalLink } from "lucide-react";
+import {
+  Shield,
+  ArrowLeft,
+  CheckCircle,
+  ExternalLink,
+  Phone,
+  Lock,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import { v4 as uuidv4 } from "uuid";
 import Footer from "@/footer/Footer";
 import mixpanel, { setMixpanelSessionId, trackSignup } from "@/utils/mixpanel";
-
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import PhoneInput from "react-phone-input-2";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface FormData {
   firstName: string;
@@ -57,14 +84,22 @@ const Register = () => {
     agreedToPrivacy: false,
     agreedToDataUsage: false,
   });
+ const phoneForm = useForm({
+   defaultValues: {
+     phone: formData.phone || "", // Initialize with formData.phone if available
+   },
+ });
 
   const updateFormData = (field: keyof FormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+      if (field === "phone") {
+        phoneForm.setValue("phone", value as string);
+      }
   };
-useEffect(() => {
-  const sessionId = `auth_${uuidv4()}`;
-  setMixpanelSessionId(sessionId);
-}, []);
+  useEffect(() => {
+    const sessionId = `auth_${uuidv4()}`;
+    setMixpanelSessionId(sessionId);
+  }, []);
   const validateStep1 = () => {
     if (!formData.firstName.trim()) {
       toast({
@@ -82,6 +117,7 @@ useEffect(() => {
       });
       return false;
     }
+
     if (!formData.email.trim()) {
       toast({
         title: "Missing Information",
@@ -125,6 +161,7 @@ useEffect(() => {
       });
       return false;
     }
+    
     return true;
   };
 
@@ -171,6 +208,7 @@ useEffect(() => {
     }
     return true;
   };
+  
 
   const validateStep3 = () => {
     if (!formData.agreedToTerms) {
@@ -203,7 +241,7 @@ useEffect(() => {
   const handleNext = () => {
     if (step === 1 && !validateStep1()) return;
     if (step === 2 && !validateStep2()) return;
-    setStep(prev => prev + 1);
+    setStep((prev) => prev + 1);
   };
 
   const handleSubmit = async () => {
@@ -265,6 +303,7 @@ useEffect(() => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
+        phone: formData.phone,
         category: formData.category,
         medical_specialty: formData.medicalSpecialty,
         institution: formData.institution,
@@ -304,7 +343,7 @@ useEffect(() => {
         title: "Registration Failed",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
-      }); 
+      });
     } finally {
       setLoading(false);
     }
@@ -387,44 +426,48 @@ useEffect(() => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Step 1: Personal Information */}
-              {step === 1 && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name *</Label>
-                      <Input
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          updateFormData("firstName", e.target.value)
-                        }
-                        placeholder="Enter your first name"
-                      />
+              <FormProvider {...phoneForm}>
+                {" "}
+                {/* Step 1:  */}
+                {step === 1 && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="firstName">First Name *</Label>
+                        <Input
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            updateFormData("firstName", e.target.value)
+                          }
+                          placeholder="Enter your first name"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="lastName">Last Name *</Label>
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) =>
+                            updateFormData("lastName", e.target.value)
+                          }
+                          placeholder="Enter your last name"
+                        />
+                      </div>
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Label htmlFor="email">Email Address *</Label>
                       <Input
-                        id="lastName"
-                        value={formData.lastName}
+                        id="email"
+                        type="email"
+                        value={formData.email}
                         onChange={(e) =>
-                          updateFormData("lastName", e.target.value)
+                          updateFormData("email", e.target.value)
                         }
-                        placeholder="Enter your last name"
+                        placeholder="Enter your email address"
                       />
                     </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email Address *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData("email", e.target.value)}
-                      placeholder="Enter your email address"
-                    />
-                  </div>
-                  <div>
+                    {/* <div>
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
@@ -433,454 +476,528 @@ useEffect(() => {
                       onChange={(e) => updateFormData("phone", e.target.value)}
                       placeholder="Enter your phone number"
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="password">Password *</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) =>
-                          updateFormData("password", e.target.value)
-                        }
-                        placeholder="Create a password (min 6 characters)"
-                      />
+                  </div> */}
+                    {/* <FormField
+                      control={form.control}
+                      name="phone"
+                      rules={{ required: "Phone number is required" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Phone className="h-4 w-4" />
+                            Phone Number
+                          </FormLabel>
+                          <FormControl>
+                            <div className="w-full">
+                              <PhoneInput
+                                country={"in"}
+                                containerClass="!w-full !max-w-full"
+                                inputClass="!w-full !pl-12 !pr-3 !py-2 !border !rounded-md !text-sm"
+                                buttonClass="!left-2"
+                                specialLabel=" "
+                                value={formData.phone}
+                                onChange={(phone) => field.onChange(phone)}
+                                inputProps={{
+                                  name: field.name,
+                                  required: true,
+                                }}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                    <FormField
+                      control={phoneForm.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Phone className="h-4 w-4" />
+                            Phone Number
+                            
+                          </FormLabel>
+                          <FormControl>
+                            <div className="w-full">
+                              <PhoneInput
+                                country={"in"}
+                                containerClass="!w-full !max-w-full"
+                                inputClass="!w-full !pl-12 !pr-3 !py-2 !border !rounded-md !text-sm"
+                                buttonClass="!left-1"
+                                specialLabel=""
+                                value={formData.phone}
+                                onChange={(phone) =>{
+                                  updateFormData("phone", phone);
+                                  field.onChange(phone);
+                                }}
+                                inputProps={{
+                                  name: "phone",
+                                  required: true,
+                                }}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="password">Password *</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={formData.password}
+                          onChange={(e) =>
+                            updateFormData("password", e.target.value)
+                          }
+                          placeholder="Create a password (min 6 characters)"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="confirmPassword">
+                          Confirm Password *
+                        </Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={formData.confirmPassword}
+                          onChange={(e) =>
+                            updateFormData("confirmPassword", e.target.value)
+                          }
+                          placeholder="Confirm your password"
+                        />
+                      </div>
                     </div>
+                  </div>
+                )}
+                {/* Step 2: Category Selection */}
+                {step === 2 && (
+                  <div className="space-y-6">
                     <div>
-                      <Label htmlFor="confirmPassword">
-                        Confirm Password *
+                      <Label className="text-base font-semibold mb-4 block">
+                        Professional Category *
+                      </Label>
+                      <RadioGroup
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          updateFormData("category", value)
+                        }
+                        className="space-y-4"
+                      >
+                        <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
+                          <RadioGroupItem value="student" id="student" />
+                          <Label
+                            htmlFor="student"
+                            className="cursor-pointer flex-1"
+                          >
+                            <div>
+                              <div className="font-semibold">Student</div>
+                              <div className="text-sm text-gray-600">
+                                Currently enrolled in medical school
+                              </div>
+                            </div>
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
+                          <RadioGroupItem
+                            value="professional"
+                            id="professional"
+                          />
+                          <Label
+                            htmlFor="professional"
+                            className="cursor-pointer flex-1"
+                          >
+                            <div>
+                              <div className="font-semibold">
+                                Medical Professional
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                Licensed healthcare practitioner
+                              </div>
+                            </div>
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="medicalSpecialty">
+                        Medical Specialty *
+                      </Label>
+                      <Select
+                        value={formData.medicalSpecialty}
+                        onValueChange={(value) =>
+                          updateFormData("medicalSpecialty", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your medical specialty" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="doctor">Doctor</SelectItem>
+                          <SelectItem value="dentist">Dentist</SelectItem>
+                          <SelectItem value="superspecialist">
+                            specialist
+                          </SelectItem>
+                          <SelectItem value="superspecialist">
+                            Superspecialist
+                          </SelectItem>
+                          <SelectItem value="nursing">Nursing</SelectItem>
+                          <SelectItem value="allied-health">
+                            Allied Health
+                          </SelectItem>
+                          <SelectItem value="dietician">Dietician</SelectItem>
+                          <SelectItem value="yoga">Yoga</SelectItem>
+                          <SelectItem value="ayurveda">Ayurveda</SelectItem>
+                          <SelectItem value="homeopathy">Homeopathy</SelectItem>
+                          <SelectItem value="naturopathy">
+                            Naturopathy
+                          </SelectItem>
+                          <SelectItem value="unani">Unani</SelectItem>
+                          <SelectItem value="fitness-coach">
+                            Fitness Coach
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="institution">
+                        Institution/Hospital *
                       </Label>
                       <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
+                        id="institution"
+                        value={formData.institution}
                         onChange={(e) =>
-                          updateFormData("confirmPassword", e.target.value)
+                          updateFormData("institution", e.target.value)
                         }
-                        placeholder="Confirm your password"
+                        placeholder="Enter your institution or hospital name"
                       />
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {/* Step 2: Category Selection */}
-              {step === 2 && (
-                <div className="space-y-6">
-                  <div>
-                    <Label className="text-base font-semibold mb-4 block">
-                      Professional Category *
-                    </Label>
-                    <RadioGroup
-                      value={formData.category}
-                      onValueChange={(value) =>
-                        updateFormData("category", value)
-                      }
-                      className="space-y-4"
-                    >
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
-                        <RadioGroupItem value="student" id="student" />
-                        <Label
-                          htmlFor="student"
-                          className="cursor-pointer flex-1"
+                    {/* Conditional Fields */}
+                    {formData.category === "student" && (
+                      <div>
+                        <Label htmlFor="yearOfStudy">Year of Study *</Label>
+                        <Select
+                          value={formData.yearOfStudy}
+                          onValueChange={(value) =>
+                            updateFormData("yearOfStudy", value)
+                          }
                         >
-                          <div>
-                            <div className="font-semibold">Student</div>
-                            <div className="text-sm text-gray-600">
-                              Currently enrolled in medical school
-                            </div>
-                          </div>
-                        </Label>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your current year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1st-year">1st Year</SelectItem>
+                            <SelectItem value="2nd-year">2nd Year</SelectItem>
+                            <SelectItem value="3rd-year">3rd Year</SelectItem>
+                            <SelectItem value="4th-year">4th Year</SelectItem>
+                            <SelectItem value="5th-year">5th Year</SelectItem>
+                            <SelectItem value="6th-year">6th Year</SelectItem>
+                            <SelectItem value="internship">
+                              Internship
+                            </SelectItem>
+                            <SelectItem value="residency">Residency</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50">
-                        <RadioGroupItem
-                          value="professional"
-                          id="professional"
-                        />
-                        <Label
-                          htmlFor="professional"
-                          className="cursor-pointer flex-1"
+                    )}
+
+                    {formData.category === "professional" && (
+                      <div>
+                        <Label htmlFor="degreeLevel">Degree Level *</Label>
+                        <Select
+                          value={formData.degreeLevel}
+                          onValueChange={(value) =>
+                            updateFormData("degreeLevel", value)
+                          }
                         >
-                          <div>
-                            <div className="font-semibold">
-                              Medical Professional
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              Licensed healthcare practitioner
-                            </div>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your highest degree" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="bachelors">
+                              Bachelor's Degree
+                            </SelectItem>
+                            <SelectItem value="masters">
+                              Master's Degree
+                            </SelectItem>
+                            <SelectItem value="doctorate">
+                              Doctorate (PhD/MD)
+                            </SelectItem>
+                            <SelectItem value="specialist">
+                              Specialist Certification
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {/* Step 3: Legal Agreements */}
+                {step === 3 && (
+                  <div className="space-y-6">
+                    <div>
+                      <Label htmlFor="additionalQualifications">
+                        Additional Qualifications
+                      </Label>
+                      <Textarea
+                        id="additionalQualifications"
+                        value={formData.additionalQualifications}
+                        onChange={(e) =>
+                          updateFormData(
+                            "additionalQualifications",
+                            e.target.value
+                          )
+                        }
+                        placeholder="List any additional certifications, specializations, or qualifications..."
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-blue-900 mb-2">
+                        Registration Summary
+                      </h4>
+                      <div className="text-sm text-blue-800 space-y-1">
+                        <p>
+                          <strong>Name:</strong> {formData.firstName}{" "}
+                          {formData.lastName}
+                        </p>
+                        <p>
+                          <strong>Email:</strong> {formData.email}
+                        </p>
+                        <p>
+                          <strong>Category:</strong> {formData.category}
+                        </p>
+                        <p>
+                          <strong>Medical Specialty:</strong>{" "}
+                          {formData.medicalSpecialty}
+                        </p>
+                        <p>
+                          <strong>Institution:</strong> {formData.institution}
+                        </p>
+                        {formData.category === "student" &&
+                          formData.yearOfStudy && (
+                            <p>
+                              <strong>Year of Study:</strong>{" "}
+                              {formData.yearOfStudy}
+                            </p>
+                          )}
+                        {formData.category === "professional" &&
+                          formData.degreeLevel && (
+                            <p>
+                              <strong>Degree Level:</strong>{" "}
+                              {formData.degreeLevel}
+                            </p>
+                          )}
+                      </div>
+                    </div>
+
+                    {/* Legal Agreements */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-semibold text-gray-900 mb-4">
+                        Legal Agreements Required
+                      </h4>
+                      <div className="space-y-4">
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id="terms"
+                            checked={formData.agreedToTerms}
+                            onCheckedChange={(checked) =>
+                              updateFormData("agreedToTerms", !!checked)
+                            }
+                          />
+                          <div className="space-y-1">
+                            <Label
+                              htmlFor="terms"
+                              className="text-sm cursor-pointer"
+                            >
+                              I agree to the Terms of Service *
+                            </Label>
+                            <Link
+                              to="/terms-of-service"
+                              target="_blank"
+                              className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                            >
+                              Read Terms of Service
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
                           </div>
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+                        </div>
 
-                  <div>
-                    <Label htmlFor="medicalSpecialty">
-                      Medical Specialty *
-                    </Label>
-                    <Select
-                      value={formData.medicalSpecialty}
-                      onValueChange={(value) =>
-                        updateFormData("medicalSpecialty", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your medical specialty" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="doctor">Doctor</SelectItem>
-                        <SelectItem value="dentist">Dentist</SelectItem>
-                        <SelectItem value="superspecialist">
-                          Superspecialist
-                        </SelectItem>
-                        <SelectItem value="nursing">Nursing</SelectItem>
-                        <SelectItem value="allied-health">
-                          Allied Health
-                        </SelectItem>
-                        <SelectItem value="dietician">Dietician</SelectItem>
-                        <SelectItem value="yoga">Yoga</SelectItem>
-                        <SelectItem value="ayurveda">Ayurveda</SelectItem>
-                        <SelectItem value="homeopathy">Homeopathy</SelectItem>
-                        <SelectItem value="naturopathy">Naturopathy</SelectItem>
-                        <SelectItem value="unani">Unani</SelectItem>
-                        <SelectItem value="fitness-coach">
-                          Fitness Coach
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id="privacy"
+                            checked={formData.agreedToPrivacy}
+                            onCheckedChange={(checked) =>
+                              updateFormData("agreedToPrivacy", !!checked)
+                            }
+                          />
+                          <div className="space-y-1">
+                            <Label
+                              htmlFor="privacy"
+                              className="text-sm cursor-pointer"
+                            >
+                              I agree to the Privacy Policy *
+                            </Label>
+                            <Link
+                              to="/privacy-policy"
+                              target="_blank"
+                              className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                            >
+                              Read Privacy Policy
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          </div>
+                        </div>
 
-                  <div>
-                    <Label htmlFor="institution">Institution/Hospital *</Label>
-                    <Input
-                      id="institution"
-                      value={formData.institution}
-                      onChange={(e) =>
-                        updateFormData("institution", e.target.value)
-                      }
-                      placeholder="Enter your institution or hospital name"
-                    />
-                  </div>
-
-                  {/* Conditional Fields */}
-                  {formData.category === "student" && (
-                    <div>
-                      <Label htmlFor="yearOfStudy">Year of Study *</Label>
-                      <Select
-                        value={formData.yearOfStudy}
-                        onValueChange={(value) =>
-                          updateFormData("yearOfStudy", value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your current year" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1st-year">1st Year</SelectItem>
-                          <SelectItem value="2nd-year">2nd Year</SelectItem>
-                          <SelectItem value="3rd-year">3rd Year</SelectItem>
-                          <SelectItem value="4th-year">4th Year</SelectItem>
-                          <SelectItem value="5th-year">5th Year</SelectItem>
-                          <SelectItem value="6th-year">6th Year</SelectItem>
-                          <SelectItem value="internship">Internship</SelectItem>
-                          <SelectItem value="residency">Residency</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {formData.category === "professional" && (
-                    <div>
-                      <Label htmlFor="degreeLevel">Degree Level *</Label>
-                      <Select
-                        value={formData.degreeLevel}
-                        onValueChange={(value) =>
-                          updateFormData("degreeLevel", value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your highest degree" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="bachelors">
-                            Bachelor's Degree
-                          </SelectItem>
-                          <SelectItem value="masters">
-                            Master's Degree
-                          </SelectItem>
-                          <SelectItem value="doctorate">
-                            Doctorate (PhD/MD)
-                          </SelectItem>
-                          <SelectItem value="specialist">
-                            Specialist Certification
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Step 3: Legal Agreements */}
-              {step === 3 && (
-                <div className="space-y-6">
-                  <div>
-                    <Label htmlFor="additionalQualifications">
-                      Additional Qualifications
-                    </Label>
-                    <Textarea
-                      id="additionalQualifications"
-                      value={formData.additionalQualifications}
-                      onChange={(e) =>
-                        updateFormData(
-                          "additionalQualifications",
-                          e.target.value
-                        )
-                      }
-                      placeholder="List any additional certifications, specializations, or qualifications..."
-                      rows={4}
-                    />
-                  </div>
-
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 mb-2">
-                      Registration Summary
-                    </h4>
-                    <div className="text-sm text-blue-800 space-y-1">
-                      <p>
-                        <strong>Name:</strong> {formData.firstName}{" "}
-                        {formData.lastName}
-                      </p>
-                      <p>
-                        <strong>Email:</strong> {formData.email}
-                      </p>
-                      <p>
-                        <strong>Category:</strong> {formData.category}
-                      </p>
-                      <p>
-                        <strong>Medical Specialty:</strong>{" "}
-                        {formData.medicalSpecialty}
-                      </p>
-                      <p>
-                        <strong>Institution:</strong> {formData.institution}
-                      </p>
-                      {formData.category === "student" &&
-                        formData.yearOfStudy && (
-                          <p>
-                            <strong>Year of Study:</strong>{" "}
-                            {formData.yearOfStudy}
-                          </p>
-                        )}
-                      {formData.category === "professional" &&
-                        formData.degreeLevel && (
-                          <p>
-                            <strong>Degree Level:</strong>{" "}
-                            {formData.degreeLevel}
-                          </p>
-                        )}
-                    </div>
-                  </div>
-
-                  {/* Legal Agreements */}
-                  <div className="border-t pt-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">
-                      Legal Agreements Required
-                    </h4>
-                    <div className="space-y-4">
-                      <div className="flex items-start space-x-3">
-                        <Checkbox
-                          id="terms"
-                          checked={formData.agreedToTerms}
-                          onCheckedChange={(checked) =>
-                            updateFormData("agreedToTerms", !!checked)
-                          }
-                        />
-                        <div className="space-y-1">
-                          <Label
-                            htmlFor="terms"
-                            className="text-sm cursor-pointer"
-                          >
-                            I agree to the Terms of Service *
-                          </Label>
-                          <Link
-                            to="/terms-of-service"
-                            target="_blank"
-                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
-                          >
-                            Read Terms of Service
-                            <ExternalLink className="h-3 w-3" />
-                          </Link>
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id="dataUsage"
+                            checked={formData.agreedToDataUsage}
+                            onCheckedChange={(checked) =>
+                              updateFormData("agreedToDataUsage", !!checked)
+                            }
+                          />
+                          <div className="space-y-1">
+                            <Label
+                              htmlFor="dataUsage"
+                              className="text-sm cursor-pointer"
+                            >
+                              I agree to the Data Usage Policy *
+                            </Label>
+                            <Link
+                              to="/data-usage-policy"
+                              target="_blank"
+                              className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
+                            >
+                              Read Data Usage Policy
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-start space-x-3">
-                        <Checkbox
-                          id="privacy"
-                          checked={formData.agreedToPrivacy}
-                          onCheckedChange={(checked) =>
-                            updateFormData("agreedToPrivacy", !!checked)
-                          }
-                        />
-                        <div className="space-y-1">
-                          <Label
-                            htmlFor="privacy"
-                            className="text-sm cursor-pointer"
-                          >
-                            I agree to the Privacy Policy *
-                          </Label>
-                          <Link
-                            to="/privacy-policy"
-                            target="_blank"
-                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
-                          >
-                            Read Privacy Policy
-                            <ExternalLink className="h-3 w-3" />
-                          </Link>
-                        </div>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
+                        <p className="text-sm text-yellow-800">
+                          <strong>Important:</strong> By registering, you
+                          acknowledge that you are responsible for maintaining
+                          secure backups of your files. The platform is not
+                          liable for data loss due to technical issues or
+                          unforeseen circumstances.
+                        </p>
                       </div>
-
-                      <div className="flex items-start space-x-3">
-                        <Checkbox
-                          id="dataUsage"
-                          checked={formData.agreedToDataUsage}
-                          onCheckedChange={(checked) =>
-                            updateFormData("agreedToDataUsage", !!checked)
-                          }
-                        />
-                        <div className="space-y-1">
-                          <Label
-                            htmlFor="dataUsage"
-                            className="text-sm cursor-pointer"
-                          >
-                            I agree to the Data Usage Policy *
-                          </Label>
-                          <Link
-                            to="/data-usage-policy"
-                            target="_blank"
-                            className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
-                          >
-                            Read Data Usage Policy
-                            <ExternalLink className="h-3 w-3" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
-                      <p className="text-sm text-yellow-800">
-                        <strong>Important:</strong> By registering, you
-                        acknowledge that you are responsible for maintaining
-                        secure backups of your files. The platform is not liable
-                        for data loss due to technical issues or unforeseen
-                        circumstances.
-                      </p>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    mixpanel.track("Clicked Previous", {
-                      step,
-                      session_id: mixpanel.get_property("session_id"),
-                      timestamp: new Date().toISOString(),
-                    });
-                    setStep((prev) => prev - 1);
-                  }}
-                  // onClick={() => setStep((prev) => prev - 1)}
-                  disabled={step === 1 || loading}
-                >
-                  Previous
-                </Button>
-                {step < 3 ? (
-                  // <Button
-                  //   onClick={() => {
-                  //     const stepName =
-                  //       step === 1
-                  //         ? "Step 1 - Personal Info Completed"
-                  //         : step === 2
-                  //         ? "Step 2 - Category & Specialty Completed"
-                  //         : step === 3
-                  //         ? "Step 3 - Legal Agreements Completed"
-                  //         : "Step Progressing";
-
-                  //     mixpanel.track(stepName, {
-                  //       // mixpanel.track("Clicked Next - Step ",sep, {
-                  //       stepNumber: step,
-                  //       timestamp: new Date().toISOString(),
-                  //     });
-
-                  //     handleNext();
-                  //   }}
-                  //   disabled={loading}
-                  // >
-                  //   Next
-                  // </Button>
+                )}
+                {/* Navigation Buttons */}
+                <div className="flex justify-between pt-6">
                   <Button
+                    variant="outline"
                     onClick={() => {
-                      const stepName =
-                        step === 1
-                          ? "Step 1 - Personal Info Completed"
-                          : step === 2
-                          ? "Step 2 - Category & Specialty Completed"
-                          : step === 3
-                          ? "Step 3 - Legal Agreements Completed"
-                          : "Step Progressing";
-
-                      if (step === 1) {
-                        mixpanel.track("Step 1 - Personal Info Submitted", {
-                          first_name: formData.firstName,
-                          last_name: formData.lastName,
-                          email: formData.email,
-                          session_id: mixpanel.get_property("session_id"),
-                          // password: formData.password, // Avoid sending password in production!
-                          timestamp: new Date().toISOString(),
-                        });
-                      } else {
-                        mixpanel.track(stepName, {
-                          stepNumber: step,
-                          session_id: mixpanel.get_property("session_id"),
-                          timestamp: new Date().toISOString(),
-                        });
-                      }
-
-                      handleNext();
-                    }}
-                    disabled={loading}
-                  >
-                    Next
-                  </Button>
-                ) : (
-                  // <Button onClick={handleNext} disabled={loading}>
-                  //   Next
-                  // </Button>
-                  <Button
-                    // onClick={handleSubmit}
-                    onClick={() => {
-                      mixpanel.track("Step 3 - Legal Agreements Completed", {
-                        email: formData.email,
+                      mixpanel.track("Clicked Previous", {
+                        step,
                         session_id: mixpanel.get_property("session_id"),
                         timestamp: new Date().toISOString(),
                       });
-                      handleSubmit();
+                      setStep((prev) => prev - 1);
                     }}
-                    className="bg-green-600 hover:bg-green-700"
-                    disabled={
-                      loading ||
-                      !formData.agreedToTerms ||
-                      !formData.agreedToPrivacy ||
-                      !formData.agreedToDataUsage
-                    }
+                    // onClick={() => setStep((prev) => prev - 1)}
+                    disabled={step === 1 || loading}
                   >
-                    {loading ? "Creating Account..." : "Complete Registration"}
+                    Previous
                   </Button>
-                )}
-              </div>
+                  {step < 3 ? (
+                    // <Button
+                    //   onClick={() => {
+                    //     const stepName =
+                    //       step === 1
+                    //         ? "Step 1 - Personal Info Completed"
+                    //         : step === 2
+                    //         ? "Step 2 - Category & Specialty Completed"
+                    //         : step === 3
+                    //         ? "Step 3 - Legal Agreements Completed"
+                    //         : "Step Progressing";
+
+                    //     mixpanel.track(stepName, {
+                    //       // mixpanel.track("Clicked Next - Step ",sep, {
+                    //       stepNumber: step,
+                    //       timestamp: new Date().toISOString(),
+                    //     });
+
+                    //     handleNext();
+                    //   }}
+                    //   disabled={loading}
+                    // >
+                    //   Next
+                    // </Button>
+                    <Button
+                      onClick={() => {
+                        const stepName =
+                          step === 1
+                            ? "Step 1 - Personal Info Completed"
+                            : step === 2
+                            ? "Step 2 - Category & Specialty Completed"
+                            : step === 3
+                            ? "Step 3 - Legal Agreements Completed"
+                            : "Step Progressing";
+
+                        if (step === 1) {
+                          mixpanel.track("Step 1 - Personal Info Submitted", {
+                            first_name: formData.firstName,
+                            last_name: formData.lastName,
+                            email: formData.email,
+                            session_id: mixpanel.get_property("session_id"),
+                            // password: formData.password, // Avoid sending password in production!
+                            timestamp: new Date().toISOString(),
+                          });
+                        } else {
+                          mixpanel.track(stepName, {
+                            stepNumber: step,
+                            session_id: mixpanel.get_property("session_id"),
+                            timestamp: new Date().toISOString(),
+                          });
+                        }
+
+                        handleNext();
+                      }}
+                      disabled={loading}
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    // <Button onClick={handleNext} disabled={loading}>
+                    //   Next
+                    // </Button>
+                    <Button
+                      // onClick={handleSubmit}
+                      onClick={() => {
+                        mixpanel.track("Step 3 - Legal Agreements Completed", {
+                          email: formData.email,
+                          session_id: mixpanel.get_property("session_id"),
+                          timestamp: new Date().toISOString(),
+                        });
+                        handleSubmit();
+                      }}
+                      className="bg-green-600 hover:bg-green-700"
+                      disabled={
+                        loading ||
+                        !formData.agreedToTerms ||
+                        !formData.agreedToPrivacy ||
+                        !formData.agreedToDataUsage
+                      }
+                    >
+                      {loading
+                        ? "Creating Account..."
+                        : "Complete Registration"}
+                    </Button>
+                  )}
+                </div>
+              </FormProvider>
             </CardContent>
           </Card>
         </div>

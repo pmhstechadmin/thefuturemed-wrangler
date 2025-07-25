@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,10 @@ import { useToast } from '@/hooks/use-toast';
 import PhoneNumberInput from './PhoneNumberInput';
 import CountrySelect from './CountrySelect';
 import DateOfBirthInput from './DateOfBirthInput';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Phone } from 'lucide-react';
+import PhoneInput from 'react-phone-input-2';
 
 interface Profile {
   id: string;
@@ -42,6 +46,11 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
   const [formData, setFormData] = useState<Profile>(profile);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+   const form = useForm({
+    defaultValues: {
+      phone: profile.phone || "",
+      // other form fields if needed
+    },});
 
   const handleInputChange = (field: keyof Profile, value: string) => {
     setFormData(prev => ({
@@ -49,6 +58,14 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
       [field]: value || null
     }));
   };
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        ...profile,
+        phone: profile.phone || "", // Ensure phone is not null
+      });
+    }
+  }, [profile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,48 +135,75 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
             Update your personal information and professional details.
           </DialogDescription>
         </DialogHeader>
-
+  <FormProvider {...form}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="first_name">First Name</Label>
               <Input
                 id="first_name"
-                value={formData.first_name || ''}
-                onChange={(e) => handleInputChange('first_name', e.target.value)}
+                value={formData.first_name || ""}
+                onChange={(e) =>
+                  handleInputChange("first_name", e.target.value)
+                }
                 placeholder="Enter your first name"
               />
             </div>
-
             <div>
               <Label htmlFor="last_name">Last Name</Label>
               <Input
                 id="last_name"
-                value={formData.last_name || ''}
-                onChange={(e) => handleInputChange('last_name', e.target.value)}
+                value={formData.last_name || ""}
+                onChange={(e) => handleInputChange("last_name", e.target.value)}
                 placeholder="Enter your last name"
               />
             </div>
-
-            <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
               <PhoneNumberInput
                 value={formData.phone || ''}
                 onChange={(value) => handleInputChange('phone', value)}
               />
-            </div>
-
+            </div> */}
+            <FormField
+              control={useForm().control} // Or use your existing form control
+              name="phone"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel className="flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    Phone Number
+                  </FormLabel>
+                  <FormControl>
+                    <div className="w-full">
+                      <PhoneInput
+                        country={"in"}
+                        containerClass="!w-full !max-w-full"
+                        inputClass="!w-full !pl-12 !pr-3 !py-2 !border !rounded-md !text-sm"
+                        buttonClass="!left-1"
+                        specialLabel=""
+                        value={formData.phone || ""}
+                        onChange={(phone) => handleInputChange("phone", phone)}
+                        inputProps={{
+                          name: "phone",
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="md:col-span-2">
               <DateOfBirthInput
-                value={formData.date_of_birth || ''}
-                onChange={(value) => handleInputChange('date_of_birth', value)}
+                value={formData.date_of_birth || ""}
+                onChange={(value) => handleInputChange("date_of_birth", value)}
               />
             </div>
-
             <div>
               <Label htmlFor="gender">Gender</Label>
-              <Select 
-                value={formData.gender || ''} 
-                onValueChange={(value) => handleInputChange('gender', value)}
+              <Select
+                value={formData.gender || ""}
+                onValueChange={(value) => handleInputChange("gender", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select gender" />
@@ -168,33 +212,32 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
-                  <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                  <SelectItem value="prefer_not_to_say">
+                    Prefer not to say
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <Label htmlFor="city">City</Label>
               <Input
                 id="city"
-                value={formData.city || ''}
-                onChange={(e) => handleInputChange('city', e.target.value)}
+                value={formData.city || ""}
+                onChange={(e) => handleInputChange("city", e.target.value)}
                 placeholder="Enter your city"
               />
             </div>
-
             <div className="md:col-span-2">
               <CountrySelect
-                value={formData.country || ''}
-                onChange={(value) => handleInputChange('country', value)}
+                value={formData.country || ""}
+                onChange={(value) => handleInputChange("country", value)}
               />
             </div>
-
             <div>
               <Label htmlFor="category">Category</Label>
-              <Select 
-                value={formData.category || ''} 
-                onValueChange={(value) => handleInputChange('category', value)}
+              <Select
+                value={formData.category || ""}
+                onValueChange={(value) => handleInputChange("category", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
@@ -203,8 +246,12 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                   <SelectItem value="doctor">Doctor</SelectItem>
                   <SelectItem value="dentist">Dentist</SelectItem>
                   <SelectItem value="nursing">Nursing</SelectItem>
-                  <SelectItem value="allied_health_professions">Allied Health Professions</SelectItem>
-                  <SelectItem value="physiotherapist">Physiotherapist</SelectItem>
+                  <SelectItem value="allied_health_professions">
+                    Allied Health Professions
+                  </SelectItem>
+                  <SelectItem value="physiotherapist">
+                    Physiotherapist
+                  </SelectItem>
                   <SelectItem value="ayurveda">Ayurveda</SelectItem>
                   <SelectItem value="unani">Unani</SelectItem>
                   <SelectItem value="homeopathy">Homeopathy</SelectItem>
@@ -216,32 +263,35 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <Label htmlFor="medical_specialty">Medical Specialty</Label>
               <Input
                 id="medical_specialty"
-                value={formData.medical_specialty || ''}
-                onChange={(e) => handleInputChange('medical_specialty', e.target.value)}
+                value={formData.medical_specialty || ""}
+                onChange={(e) =>
+                  handleInputChange("medical_specialty", e.target.value)
+                }
                 placeholder="e.g., Cardiology, Pediatrics"
               />
             </div>
-
             <div>
               <Label htmlFor="institution">Institution</Label>
               <Input
                 id="institution"
-                value={formData.institution || ''}
-                onChange={(e) => handleInputChange('institution', e.target.value)}
+                value={formData.institution || ""}
+                onChange={(e) =>
+                  handleInputChange("institution", e.target.value)
+                }
                 placeholder="Hospital, University, or Organization"
               />
             </div>
-
             <div>
               <Label htmlFor="degree_level">Degree Level</Label>
-              <Select 
-                value={formData.degree_level || ''} 
-                onValueChange={(value) => handleInputChange('degree_level', value)}
+              <Select
+                value={formData.degree_level || ""}
+                onValueChange={(value) =>
+                  handleInputChange("degree_level", value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select degree level" />
@@ -256,13 +306,14 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <Label htmlFor="year_of_study">Year of Study</Label>
               <Input
                 id="year_of_study"
-                value={formData.year_of_study || ''}
-                onChange={(e) => handleInputChange('year_of_study', e.target.value)}
+                value={formData.year_of_study || ""}
+                onChange={(e) =>
+                  handleInputChange("year_of_study", e.target.value)
+                }
                 placeholder="e.g., 1st year, 2nd year"
               />
             </div>
@@ -272,31 +323,32 @@ const EditProfileModal = ({ profile, isOpen, onClose, onUpdate }: EditProfileMod
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
-              value={formData.bio || ''}
-              onChange={(e) => handleInputChange('bio', e.target.value)}
+              value={formData.bio || ""}
+              onChange={(e) => handleInputChange("bio", e.target.value)}
               placeholder="Tell us about yourself, your interests, and your goals"
               rows={4}
             />
           </div>
 
           <div className="flex justify-end space-x-4 pt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={onClose}
               disabled={loading}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

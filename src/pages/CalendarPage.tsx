@@ -667,7 +667,7 @@ const CalendarPage = () => {
                           </h3>
                           <Badge
                             variant="secondary"
-                            className="text-xs sm:text-sm"
+                            className="text-xs sm:text-sm text-sm bg-blue-100 text-800"
                           >
                             {formatTime(seminar.time)}
                           </Badge>

@@ -484,11 +484,33 @@ interface Course {
   price?: number;
 }
 
+// interface Profile {
+//   first_name: string;
+//   last_name: string;
+//   category?: string; // Add this
+//   bro?: string;
+// }
+
 interface Profile {
-  first_name: string;
-  last_name: string;
-  category?: string; // Add this
-  bro?: string;
+  id: string;
+  bio: string | null;
+  category: string | null;
+  city: string | null;
+  country: string | null;
+  created_at: string;
+  date_of_birth: string | null;
+  degree_level: string | null;
+  email: string | null;
+  first_name: string | null;
+  gender: string | null;
+  institution: string | null;
+  last_name: string | null;
+  medical_specialty: string | null;
+  phone: string | null;
+  profile_image_url: string | null;
+  updated_at: string;
+  year_of_study: string | null;
+  bro?: string | null; // Optional field if it exists in your data
 }
 
 const CourseDetails = () => {
@@ -582,7 +604,6 @@ const CourseDetails = () => {
       setCheckingEnrollment(false);
     }
   };
-
   const fetchCourseDetails = async () => {
     try {
       const { data: courseData, error: courseError } = await supabase
@@ -594,10 +615,31 @@ const CourseDetails = () => {
       if (courseError) throw courseError;
       setCourse(courseData);
 
-      // Fetch creator profile
+      // Fetch creator profile with all fields
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("first_name, last_name,category, bro")
+        .select(
+          `
+        id,
+        bio,
+        category,
+        city,
+        country,
+        created_at,
+        date_of_birth,
+        degree_level,
+        email,
+        first_name,
+        gender,
+        institution,
+        last_name,
+        medical_specialty,
+        phone,
+        profile_image_url,
+        updated_at,
+        year_of_study
+      `
+        )
         .eq("id", courseData.creator_id)
         .single();
 
@@ -610,6 +652,34 @@ const CourseDetails = () => {
       setIsLoading(false);
     }
   };
+
+  // const fetchCourseDetails = async () => {
+  //   try {
+  //     const { data: courseData, error: courseError } = await supabase
+  //       .from("courses")
+  //       .select("*")
+  //       .eq("id", courseId)
+  //       .single();
+
+  //     if (courseError) throw courseError;
+  //     setCourse(courseData);
+
+  //     // Fetch creator profile
+  //     const { data: profileData, error: profileError } = await supabase
+  //       .from("profiles")
+  //       .select("first_name, last_name,category, bro")
+  //       .eq("id", courseData.creator_id)
+  //       .single();
+
+  //     if (!profileError) {
+  //       setCreatorProfile(profileData);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching course details:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // const checkEnrollmentStatus = async () => {
   //   try {
@@ -690,7 +760,7 @@ const checkEnrollmentStatus = async () => {
   }
 
   const creatorName = creatorProfile
-    ? `${creatorProfile.first_name} ${creatorProfile.last_name} ${creatorProfile.category} ${creatorProfile.bro}`.trim() ||
+    ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.trim() ||
       "Unknown Creator"
     : "Unknown Creator";
 
@@ -989,7 +1059,7 @@ const checkEnrollmentStatus = async () => {
                 )}
               </CardContent>
             </Card> */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Course Instructor</CardTitle>
               </CardHeader>
@@ -1016,6 +1086,49 @@ const checkEnrollmentStatus = async () => {
                 {creatorProfile?.bro && (
                   <p className="text-sm text-gray-700">{creatorProfile.bro}</p>
                 )}
+              </CardContent>
+            </Card> */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Course Instructor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-start space-x-4">
+                  {creatorProfile?.profile_image_url ? (
+                    <img
+                      src={creatorProfile.profile_image_url}
+                      alt="Instructor"
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Users className="h-6 w-6 text-blue-600" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h4 className="font-semibold">
+                      {creatorProfile?.first_name || creatorProfile?.last_name
+                        ? `${creatorProfile.first_name || ""} ${
+                            creatorProfile.last_name || ""
+                          }`.trim()
+                        : "Unknown Creator"}
+                    </h4>
+
+                    {creatorProfile?.category && (
+                      <p className="text-sm text-gray-600">
+                        {creatorProfile.category}
+                      </p>
+                    )}
+
+ 
+
+                    {creatorProfile?.bio && (
+                      <p className="text-sm text-gray-700 mt-2">
+                        {creatorProfile.bio}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
