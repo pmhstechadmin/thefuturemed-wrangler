@@ -2175,7 +2175,6 @@ export const ModulesStep = ({
                 placeholder="Enter module title"
               />
             </div>
-{/* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */}
             <div>
               <Label htmlFor="module_description">Module Description</Label>
               <Textarea

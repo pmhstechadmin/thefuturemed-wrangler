@@ -198,17 +198,31 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h3 className="font-semibold text-lg">{courseData.title}</h3>
-              <p className="text-gray-600 mt-1">{courseData.description}</p>
+              {/* <p className="text-gray-600 mt-1">{courseData.description}</p> */}
+              {courseData.description ? (
+                <div
+                  className="prose max-w-none text-gray-800"
+                  dangerouslySetInnerHTML={{ __html: courseData.description }}
+                />
+              ) : (
+                <p className="text-gray-700">
+                  No description available for this course.
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <Clock className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                <div className="text-lg font-semibold">{courseData.duration_months}</div>
+                <div className="text-lg font-semibold">
+                  {courseData.duration_months}
+                </div>
                 <div className="text-sm text-gray-600">Months</div>
               </div>
               <div className="text-center p-3 bg-green-50 rounded-lg">
                 <FileText className="h-6 w-6 text-green-600 mx-auto mb-1" />
-                <div className="text-lg font-semibold">{courseData.number_of_modules}</div>
+                <div className="text-lg font-semibold">
+                  {courseData.number_of_modules}
+                </div>
                 <div className="text-sm text-gray-600">Modules</div>
               </div>
             </div>
@@ -227,7 +241,9 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
             </div>
             <div>
               <span className="font-medium">Final Project:</span>
-              <span className="ml-2">{courseData.has_project ? 'Yes' : 'No'}</span>
+              <span className="ml-2">
+                {courseData.has_project ? "Yes" : "No"}
+              </span>
             </div>
             <div>
               <span className="font-medium">Total Content:</span>
@@ -238,7 +254,9 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           {courseData.has_project && courseData.project_description && (
             <div>
               <h4 className="font-medium mb-1">Project Description:</h4>
-              <p className="text-sm text-gray-600">{courseData.project_description}</p>
+              <p className="text-sm text-gray-600">
+                {courseData.project_description}
+              </p>
             </div>
           )}
         </CardContent>
@@ -253,10 +271,16 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
             {courseData.modules.map((module, index) => (
               <div key={index} className="border rounded-lg p-3">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-medium">Module {index + 1}: {module.title}</h4>
+                  <h4 className="font-medium">
+                    Module {index + 1}: {module.title}
+                  </h4>
                   <div className="flex space-x-2">
-                    <Badge variant="secondary">{module.content.length} content</Badge>
-                    <Badge variant="outline">{module.mcq_questions.length} MCQs</Badge>
+                    <Badge variant="secondary">
+                      {module.content.length} content
+                    </Badge>
+                    <Badge variant="outline">
+                      {module.mcq_questions.length} MCQs
+                    </Badge>
                   </div>
                 </div>
                 <p className="text-sm text-gray-600">{module.description}</p>
@@ -284,7 +308,9 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <Award className="h-8 w-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold">{courseData.online_hours + courseData.offline_hours}</div>
+              <div className="text-2xl font-bold">
+                {courseData.online_hours + courseData.offline_hours}
+              </div>
               <div className="text-sm text-gray-600">Total Hours</div>
             </div>
           </div>
@@ -297,7 +323,9 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
             <CardTitle>Resources Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-700">{courseData.resources_summary}</p>
+            <p className="text-sm text-gray-700">
+              {courseData.resources_summary}
+            </p>
           </CardContent>
         </Card>
       )}
@@ -311,17 +339,24 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
           <div className="text-sm text-green-700 space-y-1">
             <p>✓ Privacy & Data Usage Policy accepted</p>
             <p>✓ Copyright & Content Agreement accepted</p>
-            <p className="mt-2 text-xs">You have agreed to all terms and conditions for course creation.</p>
+            <p className="mt-2 text-xs">
+              You have agreed to all terms and conditions for course creation.
+            </p>
           </div>
         </CardContent>
       </Card>
 
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onPrev} disabled={isSubmitting}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onPrev}
+          disabled={isSubmitting}
+        >
           Previous
         </Button>
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           onClick={handleSubmit}
           disabled={isSubmitting}
           className="bg-green-600 hover:bg-green-700"

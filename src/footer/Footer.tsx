@@ -143,7 +143,11 @@ const Footer = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 TheFutureMed. All rights reserved.</p>
+            <p>
+              &copy; 2025 TheFutureMed. All rights reserved. Site Designed and
+              Maintained by
+              <a href="https://pmhstechsolutions.com/" className='blue-500' target='_blank'> PMHS Tech Solutions</a>
+            </p>
             {/* <p>&copy; 2024 MedPortal. All rights reserved.</p> */}
           </div>
         </div>

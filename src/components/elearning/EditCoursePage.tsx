@@ -590,6 +590,9 @@ export const EditCoursePage = () => {
           privacy_policy_accepted: true,
           copyright_agreement_accepted: true,
           resources_summary: course.resources_summary || "",
+        is_paid: course.is_paid ,
+          
+
         };
 
         setCourseData(transformedCourseData);

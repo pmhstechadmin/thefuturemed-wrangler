@@ -488,7 +488,7 @@ interface Profile {
   first_name: string;
   last_name: string;
   category?: string; // Add this
-  additional_qualifications?: string;
+  bro?: string;
 }
 
 const CourseDetails = () => {
@@ -597,7 +597,7 @@ const CourseDetails = () => {
       // Fetch creator profile
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("first_name, last_name,category, additional_qualifications")
+        .select("first_name, last_name,category, bro")
         .eq("id", courseData.creator_id)
         .single();
 
@@ -690,7 +690,7 @@ const checkEnrollmentStatus = async () => {
   }
 
   const creatorName = creatorProfile
-    ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.trim() ||
+    ? `${creatorProfile.first_name} ${creatorProfile.last_name} ${creatorProfile.category} ${creatorProfile.bro}`.trim() ||
       "Unknown Creator"
     : "Unknown Creator";
 
@@ -964,7 +964,7 @@ const checkEnrollmentStatus = async () => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Course Instructor</CardTitle>
               </CardHeader>
@@ -982,10 +982,39 @@ const checkEnrollmentStatus = async () => {
                     )}
                   </div>
                 </div>
-                {creatorProfile?.additional_qualifications && (
+                {creatorProfile?.bro && (
                   <p className="text-sm text-gray-700">
-                    {creatorProfile.additional_qualifications}
+                    {creatorProfile.bro}
                   </p>
+                )}
+              </CardContent>
+            </Card> */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Course Instructor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">
+                      {creatorProfile?.first_name || creatorProfile?.last_name
+                        ? `${creatorProfile.first_name || ""} ${
+                            creatorProfile.last_name || ""
+                          }`.trim()
+                        : "Unknown Creator"}
+                    </h4>
+                    {creatorProfile?.category && (
+                      <p className="text-sm text-gray-600">
+                        {creatorProfile.category}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {creatorProfile?.bro && (
+                  <p className="text-sm text-gray-700">{creatorProfile.bro}</p>
                 )}
               </CardContent>
             </Card>

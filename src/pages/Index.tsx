@@ -380,7 +380,11 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
         </div>
       </nav>
 
+      <div className="container mx-auto px-1 py-2">
+
       <HomepageCarousel />
+      </div>
+
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
