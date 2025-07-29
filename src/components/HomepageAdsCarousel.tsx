@@ -103,13 +103,13 @@ const HomepageAdsCarousel = () => {
                         {ad.buttonText}
                       </Button>
                     </div>
-                    <div className="hidden md:block w-40 h-40 flex-shrink-0 mr-8">
+                    {/* <div className="hidden md:block w-40 h-40 flex-shrink-0 mr-8">
                       <img 
                         src={ad.image} 
                         alt={ad.title}
                         className="w-full h-full object-cover rounded-xl shadow-lg"
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>

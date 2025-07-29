@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Clock, Users, Award, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseSearchBar } from "./CourseSearchBar";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface Course {
   id: string;
@@ -264,10 +265,20 @@ export const PublishedCourses = () => {
 
                 <Button
                   className="w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCourseClick(course.id);
-                  }}
+                   onClick={(e) => {
+                                                  mixpanelInstance.track(
+                                                    " View Course view elarning Button Clicked",
+                                                    {
+                                                      timestamp: new Date().toISOString(),
+                                                    }
+                                                  );
+                                                  e.stopPropagation();
+                                                  handleCourseClick(course.id);
+                                                }}
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   handleCourseClick(course.id);
+                  // }}
                 >
                   View Course
                 </Button>

@@ -60,6 +60,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CreditCard, Wallet, Building2 } from "lucide-react";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface PaymentMethodSelectorProps {
   onPaymentMethodSelect: (method: string) => void;
@@ -125,7 +126,16 @@ export const PaymentMethodSelector = ({
 
         <Button
           className="w-full"
-          onClick={() => onPaymentMethodSelect(selectedMethod)}
+           onClick={() => {
+                                          mixpanelInstance.track(
+                                            " Continue to Payment view elearning Button Clicked",
+                                            {
+                                              timestamp: new Date().toISOString(),
+                                            }
+                                          );
+          onPaymentMethodSelect(selectedMethod);
+                                        }}
+          // onClick={() => onPaymentMethodSelect(selectedMethod)}
           disabled={isLoading}
         >
           {isLoading ? "Processing..." : "Continue to Payment"}

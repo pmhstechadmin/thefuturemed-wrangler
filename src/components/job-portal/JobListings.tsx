@@ -1386,6 +1386,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 export const JobListings = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -1743,9 +1744,19 @@ export const JobListings = () => {
                   <Button
                     className="bg-blue-600 hover:bg-blue-700 flex-1 min-w-[120px]"
                     onClick={() => {
+                      mixpanelInstance.track(
+                        " Apply Now view Job Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
                       setSelectedJobId(job.id);
                       setSelectedSeekerId(null);
                     }}
+                    // onClick={() => {
+                    //   setSelectedJobId(job.id);
+                    //   setSelectedSeekerId(null);
+                    // }}
                   >
                     Apply Now
                   </Button>
@@ -1753,7 +1764,16 @@ export const JobListings = () => {
                   <Button
                     variant="outline"
                     className="flex-1 min-w-[100px]"
-                    onClick={() => handleSaveJob(job)}
+                    onClick={() => {
+                      mixpanelInstance.track(
+                        " Save Job view Job Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
+                      handleSaveJob(job);
+                    }}
+                    // onClick={() => handleSaveJob(job)}
                   >
                     Save Job
                   </Button>
@@ -1762,7 +1782,16 @@ export const JobListings = () => {
                     variant="ghost"
                     size="sm"
                     className="flex-1 min-w-[100px]"
-                    onClick={() => setViewedJob(job)}
+                    onClick={() => {
+                      mixpanelInstance.track(
+                        " view Details view job Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
+                      setViewedJob(job);
+                    }}
+                    // onClick={() => setViewedJob(job)}
                   >
                     View Details
                   </Button>
@@ -1845,7 +1874,16 @@ export const JobListings = () => {
                     ) : (
                       <Button
                         className="mt-3 bg-green-600 hover:bg-green-700 w-full"
-                        onClick={() => handleApplyOnBehalf(seeker.id)}
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            " Apply Here view job Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          handleApplyOnBehalf(seeker.id);
+                        }}
+                        // onClick={() => handleApplyOnBehalf(seeker.id)}
                       >
                         Apply Here
                       </Button>

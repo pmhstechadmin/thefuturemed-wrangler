@@ -393,6 +393,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Header from "@/footer/Header";
 
 interface Speaker {
   name: string;
@@ -752,8 +753,8 @@ const HostSeminar = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: "prasanthjg4@gmail.com",
-              // email: session.user.email,
+              // email: "prasanthjg4@gmail.com",
+              email: session.user.email,
               subject: `Seminar Invitation: ${topic}`,
               message: `Dear Host,<br><br>
 You are scheduled to host the following seminar:<br><br>
@@ -947,10 +948,9 @@ Looking forward to meet you at the seminar!
           </div>
         </div>
       </header> */}
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* Left Section - Logo and Back Button */}
             <div className="flex items-center space-x-2 sm:space-x-4">
               <Button
                 variant="outline"
@@ -961,12 +961,6 @@ Looking forward to meet you at the seminar!
                 <ArrowLeft className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Back</span>
               </Button>
-              {/* <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
-                <h1 className="text-xl sm:text-2xl font-bold text-white">
-                  MedPortal
-                </h1>
-              </Link> */}
               <div className="flex items-center space-x-2">
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -974,11 +968,9 @@ Looking forward to meet you at the seminar!
               </div>
             </div>
 
-            {/* Right Section - Navigation Items */}
             <div className="flex items-center space-x-2 sm:space-x-4">
               {user ? (
                 <>
-                  {/* Desktop View - Full User Info */}
                   <div className="hidden md:flex items-center space-x-4">
                     <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
                       Welcome, {user.email}
@@ -1001,8 +993,6 @@ Looking forward to meet you at the seminar!
                       <span className="hidden sm:inline">Sign Out</span>
                     </Button>
                   </div>
-
-                  {/* Mobile View - User Menu Dropdown */}
                   <div className="md:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -1060,7 +1050,6 @@ Looking forward to meet you at the seminar!
                 </>
               )}
 
-              {/* Home Button - Icon only on mobile */}
               <Button
                 variant="outline"
                 onClick={() => navigate("/")}
@@ -1073,7 +1062,8 @@ Looking forward to meet you at the seminar!
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header/>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">

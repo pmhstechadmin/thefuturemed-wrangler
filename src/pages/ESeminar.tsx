@@ -812,6 +812,8 @@ import {
 import logo from "@/image/thefuturemed_logo (1).jpg";
 
 import Footer from "@/footer/Footer";
+import Header from "@/footer/Header";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface Seminar {
   id: string;
@@ -1064,7 +1066,7 @@ const ESeminar = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -1077,16 +1079,7 @@ const ESeminar = () => {
                 <ArrowLeft className="h-4 w-4 md:mr-2" />
                 <span className="hidden md:inline">Back</span>
               </Button>
-
-              {/* <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
-                <h1 className="text-xl md:text-2xl font-bold text-white">
-                  MedPortal
-                </h1>
-              </Link> */}
               <div className="flex items-center space-x-2">
-                {/* <Shield className="h-8 w-8 text-blue-600" />
-                                                <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
 
               
 
@@ -1191,7 +1184,8 @@ const ESeminar = () => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -1204,7 +1198,16 @@ const ESeminar = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={handleHostSeminar}
+              onClick={() => {
+                mixpanelInstance.track(
+                  " Host a Seminar view E-seminer Button Clicked",
+                  {
+                    timestamp: new Date().toISOString(),
+                  }
+                );
+                handleHostSeminar();
+              }}
+              // onClick={handleHostSeminar}
               className="bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg"
             >
               <Users className="mr-2 h-5 w-5" />
@@ -1213,7 +1216,16 @@ const ESeminar = () => {
             <Button
               variant="outline"
               className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg"
-              onClick={handleTryNow}
+              onClick={() => {
+                mixpanelInstance.track(
+                  " Browse Calendar view E-seminer Button Clicked",
+                  {
+                    timestamp: new Date().toISOString(),
+                  }
+                );
+                handleTryNow();
+              }}
+              // onClick={handleTryNow}
             >
               <CalendarDays className="mr-2 h-5 w-5" />
               Browse Calendar
@@ -1278,11 +1290,23 @@ const ESeminar = () => {
                         <div className="flex justify-between items-start mb-2">
                           <h3
                             className="font-semibold text-lg text-blue-700 hover:text-blue-800"
-                            onClick={() => handleSeminarClick(seminar)}
+                            // onClick={() => handleSeminarClick(seminar)}
+                            onClick={() => {
+                              mixpanelInstance.track(
+                                " Start Meeting page view E-seminer Button Clicked",
+                                {
+                                  timestamp: new Date().toISOString(),
+                                }
+                              );
+                              handleSeminarClick(seminar);
+                            }}
                           >
                             {seminar.topic}
                           </h3>
-                          <Badge variant="secondary" className="text-sm bg-blue-100 text-800">
+                          <Badge
+                            variant="secondary"
+                            className="text-sm bg-blue-100 text-800"
+                          >
                             {formatTime(seminar.time)}
                           </Badge>
                         </div>

@@ -5522,6 +5522,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface JobSeekerProfilesProps {
   setActiveTab?: (tab: string) => void;
@@ -5994,14 +5995,32 @@ const filteredSeekers = jobSeeker.filter((seeker) => {
                     <>
                       <Button
                         className="bg-blue-600 hover:bg-blue-700 flex-1 min-w-[140px]"
-                        onClick={() => setSelectedSeeker(seeker)}
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            " Contact Now view job Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          setSelectedSeeker(seeker);
+                        }}
+                        // onClick={() => setSelectedSeeker(seeker)}
                       >
                         Contact Now
                       </Button>
                       <Button
                         variant="outline"
                         className="flex-1 min-w-[120px]"
-                        onClick={() => handleSaveCandidate(seeker.id)}
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            " Save Candidate view job Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          handleSaveCandidate(seeker.id);
+                        }}
+                        // onClick={() => handleSaveCandidate(seeker.id)}
                       >
                         Save Candidate
                       </Button>
@@ -6009,7 +6028,16 @@ const filteredSeekers = jobSeeker.filter((seeker) => {
                         variant="ghost"
                         size="sm"
                         className="flex-1 min-w-[100px]"
-                        onClick={() => setSelectedSeeker1(seeker)}
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            " View Full job Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          setSelectedSeeker1(seeker);
+                        }}
+                        // onClick={() => setSelectedSeeker1(seeker)}
                       >
                         View Full
                       </Button>
@@ -6017,9 +6045,18 @@ const filteredSeekers = jobSeeker.filter((seeker) => {
                   ) : (
                     <Button
                       className="bg-blue-600 hover:bg-blue-700 w-full"
-                      onClick={() =>
-                        setActiveTab && setActiveTab("subscription")
-                      }
+                      onClick={() => {
+                        mixpanelInstance.track(
+                          " Subscribe view job Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
+                        setActiveTab && setActiveTab("subscription");
+                      }}
+                      // onClick={() =>
+                      //   setActiveTab && setActiveTab("subscription")
+                      // }
                     >
                       Subscribe to Get the Contact Details
                     </Button>
@@ -6096,7 +6133,13 @@ const filteredSeekers = jobSeeker.filter((seeker) => {
               <DialogFooter className="mt-6">
                 <Button
                   variant="outline"
-                  onClick={() => setSelectedSeeker(null)}
+                  onClick={() => {
+                    mixpanelInstance.track(" Close view job Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                    setSelectedSeeker(null);
+                  }}
+                  // onClick={() => setSelectedSeeker(null)}
                 >
                   Close
                 </Button>
@@ -6179,7 +6222,16 @@ const filteredSeekers = jobSeeker.filter((seeker) => {
               <DialogFooter className="mt-6">
                 <Button
                   variant="outline"
-                  onClick={() => setSelectedSeeker1(null)}
+                  onClick={() => {
+                    mixpanelInstance.track(
+                      " Close view job Button Clicked",
+                      {
+                        timestamp: new Date().toISOString(),
+                      }
+                    );
+                    setSelectedSeeker1(null);
+                  }}
+                  // onClick={() => setSelectedSeeker1(null)}
                 >
                   Close
                 </Button>

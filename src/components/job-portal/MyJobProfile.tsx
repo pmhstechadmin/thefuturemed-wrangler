@@ -479,6 +479,7 @@ import { useNavigate, Link } from "react-router-dom";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 
 const MyJobProfile = () => {
@@ -761,11 +762,22 @@ const MyJobProfile = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                      navigate("/job-seekerform", {
-                        state: { seeker }, // Passing seeker object
-                      })
-                    }
+                     onClick={() => {
+                                                    mixpanelInstance.track(
+                                                      " Job seekerform Edit page view seminer Button Clicked",
+                                                      {
+                                                        timestamp: new Date().toISOString(),
+                                                      }
+                                                    );
+                                                    navigate("/job-seekerform", {
+                                                      state: { seeker }, // Passing seeker object 
+                                                      });
+                                                  }}
+                    // onClick={() =>
+                    //   navigate("/job-seekerform", {
+                    //     state: { seeker }, // Passing seeker object
+                    //   })
+                    // }
                   >
                     <FileEdit className="h-4 w-4 mr-1" />
                     Edit
@@ -846,7 +858,16 @@ const MyJobProfile = () => {
               <DialogFooter className="mt-6">
                 <Button
                   variant="outline"
-                  onClick={() => setSelectedSeeker(null)}
+                   onClick={() => {
+                                                  mixpanelInstance.track(
+                                                    "close view job Button Clicked",
+                                                    {
+                                                      timestamp: new Date().toISOString(),
+                                                    }
+                                                  );
+                                                   setSelectedSeeker(null);
+                                                }}
+                  // onClick={() => setSelectedSeeker(null)}
                 >
                   Close
                 </Button>

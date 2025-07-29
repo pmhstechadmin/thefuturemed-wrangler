@@ -586,6 +586,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import logo from "@/image/thefuturemed_logo (1).jpg";
+import Header from "@/footer/Header";
 
 const BlogList: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -715,10 +716,10 @@ const BlogList: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* Left Section - Logo and Back Button */}
+            Left Section - Logo and Back Button
             <div className="flex items-center space-x-2 md:space-x-4">
               <Button
                 variant="outline"
@@ -729,26 +730,26 @@ const BlogList: React.FC = () => {
                 <ArrowLeft className="h-4 w-4 md:mr-2" />
                 <span className="hidden md:inline">Back</span>
               </Button>
-              {/* <Link to="/" className="flex items-center space-x-2">
+              <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                 <h1 className="text-xl md:text-2xl font-bold text-white">
                   MedPortal
                 </h1>
-              </Link> */}
+              </Link>
               <div className="flex items-center space-x-2">
-                {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+                <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>
               </div>
             </div>
 
-            {/* Right Section - Navigation Items */}
+            Right Section - Navigation Items
             <div className="flex items-center space-x-2 md:space-x-4">
               {user ? (
                 <>
-                  {/* Desktop View - Full User Info */}
+                  Desktop View - Full User Info
                   <div className="hidden lg:flex items-center space-x-4">
                     <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full">
                       Welcome, {user.email}
@@ -772,7 +773,7 @@ const BlogList: React.FC = () => {
                     </Button>
                   </div>
 
-                  {/* Mobile/Tablet View - User Menu Dropdown */}
+                  Mobile/Tablet View - User Menu Dropdown
                   <div className="lg:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -830,7 +831,7 @@ const BlogList: React.FC = () => {
                 </>
               )}
 
-              {/* Home Button - Icon only on mobile/tablet */}
+              Home Button - Icon only on mobile/tablet
               <Button
                 variant="outline"
                 onClick={() => navigate("/")}
@@ -843,7 +844,8 @@ const BlogList: React.FC = () => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header/>
 
       {/* Main Content */}
       <div className="w-full px-6 py-8">

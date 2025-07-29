@@ -8,6 +8,7 @@ import { CheckCircle, Clock, FileText, Users, Award, Loader2 } from "lucide-reac
 import { CourseData } from "../CreateCourseWizard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface ReviewSubmitStepProps {
   courseData: CourseData;
@@ -357,7 +358,16 @@ export const ReviewSubmitStep = ({ courseData, updateCourseData, onPrev }: Revie
         </Button>
         <Button
           type="button"
-          onClick={handleSubmit}
+          onClick={() => {
+                                                    mixpanelInstance.track(
+                                                      " Submit & Create Course view Wizard  Button Clicked",
+                                                      {
+                                                        timestamp: new Date().toISOString(),
+                                                      }
+                                                    );
+                    handleSubmit();
+                                                  }}
+          // onClick={handleSubmit}
           disabled={isSubmitting}
           className="bg-green-600 hover:bg-green-700"
         >

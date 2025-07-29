@@ -465,6 +465,8 @@ import { BasicInfoStep } from "./wizard/BasicInfoStep";
 import { LegalAgreementStep } from "./wizard/LegalAgreementStep";
 import { ModulesStep } from "./wizard/ModulesStep";
 import { EditSubmitStep } from "./wizard/EditSubmitStep";
+import Header from "@/footer/Header";
+import Footer from "@/footer/Footer";
 
 export const EditCoursePage = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -739,15 +741,17 @@ export const EditCoursePage = () => {
   }
 
   return (
+    <div>
+    <Header/>
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <Button
+      {/* <Button
         variant="ghost"
         onClick={() => navigate("/e-learning")}
         className="mb-6"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to My Courses
-      </Button>
+      </Button> */}
 
       <h1 className="text-3xl font-bold mb-6">Edit Course</h1>
 
@@ -830,6 +834,8 @@ export const EditCoursePage = () => {
           </CardContent>
         </Card>
       </div>
+    </div>
+    <Footer/>
     </div>
   );
 };

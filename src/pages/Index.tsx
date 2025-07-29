@@ -102,6 +102,30 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
               </Link>
             </div>
 
+            {user && (
+              <div className="dropdown">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Welcome
+                </button>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
+                  <li>
+                    <span className="dropdown-item-text text-muted">
+                      {user?.email}
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            )}
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
@@ -242,6 +266,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded-lg shadow-sm">
+            
               <div className="flex flex-col space-y-3">
                 <Link
                   to="/dashboard"
@@ -381,10 +406,8 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
       </nav>
 
       <div className="container mx-auto px-1 py-2">
-
-      <HomepageCarousel />
+        <HomepageCarousel />
       </div>
-
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
@@ -396,7 +419,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
           Your comprehensive platform for medical education, community
           engagement, and professional development.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             size="lg"
             onClick={() => {
@@ -424,7 +447,50 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
             className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
           >
             Explore Dashboard
-            {/* <Link to="/dashboard">Explore Products</Link> */}
+          </Button>
+        </div> */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            size="lg"
+            onClick={() => {
+              if (!user) {
+                setShowAuthModal(true); // Redirect to registration if user not found
+                return;
+              }
+
+              // Optional: Check custom flag like user.isRegistered
+              // if (!user.isRegistered) {
+              //   navigate("/register");
+              //   return;
+              // }
+
+              mixpanelInstance.track("Get Started Button Clicked", {
+                timestamp: new Date().toISOString(),
+              });
+              navigate("/profile");
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8 py-4 text-lg"
+          >
+            Get Started
+          </Button>
+
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => {
+              if (!user) {
+                setShowAuthModal(true);
+                return;
+              }
+
+              mixpanelInstance.track("Dashboard Button Clicked", {
+                timestamp: new Date().toISOString(),
+              });
+              navigate("/dashboard");
+            }}
+            className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white shadow-md hover:shadow-lg transition-all duration-200 px-8 py-4 text-lg"
+          >
+            Explore Dashboard
           </Button>
         </div>
       </section>

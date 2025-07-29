@@ -480,6 +480,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import "react-quill/dist/quill.snow.css";
+import Header from "@/footer/Header";
 
 const BlogList: React.FC = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -601,7 +602,7 @@ const BlogList: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Responsive Header */}
-      <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2 md:space-x-4">
             <Button
@@ -613,22 +614,21 @@ const BlogList: React.FC = () => {
               <ArrowLeft className="h-4 w-4 md:mr-2" />
               <span className="hidden md:inline">Back</span>
             </Button>
-            {/* <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
               <h1 className="text-xl md:text-2xl font-bold text-white">
                 MedPortal
               </h1>
-            </Link> */}
+            </Link>
             <div className="flex items-center space-x-2">
-              {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+              <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
               </Link>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
             <Button
               variant="outline"
@@ -680,7 +680,6 @@ const BlogList: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button
               variant="outline"
@@ -699,7 +698,6 @@ const BlogList: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div
             className="md:hidden bg-black border-t border-white/20 py-3 px-4 absolute w-full z-50"
@@ -767,7 +765,8 @@ const BlogList: React.FC = () => {
             </div>
           </div>
         )}
-      </header>
+      </header> */}\
+      <Header/>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">

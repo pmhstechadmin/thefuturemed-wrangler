@@ -1019,6 +1019,7 @@ import logo from "@/image/thefuturemed_logo (1).jpg";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, CircleSlash } from "lucide-react";
+import Header from "@/footer/Header";
 
 const Myjob = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -1191,7 +1192,7 @@ const Myjob = () => {
     <div className="space-y-6">
       {/* Header, Search, etc. */}
 
-      <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Button
@@ -1201,13 +1202,13 @@ const Myjob = () => {
             >
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
-            {/* <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-400" />
               <h1 className="text-2xl font-bold text-white">MedPortal</h1>
-            </Link> */}
+            </Link>
             <div className="flex items-center space-x-2">
-              {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+              <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
               </Link>
@@ -1260,7 +1261,8 @@ const Myjob = () => {
             </Button>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header/>
 
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">

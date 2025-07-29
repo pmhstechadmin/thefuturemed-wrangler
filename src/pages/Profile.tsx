@@ -1550,15 +1550,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Mobile Menu Overlay */}
+      
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         ></div>
       )}
-
-      {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -1607,15 +1605,7 @@ const Profile = () => {
                 <ArrowLeft className="h-4 w-4" />
                 <span className="hidden sm:inline ml-2">Back to Dashboard</span>
               </Button>
-              {/* <div className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  My Profile
-                </h1>
-              </div> */}
               <div className="flex items-center space-x-2">
-                {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>

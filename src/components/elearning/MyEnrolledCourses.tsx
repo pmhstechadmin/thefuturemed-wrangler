@@ -163,6 +163,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Clock, Users, Award, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface CourseInfo {
   id: string;
@@ -369,10 +370,20 @@ export const MyEnrolledCourses = () => {
 
                   <Button
                     className="w-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCourseClick(enrollment.courses!.id);
-                    }}
+                     onClick={(e) => {
+                                                    mixpanelInstance.track(
+                                                      " Continue Learning view elearning Button Clicked",
+                                                      {
+                                                        timestamp: new Date().toISOString(),
+                                                      }
+                                                    );
+                                                    e.stopPropagation();
+                    handleCourseClick(enrollment.courses!.id);
+                                                  }}
+                    // onClick={(e) => {
+                    //   e.stopPropagation();
+                    //   handleCourseClick(enrollment.courses!.id);
+                    // }}
                   >
                     Continue Learning
                   </Button>

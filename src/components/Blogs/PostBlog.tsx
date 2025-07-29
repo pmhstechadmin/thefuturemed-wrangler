@@ -1180,6 +1180,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Shield, UserPlus, Home, User, Menu, X } from "lucide-react";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import "./PostBlog.css";
+import Header from "@/footer/Header";
 
 
 // Register the image resize module
@@ -1478,7 +1479,7 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
-      <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2 md:space-x-4">
             <Button
@@ -1490,22 +1491,21 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
               <ArrowLeft className="h-4 w-4 md:mr-2" />
               <span className="hidden md:inline">Back</span>
             </Button>
-            {/* <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
               <h1 className="text-xl md:text-2xl font-bold text-white">
                 MedPortal
               </h1>
-            </Link> */}
+            </Link>
             <div className="flex items-center space-x-2">
-              {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+              <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
               </Link>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
             <Button
               variant="outline"
@@ -1557,7 +1557,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button
               variant="outline"
@@ -1576,7 +1575,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div
             className="md:hidden bg-black border-t border-white/20 py-3 px-4 absolute w-full z-50"
@@ -1644,7 +1642,8 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
             </div>
           </div>
         )}
-      </header>
+      </header> */}
+      <Header />
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto mt-6 p-4 md:p-6 bg-white shadow rounded-lg">

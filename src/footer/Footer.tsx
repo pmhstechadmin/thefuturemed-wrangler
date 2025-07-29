@@ -146,7 +146,15 @@ const Footer = () => {
             <p>
               &copy; 2025 TheFutureMed. All rights reserved. Site Designed and
               Maintained by
-              <a href="https://pmhstechsolutions.com/" className='blue-500' target='_blank'> PMHS Tech Solutions</a>
+              <a
+                href="https://pmhstechsolutions.com/"
+                className="text-blue-500"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {" "}
+                PMHS Tech Solutions
+              </a>
             </p>
             {/* <p>&copy; 2024 MedPortal. All rights reserved.</p> */}
           </div>

@@ -239,6 +239,7 @@ import { Switch } from "@/components/ui/switch"; // Add this import
 import { CourseData } from "../CreateCourseWizard";
 import ImageResize from "quill-image-resize-module-react";
 import ReactQuill, { Quill } from "react-quill";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface BasicInfoStepProps {
   courseData: CourseData;
@@ -536,16 +537,15 @@ export const BasicInfoStep = ({
           <div>
             <Label htmlFor="price">Price (INR) *</Label>
             <Input
-                id="price"
-                type="number"
-                min="0"
-                value={courseData.price ?? ""}
-                onChange={(e) => handleNumberInput("price", e.target.value)}
-                placeholder="Enter course price"
-                required={courseData.is_paid}
-              />
-            
-             (Inclusive of GST)
+              id="price"
+              type="number"
+              min="0"
+              value={courseData.price ?? ""}
+              onChange={(e) => handleNumberInput("price", e.target.value)}
+              placeholder="Enter course price"
+              required={courseData.is_paid}
+            />
+            (Inclusive of GST)
           </div>
         )}
       </div>
@@ -553,7 +553,16 @@ export const BasicInfoStep = ({
       <div className="flex justify-end">
         <Button
           type="button"
-          onClick={handleNextClick}
+          onClick={() => {
+            mixpanelInstance.track(
+              " Next : Create Modules view Wizard  Button Clicked",
+              {
+                timestamp: new Date().toISOString(),
+              }
+            );
+            handleNextClick();
+          }}
+          // onClick={handleNextClick}
           disabled={!isValid}
           className="bg-blue-600 hover:bg-blue-700"
         >

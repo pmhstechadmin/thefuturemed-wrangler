@@ -744,6 +744,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import YouTube from 'react-youtube';
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from '@/footer/Footer';
+import { mixpanelInstance } from '@/utils/mixpanel';
 
 const products = [
   {
@@ -817,6 +818,14 @@ const products = [
     position: [0, -2, 0] as [number, number, number],
   },
 ];
+const navLinks = [
+  { path: "/dashboard", label: "Dashboard" },
+  { path: "/community", label: "Community" },
+  { path: "/e-seminar", label: "E-Seminar" },
+  { path: "/e-learning", label: "E-Learning" },
+  { path: "/jobs", label: "Jobs" },
+  { path: "/calendar", label: "Calendar" },
+];
 
 const ProductPortal = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
@@ -828,10 +837,22 @@ const ProductPortal = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  
+
+  const trackButtonClick = (buttonName: string, additionalProps = {}) => {
+    mixpanelInstance.track(`Button Click: ${buttonName}`, {
+      timestamp: new Date().toISOString(),
+      ...additionalProps,
+    });
+  };
+
   const handleAuthSuccess = () => {
+    trackButtonClick("Authentication Success");
     console.log("Authentication successful");
   };
+  
+  // const handleAuthSuccess = () => {
+  //   console.log("Authentication successful");
+  // };
 
   useEffect(() => {
     checkUser();
@@ -852,6 +873,7 @@ const ProductPortal = () => {
 
   const handleSignOut = async () => {
     try {
+       trackButtonClick("Sign Out");
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       setUser(null);
@@ -870,6 +892,7 @@ const ProductPortal = () => {
   };
 
   const handleBackNavigation = () => {
+    trackButtonClick("Back Navigation");
     if (window.history.length > 1) {
       navigate(-1);
     } else {
@@ -889,6 +912,7 @@ const ProductPortal = () => {
 
   const handleProductAction = (productId: string) => {
     try {
+      trackButtonClick(`Product Action: ${productId}`);
       if (productId === 'community') {
         if (!user) {
           toast({
@@ -902,16 +926,18 @@ const ProductPortal = () => {
         navigate('/community');
       } else if (productId === 'e-seminar') {
         navigate('/e-seminar');
+         
       } else if (productId === 'e-learning') {
         navigate('/e-learning');
       } else if (productId === "ai-medic-agents") {
         setShowVideo(true);
         // setshowNow(window.open("https://ai-assistant.medorbis.ai/", "_blank"))
       } else if (productId === "e-conferences") {
-        toast({
-          title: "Coming Soon",
-          description: "E-Conferences will be available soon!",
-        });
+        // toast({
+        //   title: "Coming Soon",
+        //   description: "E-Conferences will be available soon!",
+        // });
+         navigate('/e-seminar');
       } else if (productId === "publication") {
         navigate("/publication");
       } else if (productId === "medical-jobs") {
@@ -970,7 +996,13 @@ const ProductPortal = () => {
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode("grid")}
+                  onClick={() =>{
+                            mixpanelInstance.track(
+                              "grid Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            ); setViewMode("grid")}}
                   className={`${
                     viewMode === "grid"
                       ? "bg-blue-600 text-white"
@@ -995,9 +1027,41 @@ const ProductPortal = () => {
 
               {user ? (
                 <div className="flex items-center space-x-2 sm:space-x-4">
-                  <span className="hidden md:inline text-white text-sm bg-white/10 px-3 py-1 rounded-full">
+                  {/* <span className="hidden md:inline text-white text-sm bg-white/10 px-3 py-1 rounded-full">
                     Welcome, {user.email}
-                  </span>
+                  </span> */}
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Welcome
+                    </button>
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li>
+                        <span className="dropdown-item-text text-muted">
+                          {user?.email}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="hidden xl:flex items-center gap-2">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
                   <Button
                     variant="outline"
                     className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"
@@ -1084,7 +1148,13 @@ const ProductPortal = () => {
                       <Button
                         variant={viewMode === "grid" ? "default" : "ghost"}
                         size="sm"
-                        onClick={() => setViewMode("grid")}
+                        onClick={() => {
+                            mixpanelInstance.track(
+                              "grid Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            );setViewMode("grid")}}
                         className={`${
                           viewMode === "grid"
                             ? "bg-blue-600 text-white"
@@ -1096,7 +1166,14 @@ const ProductPortal = () => {
                       <Button
                         variant={viewMode === "list" ? "default" : "ghost"}
                         size="sm"
-                        onClick={() => setViewMode("list")}
+                        
+                        onClick={() =>{
+                            mixpanelInstance.track(
+                              "list Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            ); setViewMode("list")}}
                         className={`${
                           viewMode === "list"
                             ? "bg-blue-600 text-white"
@@ -1198,14 +1275,40 @@ const ProductPortal = () => {
                         <Button
                           className="text-white"
                           style={{ backgroundColor: product.color }}
-                          onClick={() => setShowVideo(true)}
+                          onClick={() => {
+                            mixpanelInstance.track(
+                              "Learn More Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            );
+                            setShowVideo(true);
+                          }}
+                          // onClick={() => setShowVideo(true)}
                         >
                           Learn More
                         </Button>
                         <Button
                           variant="outline"
                           className="text-white border-white/30 hover:bg-white/10"
-                          onClick={() => window.open("https://ai-assistant.medorbis.ai/", "_blank")}
+                          onClick={() => {
+                            mixpanelInstance.track(
+                              "Ai-assistant Medorbis.ai view Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            );
+                            window.open(
+                              "https://ai-assistant.medorbis.ai/",
+                              "_blank"
+                            );
+                          }}
+                          // onClick={() =>
+                          //   window.open(
+                          //     "https://ai-assistant.medorbis.ai/",
+                          //     "_blank"
+                          //   )
+                          // }
                         >
                           Try Now
                         </Button>
@@ -1215,7 +1318,16 @@ const ProductPortal = () => {
                         <Button
                           className="text-white"
                           style={{ backgroundColor: product.color }}
-                          onClick={() => handleProductAction(product.id)}
+                          onClick={() => {
+                            mixpanelInstance.track(
+                              "join view Dashboard Button Clicked",
+                              {
+                                timestamp: new Date().toISOString(),
+                              }
+                            );
+                            handleProductAction(product.id);
+                          }}
+                          // onClick={() => handleProductAction(product.id)}
                         >
                           {product.id === "community"
                             ? user
@@ -1238,7 +1350,16 @@ const ProductPortal = () => {
                     <Button
                       variant="ghost"
                       className="text-gray-300 hover:text-white"
-                      onClick={() => setSelectedProduct(null)}
+                      onClick={() => {
+                        mixpanelInstance.track(
+                          "close view Dashboard Button Clicked",
+                          {
+                            timestamp: new Date().toISOString(),
+                          }
+                        );
+                        setSelectedProduct(null);
+                      }}
+                      // onClick={() => setSelectedProduct(null)}
                     >
                       Close
                     </Button>
@@ -1255,7 +1376,16 @@ const ProductPortal = () => {
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
           <div className="relative bg-white/10 rounded-lg p-6 max-w-4xl w-full">
             <button
-              onClick={() => setShowVideo(false)}
+              onClick={() => {
+                mixpanelInstance.track(
+                  "YouTube view Dashboard Button Clicked",
+                  {
+                    timestamp: new Date().toISOString(),
+                  }
+                );
+                setShowVideo(false);
+              }}
+              // onClick={() => setShowVideo(false)}
               className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl"
             >
               &times;
@@ -1272,7 +1402,18 @@ const ProductPortal = () => {
             <div className="mt-4 flex justify-center">
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => window.open("https://ai-assistant.medorbis.ai/", "_blank")}
+                // onClick={() =>
+                //   window.open("https://ai-assistant.medorbis.ai/", "_blank")
+                // }
+                onClick={() => {
+                  mixpanelInstance.track(
+                    "Try AI Assistant Now view Dashboard Button Clicked",
+                    {
+                      timestamp: new Date().toISOString(),
+                    }
+                  );
+                  window.open("https://ai-assistant.medorbis.ai/", "_blank");
+                }}
               >
                 Try AI Assistant Now
               </Button>
@@ -1285,7 +1426,7 @@ const ProductPortal = () => {
         <p>🖱️ Click cards to explore • 📱 Switch between grid and list view</p>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -1193,6 +1193,8 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import Header from "@/footer/Header1";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 
 interface Seminar {
@@ -1244,6 +1246,7 @@ const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(true);
   // NEW: State for current IST time
   const [currentISTTime, setCurrentISTTime] = useState("");
  const [userProfile, setUserProfile] = useState<any>(null);
+ const supabaseAnonKey = import.meta.env.VITE_VIDEOSDK_TOKEN;
 
  const [meetingOptions, setMeetingOptions] = useState({
    disableParticipantMic: false,
@@ -1631,38 +1634,111 @@ useEffect(() => {
     setShowMeeting(false);
   };
 
-  const handleRegister = async () => {
-    if (!user || !seminarId) return;
+  // const handleRegister = async () => {
+  //   if (!user || !seminarId) return;
 
-    try {
-      setRegistering(true);
-      const { data, error } = await supabase
-        .from("seminar_registrations")
-        .insert({
-          seminar_id: seminarId,
-          user_id: user.id,
-        })
-        .select()
-        .single();
+  //   try {
+  //     setRegistering(true);
+  //     const { data, error } = await supabase
+  //       .from("seminar_registrations")
+  //       .insert({
+  //         seminar_id: seminarId,
+  //         user_id: user.id,
+  //       })
+  //       .select()
+  //       .single();
 
-      if (error) throw error;
-      setIsRegistered(true);
-      setRegistrationId(data.id);
-      toast({
-        title: "Registered",
-        description: "You are now registered for this seminar",
-      });
-    } catch (error) {
-      console.error("Registration Error:", error);
-      toast({
-        title: "Registration Failed",
-        variant: "destructive",
-      });
-    } finally {
-      setRegistering(false);
+  //     if (error) throw error;
+  //     setIsRegistered(true);
+  //     setRegistrationId(data.id);
+  //     toast({
+  //       title: "Registered",
+  //       description: "You are now registered for this seminar",
+  //     });
+  //   } catch (error) {
+  //     console.error("Registration Error:", error);
+  //     toast({
+  //       title: "Registration Failed",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setRegistering(false);
+  //   }
+  // };
+const handleRegister = async () => {
+  if (!user || !seminarId || !seminar) return;
+
+  try {
+    setRegistering(true);
+
+    // First, register the user for the seminar
+    const { data, error } = await supabase
+      .from("seminar_registrations")
+      .insert({
+        seminar_id: seminarId,
+        user_id: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    setIsRegistered(true);
+    setRegistrationId(data.id);
+
+    // Send confirmation email
+    const emailResponse = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          email: user.email,
+          subject: `Seminar Registration Confirmation: ${seminar.topic}`,
+          message: `Dear Participant,<br><br>
+You have successfully registered for the following seminar:<br><br>
+<strong>Topic:</strong> ${seminar.topic}<br>
+<strong>Date:</strong> ${formatDate(seminar.date)}<br>
+<strong>Time:</strong> ${formatTime(seminar.time)}<br>
+<strong>Host:</strong> ${seminar.host_name}<br><br>
+
+<strong>Preparation Checklist:</strong><br>
+- Please join 15 minutes early to set up<br>
+- Test your audio/video equipment beforehand<br>
+- Review the seminar description:<br>
+${seminar.description}<br><br>
+
+Looking forward to seeing you at the seminar!<br><br>
+
+Best regards,<br>
+The Seminar Team`,
+        }),
+      }
+    );
+
+    if (!emailResponse.ok) {
+      throw new Error("Failed to send confirmation email");
     }
-  };
 
+    toast({
+      title: "Registered",
+      description:
+        "You are now registered for this seminar. A confirmation email has been sent.",
+    });
+  } catch (error) {
+    console.error("Registration Error:", error);
+    toast({
+      title: "Registration Failed",
+      description: error instanceof Error ? error.message : "An error occurred",
+      variant: "destructive",
+    });
+  } finally {
+    setRegistering(false);
+  }
+};
   const handleCancelRegistration = async () => {
     if (!registrationId) return;
 
@@ -1709,7 +1785,7 @@ useEffect(() => {
   if (showMeeting && seminar?.meeting_id) {
     return (
       <div>
-        <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+        {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 md:space-x-4">
@@ -1723,12 +1799,12 @@ useEffect(() => {
                   <span className="hidden md:inline">Back</span>
                 </Button>
 
-                {/* <Link to="/" className="flex items-center space-x-2">
+                <Link to="/" className="flex items-center space-x-2">
                   <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
                   <h1 className="text-xl md:text-2xl font-bold text-white">
                     MedPortal
                   </h1>
-                </Link> */}
+                </Link>
 
                 <div className="flex items-center space-x-2">
                   <Link to="/">
@@ -1822,7 +1898,8 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        </header>
+        </header> */}
+        <Header/>
 
         <VideoMeeting
           isHost={isHost}
@@ -1868,7 +1945,7 @@ useEffect(() => {
     <div className="min-h-screen bg-gray-50">
       {/* NEW: Current IST time display */}
 
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -1882,12 +1959,6 @@ useEffect(() => {
                 <span className="hidden md:inline">Back</span>
               </Button>
 
-              {/* <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 md:h-8 md:w-8 text-blue-400" />
-                <h1 className="text-xl md:text-2xl font-bold text-white">
-                  MedPortal
-                </h1>
-              </Link> */}
 
               <div className="flex items-center space-x-2">
                 <Link to="/">
@@ -1981,7 +2052,8 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header seminar={seminar} />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* UPDATED: Time left display */}
@@ -2097,6 +2169,15 @@ useEffect(() => {
                   onClick={
                     isRegistered ? handleCancelRegistration : handleRegister
                   }
+                  // onClick={() => {
+                  //   mixpanelInstance.track(
+                  //     " handle Register view seminer Button Clicked",
+                  //     {
+                  //       timestamp: new Date().toISOString(),
+                  //     }
+                  //   );
+                  //   isRegistered ? handleCancelRegistration : handleRegister;
+                  // }}
                   disabled={registering || canceling}
                   className="bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg"
                 >
@@ -2337,8 +2418,17 @@ useEffect(() => {
                           <DialogFooter>
                             <Button
                               onClick={() => {
+                                mixpanelInstance.track(
+                                  " Start Meeting view seminer Button Clicked",
+                                  {
+                                    timestamp: new Date().toISOString(),
+                                  }
+                                );
                                 handleJoinMeeting();
                               }}
+                              // onClick={() => {
+                              //   handleJoinMeeting();
+                              // }}
                               className="bg-green-600 hover:bg-green-700"
                             >
                               Start Meeting
@@ -2348,6 +2438,15 @@ useEffect(() => {
                       </Dialog>
                     ) : (
                       <Button
+                        // onClick={() => {
+                        //   mixpanelInstance.track(
+                        //     " Join Meeting view seminer Button Clicked",
+                        //     {
+                        //       timestamp: new Date().toISOString(),
+                        //     }
+                        //   );
+                        //   handleJoinMeeting();
+                        // }}
                         onClick={handleJoinMeeting}
                         disabled={creatingMeeting}
                         className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"

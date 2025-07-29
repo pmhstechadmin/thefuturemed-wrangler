@@ -25,6 +25,7 @@ import {
 
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from "@/footer/Footer";
+import Header from "@/footer/Header";
 
 
 interface Course {
@@ -207,7 +208,7 @@ export const CoursesListing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      {/* <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -221,7 +222,7 @@ export const CoursesListing = () => {
               </Button>
 
               <Link to="/e-learning" className="flex items-center space-x-2">
-                {/* <Link to="/e-learning" className="flex items-center space-x-2">
+                <Link to="/e-learning" className="flex items-center space-x-2">
 
                 <BookOpen className="h-8 w-8 text-blue-600" />
                 <h1 className="text-2xl font-bold text-gray-900">
@@ -229,7 +230,7 @@ export const CoursesListing = () => {
                 </h1>
 
                 
-                </Link> */}
+                </Link>
               </Link>
               <div className="flex items-center space-x-2">
                 <Link to="/">
@@ -248,7 +249,8 @@ export const CoursesListing = () => {
             </Button>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header/>
 
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">

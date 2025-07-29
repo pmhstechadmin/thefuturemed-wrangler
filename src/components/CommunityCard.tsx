@@ -43,7 +43,10 @@ const CommunityCard = ({ community, isMember, onJoin, onLeave, onOpenChat }: Com
             </div>
             <div>
               <CardTitle className="text-lg">{community.name}</CardTitle>
-              <Badge variant="secondary" className="text-xs">
+              <Badge
+                variant="secondary"
+                className="text-sm bg-blue-100 text-800 "
+              >
                 {community.category}
               </Badge>
             </div>
@@ -54,26 +57,28 @@ const CommunityCard = ({ community, isMember, onJoin, onLeave, onOpenChat }: Com
         <CardDescription className="mb-4">
           {community.description}
         </CardDescription>
-        
+
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
           <div className="flex items-center space-x-1">
             <Users className="h-4 w-4" />
-            <span>{community.member_count}/{community.max_members} members</span>
+            <span>
+              {community.member_count}/{community.max_members} members
+            </span>
           </div>
         </div>
 
         <div className="space-y-2">
           {isMember ? (
             <div className="space-y-2">
-              <Button 
+              <Button
                 onClick={() => onOpenChat(community.id)}
                 className="w-full flex items-center gap-2"
               >
                 <MessageCircle className="h-4 w-4" />
                 Open Chat
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => onLeave(community.id)}
                 className="w-full"
               >
@@ -81,12 +86,14 @@ const CommunityCard = ({ community, isMember, onJoin, onLeave, onOpenChat }: Com
               </Button>
             </div>
           ) : (
-            <Button 
+            <Button
               onClick={() => onJoin(community.id)}
               disabled={community.member_count >= community.max_members}
               className="w-full"
             >
-              {community.member_count >= community.max_members ? 'Full' : 'Join Community'}
+              {community.member_count >= community.max_members
+                ? "Full"
+                : "Join Community"}
             </Button>
           )}
         </div>

@@ -365,6 +365,7 @@ import { useToast } from "@/hooks/use-toast";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 
 import Footer from "@/footer/Footer";
+import Header from "@/footer/Header";
 
 const Community = () => {
   const navigate = useNavigate();
@@ -437,7 +438,7 @@ const Community = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Desktop Header */}
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl hidden md:block">
+      {/* <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl hidden md:block">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -450,13 +451,13 @@ const Community = () => {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              {/* <Link to="/" className="flex items-center space-x-2">
+              <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-blue-400" />
                 <h1 className="text-2xl font-bold text-white">MedPortal</h1>
-              </Link> */}
+              </Link>
               <div className="flex items-center space-x-2">
-                {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+                <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>
@@ -516,7 +517,6 @@ const Community = () => {
         </div>
       </header>
 
-      {/* Mobile Header */}
       <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl md:hidden">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -529,13 +529,13 @@ const Community = () => {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              {/* <Link to="/" className="flex items-center ml-2">
+              <Link to="/" className="flex items-center ml-2">
                 <Shield className="h-6 w-6 text-blue-400" />
                 <h1 className="text-xl font-bold text-white ml-2">MedPortal</h1>
-              </Link> */}
+              </Link>
               <div className="flex items-center space-x-2">
-                {/* <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1> */}
+                <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
                 <Link to="/">
                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
                 </Link>
@@ -565,8 +565,6 @@ const Community = () => {
           </div>
         </div>
       </header>
-
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="bg-black/50 backdrop-blur-md fixed top-16 left-0 right-0 z-40 shadow-xl md:hidden animate-in slide-in-from-top">
           <div className="container mx-auto px-4 py-4">
@@ -618,7 +616,8 @@ const Community = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
+      <Header/>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white pt-16 md:pt-0">
         <div className="container mx-auto px-4 py-8">

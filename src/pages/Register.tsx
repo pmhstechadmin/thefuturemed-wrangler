@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/form";
 import PhoneInput from "react-phone-input-2";
 import { FormProvider, useForm } from "react-hook-form";
+import Header from "@/footer/Header";
 
 interface FormData {
   firstName: string;
@@ -352,13 +353,13 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      {/* <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
-            </Link> */}
+            </Link>
             <div className="flex items-center space-x-2">
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -372,7 +373,8 @@ const Register = () => {
             </Link>
           </div>
         </div>
-      </header>
+      </header> */}
+      <Header/>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
@@ -639,7 +641,7 @@ const Register = () => {
                           <SelectItem value="doctor">Doctor</SelectItem>
                           <SelectItem value="dentist">Dentist</SelectItem>
                           <SelectItem value="superspecialist">
-                            specialist
+                            Specialist
                           </SelectItem>
                           <SelectItem value="superspecialist">
                             Superspecialist

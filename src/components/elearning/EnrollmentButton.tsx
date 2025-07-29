@@ -12,6 +12,7 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface Props {
   courseId: string;
@@ -313,7 +314,16 @@ export const EnrollmentButton = ({
                 Cancel
               </Button>
               <Button
-                onClick={handleFreeEnrollment}
+               onClick={() => {
+                                              mixpanelInstance.track(
+                                                " Confirm Free Enrollment view elearning Button Clicked",
+                                                {
+                                                  timestamp: new Date().toISOString(),
+                                                }
+                                              );
+                                              handleFreeEnrollment();
+                                            }}
+                // onClick={handleFreeEnrollment}
                 disabled={isLoading}
                 className="bg-green-600 hover:bg-green-700"
               >

@@ -1832,6 +1832,7 @@ import { MCQEditor } from "./MCQEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FaLeaf } from "react-icons/fa";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface ModulesStepProps {
   courseData: CourseData;
@@ -2204,7 +2205,16 @@ export const ModulesStep = ({
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => addContent(activeModule, "text")}
+                    onClick={() => {
+                                                              mixpanelInstance.track(
+                                                                " Add Text view Wizard  Button Clicked",
+                                                                {
+                                                                  timestamp: new Date().toISOString(),
+                                                                }
+                                                              );
+                        addContent(activeModule, "text");
+                                                            }}
+                    // onClick={() => addContent(activeModule, "text")}
                   >
                     <FileText className="mr-2 h-4 w-4" />
                     Add Text
@@ -2213,7 +2223,16 @@ export const ModulesStep = ({
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => addContent(activeModule, "pdf")}
+                    onClick={() => {
+                                                              mixpanelInstance.track(
+                                                                " Add Pdf view Wizard  Button Clicked",
+                                                                {
+                                                                  timestamp: new Date().toISOString(),
+                                                                }
+                                                              );
+                        addContent(activeModule, "pdf");
+                                                            }}
+                    // onClick={() => addContent(activeModule, "pdf")}
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     Add PDF
@@ -2222,7 +2241,17 @@ export const ModulesStep = ({
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => addContent(activeModule, "video")}
+                    onClick={() => {
+                                                              mixpanelInstance.track(
+                                                                " Add Video view Wizard  Button Clicked",
+                                                                {
+                                                                  timestamp: new Date().toISOString(),
+                                                                }
+                                                              );
+                        addContent(activeModule, "video");
+
+                                                            }}
+                    // onClick={() => addContent(activeModule, "video")}
                   >
                     <Video className="mr-2 h-4 w-4" />
                     Add Video
@@ -2313,8 +2342,6 @@ export const ModulesStep = ({
                                       View File
                                     </a>
                                   </div>
-
-                                
                                 </div>
                               ) : (
                                 <p className="text-sm text-gray-500 mt-1">
@@ -2361,7 +2388,17 @@ export const ModulesStep = ({
           {activeModule < courseData.modules.length - 1 ? (
             <Button
               type="button"
-              onClick={() => setActiveModule(activeModule + 1)}
+              onClick={() => {
+                mixpanelInstance.track(
+                  "Next Module view Wizard Button Clicked",
+                  {
+                    timestamp: new Date().toISOString(),
+                  }
+                );
+                setActiveModule(activeModule + 1);
+                
+              }}
+              // onClick={() => setActiveModule(activeModule + 1)}
               disabled={
                 !currentModule?.title ||
                 !currentModule?.description ||
@@ -2371,7 +2408,20 @@ export const ModulesStep = ({
               Next Module
             </Button>
           ) : (
-            <Button type="button" onClick={onNext} disabled={!isValid}>
+            <Button
+              type="button"
+              onClick={() => {
+                mixpanelInstance.track(
+                  " Next: Legel Agreement view Wizard  Button Clicked",
+                  {
+                    timestamp: new Date().toISOString(),
+                  }
+                );
+                onNext();
+              }}
+              // onClick={onNext}
+              disabled={!isValid}
+            >
               Next: Legal Agreement
             </Button>
           )}
