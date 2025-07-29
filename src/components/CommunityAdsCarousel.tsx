@@ -20,41 +20,72 @@ const CommunityAdsCarousel = () => {
   // Sample ads data - you can replace this with actual data from your backend
   const ads: Ad[] = [
     {
-      id: '1',
-      title: 'Medical Conference 2024',
-      description: 'Join the biggest medical conference of the year. Register now!',
-      image: '/placeholder.svg',
-      buttonText: 'Register Now',
-      buttonLink: '#',
-      backgroundColor: 'bg-gradient-to-r from-blue-500 to-blue-600'
+      id: "1",
+      title: "Medical Conference 2024",
+      description:
+        "Join the biggest medical conference of the year. Register now!",
+      image: "/placeholder.svg",
+      buttonText: "Register Now",
+      buttonLink: "/register",
+      backgroundColor: "bg-gradient-to-r from-blue-500 to-blue-600",
+    },
+    // {
+    //   id: '2',
+    //   title: 'New Medical Equipment',
+    //   description: 'Discover the latest medical equipment and technology.',
+    //   image: '/placeholder.svg',
+    //   buttonText: 'Learn More',
+    //   buttonLink: '#',
+    //   backgroundColor: 'bg-gradient-to-r from-green-500 to-green-600'
+    // },
+    // {
+    //   id: '3',
+    //   title: 'Clinical Research Opportunities',
+    //   description: 'Participate in groundbreaking clinical research studies.',
+    //   image: '/placeholder.svg',
+    //   buttonText: 'Apply Now',
+    //   buttonLink: '#',
+    //   backgroundColor: 'bg-gradient-to-r from-purple-500 to-purple-600'
+    // },
+    // {
+    //   id: '4',
+    //   title: 'Medical Journal Subscription',
+    //   description: 'Stay updated with the latest medical research and publications.',
+    //   image: '/placeholder.svg',
+    //   buttonText: 'Subscribe',
+    //   buttonLink: '#',
+    //   backgroundColor: 'bg-gradient-to-r from-red-500 to-red-600'
+    // }
+    {
+      id: "2",
+      title: "E-Seminar Series",
+      description:
+        "Join our interactive online seminars with industry experts. Next session starts soon!",
+      image: "/placeholder.svg",
+      buttonText: "View Schedule",
+      buttonLink: "/e-seminar",
+      backgroundColor: "bg-gradient-to-r from-blue-500 to-blue-600",
     },
     {
-      id: '2',
-      title: 'New Medical Equipment',
-      description: 'Discover the latest medical equipment and technology.',
-      image: '/placeholder.svg',
-      buttonText: 'Learn More',
-      buttonLink: '#',
-      backgroundColor: 'bg-gradient-to-r from-green-500 to-green-600'
+      id: "3",
+      title: "E-Learning Platform",
+      description:
+        "Access our comprehensive online courses to enhance your professional skills.",
+      image: "/placeholder.svg",
+      buttonText: "Browse Courses",
+      buttonLink: "/e-learning",
+      backgroundColor: "bg-gradient-to-r from-green-500 to-green-600",
     },
     {
-      id: '3',
-      title: 'Clinical Research Opportunities',
-      description: 'Participate in groundbreaking clinical research studies.',
-      image: '/placeholder.svg',
-      buttonText: 'Apply Now',
-      buttonLink: '#',
-      backgroundColor: 'bg-gradient-to-r from-purple-500 to-purple-600'
+      id: "4",
+      title: "Job Opportunities",
+      description:
+        "Explore the latest job openings in your field. Submit your application today!",
+      image: "/placeholder.svg",
+      buttonText: "Find Jobs",
+      buttonLink: "/jobs",
+      backgroundColor: "bg-gradient-to-r from-purple-500 to-purple-600",
     },
-    {
-      id: '4',
-      title: 'Medical Journal Subscription',
-      description: 'Stay updated with the latest medical research and publications.',
-      image: '/placeholder.svg',
-      buttonText: 'Subscribe',
-      buttonLink: '#',
-      backgroundColor: 'bg-gradient-to-r from-red-500 to-red-600'
-    }
   ];
 
   // Auto-advance carousel every 5 seconds
@@ -87,13 +118,13 @@ const CommunityAdsCarousel = () => {
                         {ad.buttonText}
                       </Button>
                     </div>
-                    <div className="hidden md:block w-32 h-32 flex-shrink-0 mr-6">
+                    {/* <div className="hidden md:block w-32 h-32 flex-shrink-0 mr-6">
                       <img 
                         src={ad.image} 
                         alt={ad.title}
                         className="w-full h-full object-cover rounded-lg"
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>

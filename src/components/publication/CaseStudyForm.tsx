@@ -252,7 +252,7 @@ const CaseStudyForm = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">Sub Authors (Optional)</h3>
               {formData.subAuthors.length < 3 && (
-                <Button onClick={addSubAuthor} variant="outline" size="sm" className="text-white border-white/30">
+                <Button onClick={addSubAuthor} variant="outline" size="sm" className="text-grey-700 border-grey-700/30 hover:bg-grey-700/10 text-black">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Sub Author
                 </Button>
@@ -288,7 +288,7 @@ const CaseStudyForm = () => {
                   />
                 </div>
                 <div className="flex items-end">
-                  <Button onClick={() => removeSubAuthor(index)} variant="outline" size="sm" className="text-white border-white/30">
+                  <Button onClick={() => removeSubAuthor(index)} variant="outline" size="sm" className="text-black border-white/30">
                     <Minus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -487,7 +487,7 @@ const CaseStudyForm = () => {
             <Button 
               onClick={handlePreview} 
               variant="outline" 
-              className="flex-1 text-white border-white/30 hover:bg-white/10"
+              className="flex-1 text-black border border-white/30 hover:bg-white/10"
             >
               <Eye className="h-4 w-4 mr-2" />
               Preview

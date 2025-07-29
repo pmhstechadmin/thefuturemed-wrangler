@@ -190,6 +190,7 @@ export const PublishedCourses = () => {
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start mb-2">
                   <Badge
+                    className="text-sm bg-blue-100 text-800"
                     variant={
                       course.status === "published" ? "default" : "secondary"
                     }
@@ -251,7 +252,12 @@ export const PublishedCourses = () => {
 
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex space-x-1">
-                    <Badge variant="secondary">Medical</Badge>
+                    <Badge
+                      variant="secondary"
+                      className="text-sm bg-blue-100 text-800"
+                    >
+                      Medical
+                    </Badge>
                     {course.has_project && (
                       <Badge variant="outline">Project</Badge>
                     )}
@@ -265,16 +271,16 @@ export const PublishedCourses = () => {
 
                 <Button
                   className="w-full"
-                   onClick={(e) => {
-                                                  mixpanelInstance.track(
-                                                    " View Course view elarning Button Clicked",
-                                                    {
-                                                      timestamp: new Date().toISOString(),
-                                                    }
-                                                  );
-                                                  e.stopPropagation();
-                                                  handleCourseClick(course.id);
-                                                }}
+                  onClick={(e) => {
+                    mixpanelInstance.track(
+                      " View Course view elarning Button Clicked",
+                      {
+                        timestamp: new Date().toISOString(),
+                      }
+                    );
+                    e.stopPropagation();
+                    handleCourseClick(course.id);
+                  }}
                   // onClick={(e) => {
                   //   e.stopPropagation();
                   //   handleCourseClick(course.id);

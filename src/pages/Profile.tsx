@@ -1706,7 +1706,7 @@ const Profile = () => {
         </Card>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+        {/* <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
           <Card className="col-span-1">
             <CardContent className="pt-4 sm:pt-6">
               <div className="flex items-center space-x-2">
@@ -1778,7 +1778,7 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         {/* Tabs Section */}
         <Tabs defaultValue="products" className="space-y-6">

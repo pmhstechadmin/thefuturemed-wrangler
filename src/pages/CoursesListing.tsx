@@ -250,7 +250,7 @@ export const CoursesListing = () => {
           </div>
         </div>
       </header> */}
-      <Header/>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
@@ -375,7 +375,10 @@ export const CoursesListing = () => {
 
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex space-x-1">
-                        <Badge variant="secondary">
+                        <Badge
+                          variant="secondary"
+                          className="text-sm bg-blue-100 text-800"
+                        >
                           {getCreatorSpecialty(course.creator_id)}
                         </Badge>
                         {course.has_project && (
@@ -391,7 +394,7 @@ export const CoursesListing = () => {
                           <span className="text-green-600">Free</span>
                         )} */}
                         {course.is_paid && course.price > 0 ? (
-                          `₹ ${(course.price).toFixed(2)}`
+                          `₹ ${course.price.toFixed(2)}`
                         ) : (
                           <span className="text-green-600">Free</span>
                         )}

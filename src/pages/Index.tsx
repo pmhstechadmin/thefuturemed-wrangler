@@ -497,7 +497,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
 
       {/* Homepage Ads Carousel */}
       <section className="container mx-auto px-4">
-        <HomepageAdsCarousel />
+        <HomepageAdsCarousel   />
       </section>
 
       {/* Features Grid */}

@@ -775,13 +775,19 @@ const checkEnrollmentStatus = async () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Badge
+                  className="text-sm bg-blue-100 text-800"
                   variant={
                     course.status === "published" ? "default" : "secondary"
                   }
                 >
                   {course.status}
                 </Badge>
-                <Badge variant="outline">Medical</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-sm bg-blue-100 text-800"
+                >
+                  Medical
+                </Badge>
                 {course.has_project && (
                   <Badge variant="outline">Project Included</Badge>
                 )}
@@ -1119,8 +1125,6 @@ const checkEnrollmentStatus = async () => {
                         {creatorProfile.category}
                       </p>
                     )}
-
- 
 
                     {creatorProfile?.bio && (
                       <p className="text-sm text-gray-700 mt-2">

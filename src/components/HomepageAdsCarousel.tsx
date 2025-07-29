@@ -1,8 +1,15 @@
-
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import AuthModal from "./AuthModal";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Ad {
   id: string;
@@ -16,6 +23,41 @@ interface Ad {
 
 const HomepageAdsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState(null);
+  const [authMode, setAuthMode] = useState<"signin">("signin");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    checkUser();
+  }, []);
+  const checkUser = async () => {
+    try {
+      console.log("🔄 Checking user session...");
+
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("❌ Error getting session:", error);
+      }
+
+      console.log("📦 Full session data:", session);
+      console.log("👤 User data:", session?.user);
+
+      setUser(session?.user || null);
+    } catch (error) {
+      console.error("❗ Unexpected error checking user:", error);
+    } finally {
+      setLoading(false);
+      console.log("✅ Done checking user. Loading set to false.");
+    }
+  };
+  const handleAuthSuccess = () => {
+    // Handle successful authentication - you can add any additional logic here
+    console.log("Authentication successful");
+  };
 
   // Sample ads data for homepage
   const ads: Ad[] = [
@@ -27,18 +69,29 @@ const HomepageAdsCarousel = () => {
         "Your comprehensive platform for medical education and professional development.",
       image: "/placeholder.svg",
       buttonText: "Get Started",
-      buttonLink: "/register",
+      buttonLink: "/profile",
+      // buttonLink: "/register",
       backgroundColor: "bg-gradient-to-r from-blue-600 to-blue-700",
     },
+    // {
+    //   id: "2",
+    //   title: "Medical Conference 2024",
+    //   description:
+    //     "Join the biggest medical conference of the year. Network with professionals worldwide.",
+    //   image: "/placeholder.svg",
+    //   buttonText: "Register Now",
+    //   buttonLink: "/e-seminar",
+    //   backgroundColor: "bg-gradient-to-r from-green-600 to-green-700",
+    // },
     {
       id: "2",
-      title: "Medical Conference 2024",
+      title: "E-Seminar Series",
       description:
-        "Join the biggest medical conference of the year. Network with professionals worldwide.",
+        "Join our interactive online seminars with industry experts. Next session starts soon!",
       image: "/placeholder.svg",
-      buttonText: "Register Now",
+      buttonText: "View Schedule",
       buttonLink: "/e-seminar",
-      backgroundColor: "bg-gradient-to-r from-green-600 to-green-700",
+      backgroundColor: "bg-gradient-to-r from-blue-500 to-blue-600",
     },
     {
       id: "3",
@@ -50,15 +103,26 @@ const HomepageAdsCarousel = () => {
       buttonLink: "/e-learning",
       backgroundColor: "bg-gradient-to-r from-purple-600 to-purple-700",
     },
+    // {
+    //   id: "4",
+    //   title: "Latest Medical Equipment",
+    //   description:
+    //     "Discover cutting-edge medical equipment and pharmaceutical products.",
+    //   image: "/placeholder.svg",
+    //   buttonText: "Browse Dashboard",
+    //   // buttonText: "Browse Products",
+    //   buttonLink: "/dashboard",
+    //   // buttonLink: "/products",
+    //   backgroundColor: "bg-gradient-to-r from-orange-600 to-orange-700",
+    // },
     {
       id: "4",
-      title: "Latest Medical Equipment",
+      title: "Dashboard",
       description:
-        "Discover cutting-edge medical equipment and pharmaceutical products.",
+        "Access real-time metrics and insights about your professional activities and progress.",
       image: "/placeholder.svg",
-      buttonText: "Browse Products",
+      buttonText: "View Dashboard",
       buttonLink: "/dashboard",
-      // buttonLink: "/products",
       backgroundColor: "bg-gradient-to-r from-orange-600 to-orange-700",
     },
     {
@@ -83,56 +147,78 @@ const HomepageAdsCarousel = () => {
   }, [ads.length]);
 
   return (
-    <div className="mb-16">
-      <Carousel className="w-full max-w-full">
-        <CarouselContent>
-          {ads.map((ad, index) => (
-            <CarouselItem key={ad.id}>
-              <Card className="border-0 shadow-2xl overflow-hidden">
-                <CardContent className={`${ad.backgroundColor} text-white p-0`}>
-                  <div className="flex items-center min-h-[200px] md:h-40">
-                    <div className="flex-1 p-8">
-                      <h3 className="text-2xl md:text-3xl font-bold mb-3">{ad.title}</h3>
-                      <p className="text-white/90 mb-6 text-base md:text-lg leading-relaxed">{ad.description}</p>
-                      <Button 
-                        variant="secondary" 
-                        size="lg"
-                        onClick={() => window.location.href = ad.buttonLink}
-                        className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-200"
-                      >
-                        {ad.buttonText}
-                      </Button>
-                    </div>
-                    {/* <div className="hidden md:block w-40 h-40 flex-shrink-0 mr-8">
+    <>
+      <div className="mb-16">
+        <Carousel className="w-full max-w-full">
+          <CarouselContent>
+            {ads.map((ad, index) => (
+              <CarouselItem key={ad.id}>
+                <Card className="border-0 shadow-2xl overflow-hidden">
+                  <CardContent
+                    className={`${ad.backgroundColor} text-white p-0`}
+                  >
+                    <div className="flex items-center min-h-[200px] md:h-40">
+                      <div className="flex-1 p-8">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                          {ad.title}
+                        </h3>
+                        <p className="text-white/90 mb-6 text-base md:text-lg leading-relaxed">
+                          {ad.description}
+                        </p>
+                        <Button
+                          variant="secondary"
+                          size="lg"
+                          onClick={() => {
+                            if (!user) {
+                              setShowAuthModal(true); // Redirect to registration if user not found
+                              return;
+                            }
+                            window.open(ad.buttonLink, "_blank");
+                          }}
+                          // onClick={() => window.location.href = ad.buttonLink}
+                          className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-200"
+                        >
+                          {ad.buttonText}
+                        </Button>
+                      </div>
+                      {/* <div className="hidden md:block w-40 h-40 flex-shrink-0 mr-8">
                       <img 
                         src={ad.image} 
                         alt={ad.title}
                         className="w-full h-full object-cover rounded-xl shadow-lg"
                       />
                     </div> */}
-                  </div>
-                </CardContent>
-              </Card>
-            </CarouselItem>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 bg-white/20 border-white/30 text-white hover:bg-white/30" />
+          <CarouselNext className="right-4 bg-white/20 border-white/30 text-white hover:bg-white/30" />
+        </Carousel>
+
+        {/* Carousel indicators */}
+        <div className="flex justify-center mt-6 space-x-3">
+          {ads.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? "bg-blue-600 scale-110"
+                  : "bg-gray-300 hover:bg-gray-400"
+              }`}
+            />
           ))}
-        </CarouselContent>
-        <CarouselPrevious className="left-4 bg-white/20 border-white/30 text-white hover:bg-white/30" />
-        <CarouselNext className="right-4 bg-white/20 border-white/30 text-white hover:bg-white/30" />
-      </Carousel>
-      
-      {/* Carousel indicators */}
-      <div className="flex justify-center mt-6 space-x-3">
-        {ads.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentIndex ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          />
-        ))}
+        </div>
       </div>
-    </div>
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
+    </>
   );
 };
 

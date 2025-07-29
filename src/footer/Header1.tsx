@@ -27,13 +27,47 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import AuthModal from "@/components/AuthModal";
 
 const Header = ({ seminar = null }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isHost = seminar?.host_id === user?.id;
+const [showAuthModal, setShowAuthModal] = useState(false);
+const [authMode, setAuthMode] = useState<"signin" >("signin");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    checkUser();
+  }, []);
+  const checkUser = async () => {
+    try {
+      console.log("🔄 Checking user session...");
 
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("❌ Error getting session:", error);
+      }
+
+      console.log("📦 Full session data:", session);
+      console.log("👤 User data:", session?.user);
+
+      setUser(session?.user || null);
+    } catch (error) {
+      console.error("❗ Unexpected error checking user:", error);
+    } finally {
+      setLoading(false);
+      console.log("✅ Done checking user. Loading set to false.");
+    }
+  };
+   const handleAuthSuccess = () => {
+     // Handle successful authentication - you can add any additional logic here
+     console.log("Authentication successful");
+   };
   useEffect(() => {
     const fetchUser = async () => {
       const {
@@ -60,236 +94,257 @@ const Header = ({ seminar = null }) => {
   ];
 
   return (
-    <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left Section - Logo and Back Button */}
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <Button
-              variant="outline"
-              onClick={handleBackNavigation}
-              className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
-              title="Go back"
-            >
-              <ArrowLeft className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Back</span>
-            </Button>
+    <>
+      <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left Section - Logo and Back Button */}
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleBackNavigation}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                title="Go back"
+              >
+                <ArrowLeft className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Back</span>
+              </Button>
 
-            <Link to="/" className="flex items-center">
-              <img
-                src={logo}
-                alt="MedPortal Logo"
-                className="h-10 w-auto max-w-[200px]"
-              />
-            </Link>
+              <Link to="/" className="flex items-center">
+                <img
+                  src={logo}
+                  alt="MedPortal Logo"
+                  className="h-10 w-auto max-w-[200px]"
+                />
+              </Link>
 
-            {/* Seminar Status Indicator */}
-            {seminar?.meeting_id && (
-              <div className="flex items-center space-x-2 ml-2 md:ml-4">
-                <span className="text-white text-xs md:text-sm bg-white/10 px-2 py-1 md:px-3 md:py-1 rounded-full">
-                  {isHost ? "Hosting" : "User"}
-                  {/* {isHost ? "Hosting" : "Joined"} */}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Right Section - Navigation Items */}
-          <div className="flex items-center space-x-2 md:space-x-4">
-            {user ? (
-              <>
-                {/* Desktop View - Full User Info */}
-                <div className="hidden lg:flex items-center space-x-2">
-                  <div className="dropdown">
-                    <button
-                      className="btn btn-secondary dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Welcome
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
-                    >
-                      <li>
-                        <span className="dropdown-item-text text-muted">
-                          {user?.email}
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  <Button
-                    variant="outline"
-                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
-                    onClick={() => navigate("/profile")}
-                    title="Profile"
-                  >
-                    <UserIcon className="h-4 w-4 md:mr-2" />
-                    <span className="hidden md:inline">Profile</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
-                    onClick={handleSignOut}
-                    title="Sign Out"
-                  >
-                    <LogOut className="h-4 w-4 md:mr-2" />
-                    <span className="hidden md:inline">Sign Out</span>
-                  </Button>
+              {/* Seminar Status Indicator */}
+              {/* {seminar?.meeting_id && (
+                <div className="flex items-center space-x-2 ml-2 md:ml-4">
+                  <span className="text-white text-xs md:text-sm bg-white/10 px-2 py-1 md:px-3 md:py-1 rounded-full">
+                    {isHost ? "User Hosting" : "User Participation"}
+                    {isHost ? "Hosting" : "Joined"}
+                  </span>
                 </div>
+              )} */}
+            </div>
 
-                {/* Tablet View - Condensed Menu */}
-                <div className="hidden md:flex lg:hidden">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+            {/* Right Section - Navigation Items */}
+            <div className="flex items-center space-x-2 md:space-x-4">
+              {user ? (
+                <>
+                  {/* Desktop View - Full User Info */}
+                  <div className="hidden lg:flex items-center space-x-2">
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
                       >
-                        <Menu className="h-4 w-4 mr-2" />
-                        <span>Menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 bg-black/80 backdrop-blur-md border-white/20">
-                      <DropdownMenuLabel className="text-white">
-                        {user.email}
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator className="bg-white/20" />
-                      {navLinks.map((link) => (
-                        <DropdownMenuItem
-                          key={link.path}
-                          className="text-white hover:bg-white/10"
-                          onClick={() => navigate(link.path)}
-                        >
-                          {link.label}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {/* Mobile View - Sidebar Menu */}
-                <div className="flex lg:hidden">
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm md:hidden"
+                        Welcome
+                      </button>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
                       >
-                        <Menu className="h-4 w-4" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent
-                      side="right"
-                      className="bg-black/90 backdrop-blur-md border-l border-white/20 w-64"
-                    >
-                      <div className="flex flex-col h-full">
-                        <div className="flex items-center justify-between mb-6">
-                          <h3 className="text-lg font-semibold text-white">
-                            Menu
-                          </h3>
-                          <SheetClose asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-white hover:bg-white/10"
-                            >
-                              <X className="h-5 w-5" />
-                            </Button>
-                          </SheetClose>
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto">
-                          <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full ">
-                            Welcome, {user.email}
+                        <li>
+                          <span className="dropdown-item-text text-muted">
+                            {user?.email}
                           </span>
-                          <div className="space-y-1">
-                            {navLinks.map((link) => (
-                              <Link
-                                key={link.path}
-                                to={link.path}
-                                className="block text-white/80 hover:text-white hover:bg-white/10 transition-colors text-sm font-medium px-3 py-2 rounded-md"
-                                onClick={() => setMobileMenuOpen(false)}
+                        </li>
+                        <li>
+                          {seminar?.meeting_id && (
+                            <div >
+                              <span className="dropdown-item-text text-muted">
+                                {isHost ? "User Hosting" : "User Participation"}
+                                {/* {isHost ? "Hosting" : "Joined"} */}
+                              </span>
+                            </div>
+                          )}
+                        </li>
+                      </ul>
+                    </div>
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                      onClick={() => navigate("/profile")}
+                      title="Profile"
+                    >
+                      <UserIcon className="h-4 w-4 md:mr-2" />
+                      <span className="hidden md:inline">Profile</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                      onClick={handleSignOut}
+                      title="Sign Out"
+                    >
+                      <LogOut className="h-4 w-4 md:mr-2" />
+                      <span className="hidden md:inline">Sign Out</span>
+                    </Button>
+                  </div>
+
+                  {/* Tablet View - Condensed Menu */}
+                  <div className="hidden md:flex lg:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                        >
+                          <Menu className="h-4 w-4 mr-2" />
+                          <span>Menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56 bg-black/80 backdrop-blur-md border-white/20">
+                        <DropdownMenuLabel className="text-white">
+                          {user.email}
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-white/20" />
+                        {navLinks.map((link) => (
+                          <DropdownMenuItem
+                            key={link.path}
+                            className="text-white hover:bg-white/10"
+                            onClick={() => navigate(link.path)}
+                          >
+                            {link.label}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* Mobile View - Sidebar Menu */}
+                  <div className="flex lg:hidden">
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm md:hidden"
+                        >
+                          <Menu className="h-4 w-4" />
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent
+                        side="right"
+                        className="bg-black/90 backdrop-blur-md border-l border-white/20 w-64"
+                      >
+                        <div className="flex flex-col h-full">
+                          <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-semibold text-white">
+                              Menu
+                            </h3>
+                            <SheetClose asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-white hover:bg-white/10"
                               >
-                                {link.label}
-                              </Link>
-                            ))}
+                                <X className="h-5 w-5" />
+                              </Button>
+                            </SheetClose>
+                          </div>
+
+                          <div className="flex-1 overflow-y-auto">
+                            <span className="text-white text-sm bg-white/10 px-3 py-1 rounded-full ">
+                              Welcome, {user.email}
+                            </span>
+                            <div className="space-y-1">
+                              {navLinks.map((link) => (
+                                <Link
+                                  key={link.path}
+                                  to={link.path}
+                                  className="block text-white/80 hover:text-white hover:bg-white/10 transition-colors text-sm font-medium px-3 py-2 rounded-md"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  {link.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="mt-auto pt-4 border-t border-white/20">
+                            <Button
+                              variant="outline"
+                              className="w-full text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm mb-2"
+                              onClick={() => navigate("/profile")}
+                            >
+                              <UserIcon className="h-4 w-4 mr-2" />
+                              Profile
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="w-full text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                              onClick={handleSignOut}
+                            >
+                              <LogOut className="h-4 w-4 mr-2" />
+                              Sign Out
+                            </Button>
                           </div>
                         </div>
+                      </SheetContent>
+                    </Sheet>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link to="/register" className="hidden sm:block">
+                    <Button
+                      variant="outline"
+                      className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
+                    >
+                      Register
+                    </Button>
+                  </Link>
 
-                        <div className="mt-auto pt-4 border-t border-white/20">
-                          <Button
-                            variant="outline"
-                            className="w-full text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm mb-2"
-                            onClick={() => navigate("/profile")}
-                          >
-                            <UserIcon className="h-4 w-4 mr-2" />
-                            Profile
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
-                            onClick={handleSignOut}
-                          >
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Sign Out
-                          </Button>
-                        </div>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link to="/register" className="hidden sm:block">
-                  <Button
-                    variant="outline"
-                    className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm"
-                  >
-                    Register
-                  </Button>
-                </Link>
+                  <>
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 p-2 md:px-4 md:py-2"
+                      title="Sign In"
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setAuthMode("signin");
+                      }}
+                    >
+                      <UserIcon className="h-4 w-4 md:mr-2" />
+                      <span className="hidden md:inline">Sign In</span>
+                    </Button>
+                  </>
+                </>
+              )}
 
-                <Link to="/login">
-                  <Button
-                    className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 p-2 md:px-4 md:py-2"
-                    title="Sign In"
-                  >
-                    <UserIcon className="h-4 w-4 md:mr-2" />
-                    <span className="hidden md:inline">Sign In</span>
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            {/* Home Button - Always visible */}
-            <Button
-              variant="outline"
-              onClick={() => navigate("/")}
-              className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
-              title="Go to home page"
-            >
-              <Home className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Home</span>
-            </Button>
+              {/* Home Button - Always visible */}
+              <Button
+                variant="outline"
+                onClick={() => navigate("/")}
+                className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"
+                title="Go to home page"
+              >
+                <Home className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Home</span>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
+    </>
   );
 };
 

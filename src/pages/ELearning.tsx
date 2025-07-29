@@ -292,6 +292,14 @@ const ELearning = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    // variant="outline"
+                    onClick={() => navigate("/dashboard")}
+                    className="w-full text-left"
+                    title="Go to home page"
+                  >
+                    Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setActiveTab("browse")}>
                     Browse Courses
                   </DropdownMenuItem>
@@ -313,6 +321,14 @@ const ELearning = () => {
               {/* Desktop Home Button */}
               {/* Desktop Navigation Tabs */}
               <nav className="hidden md:flex space-x-4 justify-center">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/dashboard")}
+                  className="w-full text-left"
+                  title="Go to home page"
+                >
+                  Dashboard
+                </Button>
                 <Button
                   variant={activeTab === "browse" ? "default" : "outline"}
                   onClick={() => setActiveTab("browse")}
@@ -356,9 +372,8 @@ const ELearning = () => {
       <main className="container mx-auto px-4 py-8 pb-20 md:pb-8">
         {activeTab === "browse" && (
           <div className="space-y-8">
-
             {/* Stats Cards - Responsive Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card
                 className="hover:shadow-lg transition-shadow cursor-pointer"
                 onClick={() => navigate("/courses")}
@@ -430,7 +445,7 @@ const ELearning = () => {
                   </p>
                 </CardContent>
               </Card>
-            </div>
+            </div> */}
 
             <PublishedCourses />
           </div>
@@ -486,7 +501,7 @@ const ELearning = () => {
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 };

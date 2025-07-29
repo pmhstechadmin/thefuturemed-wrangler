@@ -1339,7 +1339,7 @@ const ProductPortal = () => {
                         </Button>
                         <Button
                           variant="outline"
-                          className="text-white border-white/30 hover:bg-white/10"
+                          className="text-gray-700  hover:text-white border-white/30 hover:bg-white/10 "
                         >
                           {product.id === "community" && user
                             ? "Join Now"
@@ -1349,7 +1349,7 @@ const ProductPortal = () => {
                     )}
                     <Button
                       variant="ghost"
-                      className="text-gray-300 hover:text-white"
+                      className="text-gray-300 hover:text-black"
                       onClick={() => {
                         mixpanelInstance.track(
                           "close view Dashboard Button Clicked",

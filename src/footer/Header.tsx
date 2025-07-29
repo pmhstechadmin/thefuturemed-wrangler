@@ -278,12 +278,46 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import AuthModal from "@/components/AuthModal";
 
 const Header = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const [showAuthModal, setShowAuthModal] = useState(false);
+const [authMode, setAuthMode] = useState<"signin" >("signin");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    checkUser();
+  }, []);
+  const checkUser = async () => {
+    try {
+      console.log("🔄 Checking user session...");
 
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("❌ Error getting session:", error);
+      }
+
+      console.log("📦 Full session data:", session);
+      console.log("👤 User data:", session?.user);
+
+      setUser(session?.user || null);
+    } catch (error) {
+      console.error("❗ Unexpected error checking user:", error);
+    } finally {
+      setLoading(false);
+      console.log("✅ Done checking user. Loading set to false.");
+    }
+  };
+   const handleAuthSuccess = () => {
+     // Handle successful authentication - you can add any additional logic here
+     console.log("Authentication successful");
+   };
   useEffect(() => {
     const fetchUser = async () => {
       const {
@@ -310,6 +344,7 @@ const Header = () => {
   ];
 
   return (
+    <>
     <header className="bg-black/30 backdrop-blur-md border-b border-white/20 sticky top-0 z-50 shadow-xl">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
@@ -507,15 +542,18 @@ const Header = () => {
                   </Button>
                 </Link>
 
-                <Link to="/login">
+                <>
                   <Button
                     className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 p-2 md:px-4 md:py-2"
                     title="Sign In"
+                    onClick={() => {
+                     setShowAuthModal(true);
+                      setAuthMode("signin");}}
                   >
                     <UserIcon className="h-4 w-4 md:mr-2" />
                     <span className="hidden md:inline">Sign In</span>
                   </Button>
-                </Link>
+                </>
               </>
             )}
 
@@ -533,6 +571,12 @@ const Header = () => {
         </div>
       </div>
     </header>
+    <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
+      </>
   );
 };
 

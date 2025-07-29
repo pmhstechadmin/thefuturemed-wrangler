@@ -102,7 +102,7 @@ export const JobFetchingProfile = () => {
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search by name, qualification, skills..."
+                placeholder="  Search by name, qualification, skills..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
