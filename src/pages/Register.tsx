@@ -640,7 +640,7 @@ const Register = () => {
                         <SelectContent>
                           <SelectItem value="doctor">Doctor</SelectItem>
                           <SelectItem value="dentist">Dentist</SelectItem>
-                          <SelectItem value="superspecialist">
+                          <SelectItem value="specialist">
                             Specialist
                           </SelectItem>
                           <SelectItem value="superspecialist">

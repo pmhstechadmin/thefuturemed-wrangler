@@ -726,8 +726,9 @@ const ProductCard = ({
               }`}
             >
               {notAvailableProducts.includes(product.id)
-                ? "Not Available"
-                : isAuthenticated
+                ? "coming soon"
+                : // ? "Not Available"
+                isAuthenticated
                 ? "Available"
                 : "Login Required"}
             </Badge>

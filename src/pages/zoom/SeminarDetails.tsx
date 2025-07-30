@@ -1247,6 +1247,7 @@ const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(true);
   const [currentISTTime, setCurrentISTTime] = useState("");
  const [userProfile, setUserProfile] = useState<any>(null);
  const supabaseAnonKey = import.meta.env.VITE_VIDEOSDK_TOKEN;
+ 
 
  const [meetingOptions, setMeetingOptions] = useState({
    disableParticipantMic: false,
@@ -1666,8 +1667,15 @@ useEffect(() => {
   //   }
   // };
 const handleRegister = async () => {
-  if (!user || !seminarId || !seminar) return;
-
+  // if (!user || !seminarId || !seminar) return;
+  if (!user || !seminarId || !seminar) {
+    toast({
+      title: "Registration Required",
+      description: "You must register for the seminar before joining",
+      variant: "destructive",
+    });
+    return;
+  }
   try {
     setRegistering(true);
 
