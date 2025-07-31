@@ -359,7 +359,19 @@ const App = () => {
             <Route path="/my-job" element={<Myjob />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/my-job-profile" element={<MyJobProfile />} />
-
+<Route
+              path="/mee"
+              element={
+                <VideoMeeting4
+                  apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
+                  meetingId="your-meeting-id"
+                  name="John Doe"
+                  micEnabled={true}
+                  webcamEnabled={true}
+                  containerId={null}
+                />
+              }
+            />
             <Route path="/saved-job" element={<SaveJob />} />
             <Route path="/saved-candidates" element={<SaveCandidate />} />
             <Route path="/blog-list/:id" element={<BlogList />} />
