@@ -958,7 +958,6 @@
 //   const navigate = useNavigate();
 //     const [timer, setTimer] = useState(3); // 3-second countdown
 //     const [shouldRedirect, setShouldRedirect] = useState(false);
-    
 
 //     useEffect(() => {
 //       let countdown: NodeJS.Timeout;
@@ -1181,11 +1180,10 @@ import { ArrowLeft, Shield, UserPlus, Home, User, Menu, X } from "lucide-react";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import "./PostBlog.css";
 import Header from "@/footer/Header";
-
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 // Register the image resize module
 Quill.register("modules/imageResize", ImageResize);
-
 
 const modules = {
   toolbar: {
@@ -1240,7 +1238,6 @@ const modules = {
   },
 };
 
-
 const formats = [
   "header",
   "bold",
@@ -1257,8 +1254,11 @@ const formats = [
   "image",
   "video",
 ];
-
-const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
+interface PostBlogProps {
+  onBlogPosted?: () => void;
+}
+// const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
+const PostBlog: React.FC<PostBlogProps> = ({ onBlogPosted = () => {} }) => {
   const [title, setTitle] = useState("");
   const quillRef = useRef(null); // 👈 create a ref to control the editor
 
@@ -1290,19 +1290,16 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
     };
 
     // Listen to text and format changes
-    quill.on('text-change', handleManualChange);
-    quill.on('selection-change', handleManualChange);
-    quill.on('editor-change', handleManualChange);
+    quill.on("text-change", handleManualChange);
+    quill.on("selection-change", handleManualChange);
+    quill.on("editor-change", handleManualChange);
 
     return () => {
-      quill.off('text-change', handleManualChange);
-      quill.off('selection-change', handleManualChange);
-      quill.off('editor-change', handleManualChange);
+      quill.off("text-change", handleManualChange);
+      quill.off("selection-change", handleManualChange);
+      quill.off("editor-change", handleManualChange);
     };
   }, []);
-
-
-
 
   useEffect(() => {
     if (quillRef.current) {
@@ -1315,8 +1312,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
       }
     }
   }, [content]);
-
-
 
   const handleSignOut = async () => {
     try {
@@ -1371,7 +1366,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
     }
   };
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -1379,8 +1373,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
   const handleContentChange = (value: string) => {
     setFormData({ ...formData, content: value });
   };
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1439,7 +1431,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
           /<img([^>]+)src=["']data:image\/[^"']+["']/,
           `<img$1src="${publicImageUrl}"`
         );
-
       } else {
         console.error("Image upload failed:", uploadError.message);
       }
@@ -1456,7 +1447,9 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
     if (error) {
       setMessage(`❌ Error: ${error.message}`);
     } else {
-      setMessage("✅ Blog posted successfully!");
+      setMessage(
+        "✅ Blog posted successfully!. It is not published yet. Please go to Profile page Blog section to publish it."
+      );
       setTitle("");
       setContent("");
       onBlogPosted();
@@ -1464,7 +1457,6 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
 
     setLoading(false);
   };
-
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -1675,13 +1667,19 @@ const PostBlog: React.FC<{ onBlogPosted: () => void }> = ({ onBlogPosted }) => {
             type="submit"
             className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto disabled:opacity-70"
             disabled={loading}
+            onClick={() => {
+              mixpanelInstance.track(" Blog Posting Button Clicked", {
+                timestamp: new Date().toISOString(),
+              });
+            }}
           >
             {loading ? "Posting..." : "Post Blog"}
           </button>
           {message && (
             <p
-              className={`text-sm mt-3 ${message.includes("✅") ? "text-green-600" : "text-red-600"
-                }`}
+              className={`text-sm mt-3 ${
+                message.includes("✅") ? "text-green-600" : "text-red-600"
+              }`}
             >
               {message}
             </p>

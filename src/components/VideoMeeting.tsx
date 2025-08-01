@@ -405,9 +405,31 @@ const VideoMeeting = ({
     meetingTitle,
     isRejoining,
   ]);
-
+ const handleHostAction = () => {
+    console.log("Host-only action triggered");
+    // You can trigger any logic here, e.g., start recording, custom alert, etc.
+  };
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+       {isHost && (
+        <button
+          onClick={handleHostAction}
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            zIndex: 1000,
+            padding: "8px 12px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Host Action
+        </button>
+      )}
       <div
         ref={containerRef}
         id={idRef.current}

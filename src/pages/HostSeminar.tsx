@@ -1119,7 +1119,7 @@ Looking forward to meet you at the seminar!
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Date *</Label>
+                  <Label> Start Date *</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -1144,7 +1144,7 @@ Looking forward to meet you at the seminar!
                   </Popover>
                 </div>
                 <div>
-                  <Label htmlFor="time">Time (IST Indian) *</Label>
+                  <Label htmlFor="time">Start Time (IST Indian) *</Label>
                   <Input
                     id="time"
                     type="time"
@@ -1407,6 +1407,10 @@ Looking forward to meet you at the seminar!
                     </SelectContent>
                   </Select>
                 </div>
+              <div className="flex flex-col justify-center">
+    <Label>Duration : 1 hour</Label>
+    
+  </div>
 
                 {/* <div>
                   <Label htmlFor="timezone">Timezone *</Label>

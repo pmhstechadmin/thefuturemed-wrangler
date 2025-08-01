@@ -824,7 +824,8 @@ const navLinks = [
   { path: "/e-seminar", label: "E-Seminar" },
   { path: "/e-learning", label: "E-Learning" },
   { path: "/jobs", label: "Jobs" },
-  { path: "/calendar", label: "Calendar" },
+  { path: "/blog-portal", label: "Blogs" },
+  // { path: "/calendar", label: "Calendar" },
 ];
 
 const ProductPortal = () => {

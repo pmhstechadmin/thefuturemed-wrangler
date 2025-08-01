@@ -160,11 +160,17 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                 Jobs
               </Link>
               <Link
+                to="/blog-portal"
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50"
+              >
+                Blogs
+              </Link>
+              {/* <Link
                 to="/calendar"
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md hover:bg-blue-50"
               >
                 Calendar
-              </Link>
+              </Link> */}
               {user ? (
                 <div className="flex items-center gap-4">
                   {/* Profile Button */}
@@ -300,11 +306,17 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                   Jobs
                 </Link>
                 <Link
+                  to="/blog-portal"
+                  className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50"
+                >
+                  Blogs
+                </Link>
+                {/* <Link
                   to="/calendar"
                   className="text-gray-600 hover:text-blue-600 transition-colors font-medium p-3 rounded-md hover:bg-blue-50"
                 >
                   Calendar
-                </Link>
+                </Link> */}
                 {/* <Button
                   onClick={() => setShowAuthModal(true)}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"

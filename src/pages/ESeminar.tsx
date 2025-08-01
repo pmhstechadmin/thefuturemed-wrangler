@@ -1307,12 +1307,19 @@ const ESeminar = () => {
                             variant="secondary"
                             className="text-sm bg-blue-100 text-800"
                           >
-                            {formatTime(seminar.time)}
+                            Start Time : {formatTime(seminar.time)}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600 mb-2">
-                          <UserIcon className="h-4 w-4" />
-                          <span>Hosted by {seminar.host_name}</span>
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center gap-2 text-gray-600 mb-2">
+                            <UserIcon className="h-4 w-4" />
+                            <span>Hosted by {seminar.host_name}</span>
+                          </div>
+                          <div>
+                            <p>
+                              <b>Duration:</b> 1 hour
+                            </p>
+                          </div>
                         </div>
                         {seminar.description && (
                           <p className="text-gray-600 text-sm">
