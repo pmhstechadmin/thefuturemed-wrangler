@@ -221,9 +221,11 @@ const UpdatePassword = () => {
       //  alert('Failed to update password');
     else {
       toast({
-        title: "Password updated",
-        description: "Password updated!",
-        variant: "destructive",
+        title: "Password Updated Successfully",
+        description: "Your password has been changed successfully!",
+        // description: "Password updated!",
+        className: "bg-white text-grey-600 border-grey-200",
+        // variant: "destructive",
       });
       // alert('Password updated!');
       navigate('/');
