@@ -940,7 +940,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `https://pro-portal-register.vercel.app/update-password`,
+      redirectTo: `https://www.thefuturemed.com/update-password`,
+      // redirectTo: `https://pro-portal-register.vercel.app/update-password`,
       // redirectTo: `${window.location.origin}/update-password`,
     });
 

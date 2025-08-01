@@ -173,6 +173,8 @@ import { Shield, UserPlus, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from '@/footer/Footer';
+import Header from '@/footer/Header';
+import { useToast } from '@/hooks/use-toast';
 
 
 const UpdatePassword = () => {
@@ -181,11 +183,17 @@ const UpdatePassword = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const navigate = useNavigate();
+   const { toast } = useToast();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
-        alert('Please use the email link to reset your password.');
+        toast({
+          title: "reset your password",
+          description: "Please use the email link to reset your password.",
+          variant: "destructive",
+        });
+        // alert('Please use the email link to reset your password.');
         navigate('/');
       }
     });
@@ -193,14 +201,31 @@ const UpdatePassword = () => {
 
   const handleUpdate = async () => {
     if (password !== repeatPassword) {
-      alert('Passwords do not match');
+      toast({
+        title: "reset your password",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      // alert('Passwords do not match');
       return;
     }
 
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) alert('Failed to update password');
+    if (error){
+      toast({
+        title: "Password Failed",
+        description: "Failed to update password",
+        variant: "destructive",
+      });
+    }
+      //  alert('Failed to update password');
     else {
-      alert('Password updated!');
+      toast({
+        title: "Password updated",
+        description: "Password updated!",
+        variant: "destructive",
+      });
+      // alert('Password updated!');
       navigate('/');
     }
   };
@@ -208,13 +233,13 @@ const UpdatePassword = () => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-blue-50 to-white">
       {/* NAVBAR */}
-      <nav className="bg-white shadow border-b border-blue-100 sticky top-0 z-50">
+      {/* <nav className="bg-white shadow border-b border-blue-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Shield className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">MedPortal</h1>
-            </div> */}
+            </div>
             <div className="flex items-center space-x-2">
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -290,7 +315,8 @@ const UpdatePassword = () => {
             </div>
           )}
         </div>
-      </nav>
+      </nav> */}
+      <Header/>
 
       {/* PASSWORD FORM */}
       <div className="flex justify-center items-center py-12">

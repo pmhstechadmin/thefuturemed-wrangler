@@ -187,7 +187,7 @@
 // //         }
 
 // //         console.log("Participant count response:", count);
-        
+
 // //         setParticipantCount(count );
 // //         return count || 0;
 // //       } catch (error) {
@@ -197,7 +197,6 @@
 // //       }
 // //     };
 
-   
 // //     const fetchData = async () => {
 // //       try {
 // //         // Get user session
@@ -688,7 +687,6 @@
 // //                 <span className="hidden md:inline">Back</span>
 // //               </Button>
 
-
 // //               <div className="flex items-center space-x-2">
 // //                 <Link to="/">
 // //                   <img src={logo} alt="Logo" className="h-10 w-100 mr-2" />
@@ -889,7 +887,7 @@
 // //                     <p className="text-gray-600">{seminar.host_country}</p>
 // //                   </div>
 // //                 </div>
-              
+
 // //               </div>
 // //             </div>
 // //             {isHost && (
@@ -897,7 +895,7 @@
 // //                 <Card>
 // //                   <CardHeader>
 // //                     <CardTitle>
-// //                       Registered Participants 
+// //                       Registered Participants
 // //                     </CardTitle>
 // //                   </CardHeader>
 // //                   <CardContent>
@@ -1241,7 +1239,7 @@
 // // };
 
 // // export default SeminarDetails;
- 
+
 // import React, { useEffect, useState } from 'react'
 
 // const SeminarDetails = () => {
@@ -1277,7 +1275,6 @@
 // };
 
 // export default SeminarDetails
-
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -1645,7 +1642,6 @@ const SeminarDetails = () => {
         setSeminar((prev) => (prev ? { ...prev, is_host_joined: true } : null));
       }
 
-
       // Join the meeting
       setShowMeeting(true);
     } catch (error) {
@@ -1753,12 +1749,12 @@ const SeminarDetails = () => {
       setIsRegistered(true);
       setRegistrationId(data.id);
       console.log("Registration ID:", data.id);
-            // setParticipantCount((prev) => {
-            //   const newCount = prev + 1;
-            //   console.log("Incremented participant count to:", newCount); // Log the new count
-            //   return newCount;
-            // });
-            setParticipantCount(prev => Math.max( prev - 1));
+      // setParticipantCount((prev) => {
+      //   const newCount = prev + 1;
+      //   console.log("Incremented participant count to:", newCount); // Log the new count
+      //   return newCount;
+      // });
+      setParticipantCount((prev) => Math.max(prev - 1));
 
       // Send confirmation email
       const emailResponse = await fetch(
@@ -1828,11 +1824,11 @@ The Seminar Team`,
       setIsRegistered(false);
       setRegistrationId(null);
       // setParticipantCount((prev) => prev - 1);
-             setParticipantCount((prev) => {
-               const newCount = prev - 1;
-               console.log("Decremented participant count to:", newCount); // Log the new count
-               return newCount;
-             });
+      setParticipantCount((prev) => {
+        const newCount = prev - 1;
+        console.log("Decremented participant count to:", newCount); // Log the new count
+        return newCount;
+      });
       toast({
         title: "Registration Cancelled",
       });
@@ -1864,7 +1860,7 @@ The Seminar Team`,
   };
 
   if (showMeeting && seminarId) {
-  // if (showMeeting && seminar?.meeting_id) {
+    // if (showMeeting && seminar?.meeting_id) {
     return (
       <div>
         <Header />
@@ -2380,7 +2376,7 @@ The Seminar Team`,
                             className={`px-8 py-3 text-lg bg-green-600 hover:bg-green-700`}
                           >
                             {isJoinButtonDisabled
-                              ? "Meeting Expired"
+                              ? "You're the host — but it's not time to start the seminar just yet."
                               : "Start Meeting"}
                           </Button>
                         </DialogTrigger>
