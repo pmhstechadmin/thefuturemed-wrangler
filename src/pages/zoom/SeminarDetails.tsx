@@ -1372,7 +1372,7 @@ const SeminarDetails = () => {
   const [currentISTTime, setCurrentISTTime] = useState("");
   const [userProfile, setUserProfile] = useState<any>(null);
   const supabaseAnonKey = import.meta.env.VITE_VIDEOSDK_TOKEN;
-
+const [seminarEndTime, setSeminarEndTime] = useState<Date | null>(null);
   const [meetingOptions, setMeetingOptions] = useState({
     disableParticipantMic: false,
     disableParticipantVideo: false,
@@ -1399,50 +1399,105 @@ const SeminarDetails = () => {
     if (!error) setParticipantCount(count || 0);
   };
 
-  useEffect(() => {
-    if (!seminar) {
-      console.log("Seminar data not available yet.");
+  // useEffect(() => {
+  //   if (!seminar) {
+  //     console.log("Seminar data not available yet.");
+  //     return;
+  //   }
+
+  //   const seminarDateTime = new Date(`${seminar.date}T${seminar.time}`);
+  //   console.log("Parsed Seminar DateTime (local):", seminarDateTime);
+  //   setSeminarStartTime(seminarDateTime);
+
+  //   const timer = setInterval(() => {
+  //     const now = new Date();
+  //     console.log("Current Local Time:", now);
+  //     setHostCurrentTime(now);
+
+  //     const diffMs = seminarDateTime.getTime() - now.getTime();
+  //     console.log("Time difference in ms:", diffMs);
+
+  //     if (diffMs <= 0) {
+  //       console.log("Seminar has already started.");
+  //       setTimeLeft("Seminar has started");
+
+  //       // ✅ Enable the join button once time has passed
+  //       setIsJoinButtonDisabled(false);
+  //       return;
+  //     } else {
+  //       setIsJoinButtonDisabled(true);
+  //     }
+
+  //     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  //     const hours = Math.floor(
+  //       (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  //     );
+  //     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  //     const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+  //     setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+  //   }, 1000);
+
+  //   return () => {
+  //     console.log("Clearing countdown interval");
+  //     clearInterval(timer);
+  //   };
+  // }, [seminar]);
+
+useEffect(() => {
+  if (!seminar) {
+    console.log("Seminar data not available yet.");
+    return;
+  }
+
+  const seminarDateTime = new Date(`${seminar.date}T${seminar.time}`);
+  console.log("Parsed Seminar DateTime (local):", seminarDateTime);
+  setSeminarStartTime(seminarDateTime);
+
+  const seminarEndTime = new Date(seminarDateTime.getTime() + 60 * 60 * 1000); // Add 1 hour
+ const endTime = new Date(seminarDateTime.getTime() + 60 * 60 * 1000);
+    setSeminarEndTime(endTime);
+
+  const timer = setInterval(() => {
+    const now = new Date();
+    console.log("Current Local Time:", now);
+    setHostCurrentTime(now);
+
+    // If seminar has ended (1 hour passed)
+    if (now >= endTime) {
+      console.log("Seminar has ended (1 hour window passed)");
+      setTimeLeft("Seminar has ended");
+      setIsJoinButtonDisabled(true);
       return;
     }
 
-    const seminarDateTime = new Date(`${seminar.date}T${seminar.time}`);
-    console.log("Parsed Seminar DateTime (local):", seminarDateTime);
-    setSeminarStartTime(seminarDateTime);
+    const diffMs = seminarDateTime.getTime() - now.getTime();
+    console.log("Time difference in ms:", diffMs);
 
-    const timer = setInterval(() => {
-      const now = new Date();
-      console.log("Current Local Time:", now);
-      setHostCurrentTime(now);
+    if (diffMs <= 0) {
+      console.log("Seminar has started.");
+      setTimeLeft("Seminar has started");
+      setIsJoinButtonDisabled(false); // Enable button when seminar starts
+      return;
+    } else {
+      setIsJoinButtonDisabled(true); // Disable before seminar starts
+    }
 
-      const diffMs = seminarDateTime.getTime() - now.getTime();
-      console.log("Time difference in ms:", diffMs);
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-      if (diffMs <= 0) {
-        console.log("Seminar has already started.");
-        setTimeLeft("Seminar has started");
+    setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+  }, 1000);
 
-        // ✅ Enable the join button once time has passed
-        setIsJoinButtonDisabled(false);
-        return;
-      } else {
-        setIsJoinButtonDisabled(true);
-      }
-
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-    }, 1000);
-
-    return () => {
-      console.log("Clearing countdown interval");
-      clearInterval(timer);
-    };
-  }, [seminar]);
+  return () => {
+    console.log("Clearing countdown interval");
+    clearInterval(timer);
+  };
+}, [seminar]);
 
   const getDisplayName = () => {
     if (userProfile?.first_name && userProfile?.last_name) {
@@ -2285,7 +2340,7 @@ The Seminar Team`,
 
           <CardContent>
             <div className="space-y-4">
-              {timeLeft &&
+              {/* {timeLeft &&
               seminarStartTime &&
               seminar.host_country === "India" &&
               timeLeft ? (
@@ -2310,12 +2365,67 @@ The Seminar Team`,
                   Your Country: {seminar.host_country} — Please check the time
                   difference manually.
                 </span>
+              )} */}
+              {timeLeft === "Seminar has ended" ? (
+                <div className="bg-red-600 text-white py-3 px-4 rounded-lg mb-6 flex items-center">
+                  <Clock className="h-5 w-5 mr-2" />
+                  <span className="font-semibold">
+                    This seminar session has ended
+                  </span>
+                </div>
+              ) : timeLeft &&
+                seminarStartTime &&
+                seminar.host_country === "India" ? (
+                <div className="bg-blue-600 text-white py-3 px-4 rounded-lg mb-6 flex flex-col md:flex-row items-center justify-between">
+                  <div className="flex items-center mb-2 md:mb-0">
+                    <Clock className="h-5 w-5 mr-2" />
+                    <span className="font-semibold">Time left: {timeLeft}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CalendarDays className="h-5 w-5 mr-2" />
+                    <span className="text-sm">
+                      Ends: {formatDate(seminar.date)} at{" "}
+                      {formatTime(
+                        new Date(seminarEndTime!).toTimeString().slice(0, 5)
+                      )}
+                      {seminar.host_country &&
+                        ` (${seminar.host_country} Time)`}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-200 text-black py-3 px-4 rounded-lg mb-6 flex items-center">
+                  <Clock className="h-5 w-5 mr-2" />
+                  <span className="font-semibold">
+                    Your Country: {seminar.host_country} - Please check the time
+                    difference manually.
+                    {timeLeft &&
+                      ` Time left: ${timeLeft} (${seminar.host_country})`}
+                  </span>
+                </div>
               )}
             </div>
             <div className="space-y-4">
               {(seminar.meeting_id || isHost) && (
                 <div className="text-center py-4 space-y-4">
-                  {isHost ? (
+                  {/* {isHost ? (
+                    <p className="text-sm text-blue-500">
+                      You are hosting this seminar
+                    </p>
+                  ) : seminar?.is_host_joined ? (
+                    <p className="text-sm text-green-600">
+                      Host is available to join
+                    </p>
+                  ) : (
+                    <p className="text-sm text-yellow-600">
+                      Host has not joined yet
+                    </p>
+                  )} */}
+                  {timeLeft === "Seminar has ended" ? (
+                    <p className="text-sm text-red-600">
+                      This seminar session has concluded
+                    </p>
+                  ) : isHost ? (
                     <p className="text-sm text-blue-500">
                       You are hosting this seminar
                     </p>
@@ -2372,10 +2482,24 @@ The Seminar Team`,
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
-                            disabled={creatingMeeting || isJoinButtonDisabled}
-                            className={`px-8 py-3 text-lg bg-green-600 hover:bg-green-700`}
+                            disabled={
+                              creatingMeeting ||
+                              isJoinButtonDisabled ||
+                              timeLeft === "Seminar has ended"
+                            }
+                            // className={`px-8 py-3 text-lg bg-green-600 hover:bg-green-700`}
+                            className={`px-8 py-3 text-lg ${
+                              timeLeft === "Seminar has ended"
+                                ? "bg-gray-500 cursor-not-allowed"
+                                : "bg-green-600 hover:bg-green-700"
+                            }`}
                           >
-                            {isJoinButtonDisabled
+                            {/* {isJoinButtonDisabled
+                              ? "You're the host — but it's not time to start the seminar just yet."
+                              : "Start Meeting"} */}
+                            {timeLeft === "Seminar has ended"
+                              ? "Start Meeting"
+                              : isJoinButtonDisabled
                               ? "You're the host — but it's not time to start the seminar just yet."
                               : "Start Meeting"}
                           </Button>
@@ -2438,25 +2562,80 @@ The Seminar Team`,
                         </DialogContent>
                       </Dialog>
                     ) : (
+                      // <Button
+                      //   onClick={() => {
+                      //     mixpanelInstance.track(
+                      //       " Join Seminer Button Clicked",
+                      //       {
+                      //         timestamp: new Date().toISOString(),
+                      //       }
+                      //     );
+                      //     handleJoinMeeting();
+                      //   }}
+                      //   // onClick={handleJoinMeeting}
+                      //   disabled={
+                      //     creatingMeeting ||
+                      //     isJoinButtonDisabled ||
+                      //     timeLeft === "Seminar has ended"
+                      //   }
+                      //   // className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
+                      //   className={`px-8 py-3 text-lg ${
+                      //     timeLeft === "Seminar has ended"
+                      //       ? "bg-gray-500 cursor-not-allowed"
+                      //       : "bg-blue-600 hover:bg-blue-700"
+                      //   }`}
+                      // >
+                      //   {/* {creatingMeeting ? (
+                      //     <>
+                      //       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      //       Joining...
+                      //     </>
+                      //   ) : (
+                      //     "Join Meeting"
+                      //   )} */}
+                      //   {timeLeft === "Seminar has ended" ? (
+                      //     "Join Meeting"
+                      //   ) : creatingMeeting ? (
+                      //     <>
+                      //       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      //       Joining...
+                      //     </>
+                      //   ) : (? "You're the Participants — but it's not time to start the seminar just yet."
+                      //         :
+                      //     "Join Meeting"
+                      //   )}
+                      // </Button>
                       <Button
                         onClick={() => {
                           mixpanelInstance.track(
-                            " Join Seminer Button Clicked",
+                            "Join Seminar Button Clicked",
                             {
                               timestamp: new Date().toISOString(),
                             }
                           );
                           handleJoinMeeting();
                         }}
-                        // onClick={handleJoinMeeting}
-                        disabled={creatingMeeting}
-                        className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
+                        disabled={
+                          creatingMeeting ||
+                          isJoinButtonDisabled ||
+                          timeLeft === "Seminar has ended"
+                        }
+                        className={`px-8 py-3 text-lg ${
+                          timeLeft === "Seminar has ended" ||
+                          isJoinButtonDisabled
+                            ? "bg-gray-500 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
                       >
-                        {creatingMeeting ? (
+                        {timeLeft === "Seminar has ended" ? (
+                          "Join Meeting"
+                        ) : creatingMeeting ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Joining...
                           </>
+                        ) : isJoinButtonDisabled ? (
+                          "You're the Participant — but it's not time to join the seminar just yet."
                         ) : (
                           "Join Meeting"
                         )}

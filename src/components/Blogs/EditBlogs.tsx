@@ -769,12 +769,12 @@ const EditBlogs = () => {
           theme="snow"
         />
 
-        <input
+        {/* <input
           type="file"
           accept="image/*"
           className="mb-4"
           onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-        />
+        /> */}
 
         <Button onClick={handleUpdate} disabled={loading}>
           {loading ? "Updating..." : "Update Blog"}
