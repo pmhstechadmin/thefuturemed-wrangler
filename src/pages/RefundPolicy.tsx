@@ -22,8 +22,8 @@ const RefundPolicy = () => {
                   1. No Refunds Once Payment is Processed
                 </h2>
                 <p className="text-gray-700">
-                  All payments made through Razorpay for our AI assistant
-                  services are final and non-refundable. Once a transaction is
+                  All payments made through Razorpay in our TheFutureMed
+                  platform are final and non-refundable. Once a transaction is
                   completed successfully, we do not offer any partial or full
                   refunds, cancellations, or chargebacks under any
                   circumstances.
@@ -51,7 +51,7 @@ const RefundPolicy = () => {
                   In the unlikely event of technical issues or service
                   disruptions, our team will provide support to resolve the
                   issue as soon as possible. However, this does not qualify for
-                  a refund. Please contact us at support@medorbis.ai for
+                  a refund. Please contact us at support@thefuturemed.com for
                   assistance.
                 </p>
               </div>

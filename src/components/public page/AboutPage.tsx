@@ -918,7 +918,7 @@ const AboutPage = () => {
                 </p>
                 <p className="text-gray-700 mt-2 text-sm md:text-base">
                   Dr. Mohammed Ahetasham is a visionary healthcare innovator,
-                  accomplished radiologist, and Founder & Chairman of Prestige
+                  accomplished Radiologist, and Founder & Chairman of Prestige
                   Medical Health Sciences (PMHS). With over 12 years of
                   experience in the medical industry, he has been instrumental
                   in advancing the intersection of clinical excellence, academic
@@ -927,8 +927,8 @@ const AboutPage = () => {
                 <p className="text-gray-700 mt-2 text-sm md:text-base">
                   His career spans extensive clinical practice, academic
                   research, and leadership in the adoption of emerging
-                  technologies such as AI, machine learning, agentic platforms,
-                  and no-code healthtech solutions.
+                  technologies such as medical prompting, AI, machine learning,
+                  agentic platforms, and no-code healthtech solutions.
                 </p>
                 {/* <p className="text-gray-700 mt-2 text-sm md:text-base">
                 After earning his M.B.B.S. from Vydehi Institute of Medical

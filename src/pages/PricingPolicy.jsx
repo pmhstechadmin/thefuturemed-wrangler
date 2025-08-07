@@ -253,12 +253,12 @@ const PricingPolicy = () => {
               <strong>Free E-Course</strong>: No cost to upload and list your courses.
             </li>
             <li>
-              <strong>Paid E-Course</strong>: A small commission (25%) is charged per 
-              successful sale as platform charges.
+              <strong>Paid E-Course</strong>: A small platform charges (25%) is charged per 
+              successful sale.
             </li>
             <li>
               <strong>Payouts</strong>: Monthly payouts with complete earnings visibility in your 
-              dashboard.
+              dashboard. Please ensure that you independently manage and fulfill all applicable tax payments, as we do not handle tax deductions or filings on your behalf.
             </li>
           </ul>
         </section>
@@ -271,12 +271,12 @@ const PricingPolicy = () => {
               <strong>Free Events</strong>: No fees for free-to-attend seminars.
             </li>
             <li>
-              <strong>Paid Events</strong>: A small commission (25%) is charged per paid 
-              registrations as platform charges.
+              <strong>Paid Events</strong>: A small platform fee (25%) is charged per paid 
+              registrations.
             </li>
             <li>
               <strong>Host Payouts</strong>: Monthly payouts with complete earnings visibility in 
-              your dashboard.
+              your dashboard. Please ensure that you independently manage and fulfill all applicable tax payments, as we do not handle tax deductions or filings on your behalf.
             </li>
           </ul>
         </section>
