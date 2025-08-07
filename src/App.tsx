@@ -309,6 +309,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Contact from "./pages/contact/Contact";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import Confirm from "./pages/Confirm";
+import { CreateSeminarModal } from "./components/profile/CreateSeminarModal";
+import RefundPolicy from "./pages/RefundPolicy";
+import PricingPolicy from "./pages/PricingPolicy";
 
 const queryClient = new QueryClient();
 
@@ -346,6 +349,7 @@ const App = () => {
               path="/course/:courseId/learn"
               element={<CourseAccessPage />}
             />
+            <Route path="/my-seminars" element={<CreateSeminarModal />} />
             <Route path="/jobs" element={<JobPortal />} />
             <Route path="/confirm-email" element={<Confirm />} />
             <Route path="/job-seekerform" element={<JobSeekerForm />} />
@@ -359,7 +363,7 @@ const App = () => {
             <Route path="/my-job" element={<Myjob />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/my-job-profile" element={<MyJobProfile />} />
-<Route
+            <Route
               path="/mee"
               element={
                 <VideoMeeting4
@@ -380,6 +384,8 @@ const App = () => {
             <Route path="/blog-portal" element={<BlogPortal />} />
             <Route path="/my-blogs" element={<MyBlog />} />
             <Route path="/about-us" element={<AboutPage />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/pricing-policy" element={<PricingPolicy/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

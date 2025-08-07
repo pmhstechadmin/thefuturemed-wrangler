@@ -856,7 +856,7 @@ const AboutPage = () => {
   return (
     <div className="space-y-6">
       {/* Header with Sheet component wrapping mobile menu */}
-      <Header/>
+      <Header />
 
       {/* Page content remains the same */}
       <div className="min-h-screen p-4 md:p-8 bg-gray-50">
@@ -894,6 +894,85 @@ const AboutPage = () => {
               Our mission is to empower users by delivering high-quality,
               accessible information...
             </p>
+          </div>
+        </div>
+
+        {/* Section: Our Team */}
+        <div className="max-w-6xl mx-auto mt-8 bg-white p-5 md:p-6 shadow rounded-lg">
+          <h2 className="text-xl md:text-3xl font-bold mb-4">Our Team</h2>
+          <p className="text-gray-700 mb-6 text-sm md:text-base">
+            Meet the experts behind <strong>THEFUTUREMED.com</strong> – a unique
+            blend of medical professionals, AI engineers, and education
+            specialists.
+          </p>
+
+          <div className="space-y-6">
+            {/* Team Member 1 */}
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
+              <div className="flex-1 bg-white p-5 md:p-6 shadow rounded-lg">
+                <h3 className="text-lg md:text-xl font-semibold text-blue-700">
+                  Dr. Mohammed Ahetasham, M.B.B.S, M.D.R.D
+                </h3>
+                <p className="text-sm md:text-base font-medium text-gray-800">
+                  Founder & Chairman – Prestige Medical Health Sciences (PMHS)
+                </p>
+                <p className="text-gray-700 mt-2 text-sm md:text-base">
+                  Dr. Mohammed Ahetasham is a visionary healthcare innovator,
+                  accomplished radiologist, and Founder & Chairman of Prestige
+                  Medical Health Sciences (PMHS). With over 12 years of
+                  experience in the medical industry, he has been instrumental
+                  in advancing the intersection of clinical excellence, academic
+                  leadership, and digital transformation.
+                </p>
+                <p className="text-gray-700 mt-2 text-sm md:text-base">
+                  His career spans extensive clinical practice, academic
+                  research, and leadership in the adoption of emerging
+                  technologies such as AI, machine learning, agentic platforms,
+                  and no-code healthtech solutions.
+                </p>
+                {/* <p className="text-gray-700 mt-2 text-sm md:text-base">
+                After earning his M.B.B.S. from Vydehi Institute of Medical
+                Sciences and Research Centre in 2009, Dr. Ahetasham served as a
+                Consultant Radiologist across leading institutions such as
+                NIMHANS, Kidwai Memorial Institute, Narayana Health, Apollo
+                Cradle, and Anand Diagnostic. He completed his M.D.R.D from Dr.
+                B.R. Ambedkar Medical College in 2016, the same year he
+                established PMHS with a mission to deliver globally relevant,
+                future-ready healthcare education.
+              </p> */}
+              </div>
+
+              {/* Team Member 2 */}
+              <div className="flex-1 bg-white p-5 md:p-6 shadow rounded-lg">
+                <h3 className="text-lg md:text-xl font-semibold text-blue-700">
+                  Suresh Kannan
+                </h3>
+                <p className="text-sm md:text-base font-medium text-gray-800">
+                  Senior Technology Leader | AI Platforms & Product Delivery
+                </p>
+                <p className="text-gray-700 mt-2 text-sm md:text-base">
+                  An accomplished technology leader with over 25 years of
+                  experience in driving innovation across product engineering,
+                  software architecture, and large-scale project delivery. Known
+                  for successfully leading global teams and delivering
+                  intelligent, AI-powered solutions.
+                </p>
+                <p className="text-gray-700 mt-2 text-sm md:text-base">
+                  With deep expertise in cloud infrastructure, AI/ML systems,
+                  and large language models (LLMs), this executive has played a
+                  critical role in building next-generation platforms.
+                </p>
+                {/* <p className="text-gray-700 mt-2 text-sm md:text-base">
+                Highly proficient in integrating low-code and no-code platforms,
+                orchestrating end-to-end delivery pipelines, and managing
+                deployments across cloud-native environments like Supabase, they
+                bring a strategic, hands-on approach to transforming digital
+                ecosystems. With a focus on aligning technical capabilities to
+                business goals, they consistently drive measurable outcomes and
+                lasting value.
+              </p> */}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -996,7 +1075,7 @@ const AboutPage = () => {
         </div>
 
         {/* Section: Commitment to Excellence */}
-        <div className="max-w-6xl mx-auto mt-8 bg-white p-5 md:p-6 shadow rounded-lg">
+        {/* <div className="max-w-6xl mx-auto mt-8 bg-white p-5 md:p-6 shadow rounded-lg">
           <h2 className="text-xl md:text-3xl font-bold mb-4">
             Commitment to Excellence and Student Success
           </h2>
@@ -1009,12 +1088,12 @@ const AboutPage = () => {
             positions within our own network of specialized healthcare
             facilities.
           </p>
-        </div>
+        </div> */}
 
         {/* Section: Highlights or Features */}
-        <div className="max-w-6xl mx-auto mt-8">
+        {/* <div className="max-w-6xl mx-auto mt-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1 */}
+            
             <div className="bg-white shadow rounded-lg p-5 text-center">
               <Building className="mx-auto mb-3 h-8 w-8 md:h-10 md:w-10 text-blue-500" />
               <h3 className="text-lg md:text-xl font-semibold mb-3">
@@ -1029,7 +1108,6 @@ const AboutPage = () => {
               </ol>
             </div>
 
-            {/* Card 2 */}
             <div className="bg-white shadow rounded-lg p-5 text-center">
               <Laptop className="mx-auto mb-3 h-8 w-8 md:h-10 md:w-10 text-blue-500" />
               <h3 className="text-lg md:text-xl font-semibold mb-3">
@@ -1046,7 +1124,6 @@ const AboutPage = () => {
               </div>
             </div>
 
-            {/* Card 3 */}
             <div className="bg-white shadow rounded-lg p-5 text-center">
               <Users className="mx-auto mb-3 h-8 w-8 md:h-10 md:w-10 text-blue-500" />
               <h3 className="text-lg md:text-xl font-semibold mb-3">
@@ -1057,7 +1134,7 @@ const AboutPage = () => {
               </ul>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <Footer />
     </div>

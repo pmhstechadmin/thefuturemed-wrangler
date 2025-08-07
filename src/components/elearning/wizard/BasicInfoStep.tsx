@@ -514,7 +514,7 @@ export const BasicInfoStep = ({
         )}
       </div>
       {/* Add Paid/Free toggle and Price input */}
-      <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
+      {/* <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-base font-medium">
@@ -546,6 +546,55 @@ export const BasicInfoStep = ({
               required={courseData.is_paid}
             />
             (Inclusive of GST)
+          </div>
+        )}
+      </div> */}
+
+      <div className="space-y-4 p-4 border border-green-200 rounded-lg bg-green-50 transition-all hover:shadow-sm hover:border-green-300 focus-within:ring-2 focus-within:ring-green-200 focus-within:border-green-400">
+        <div className="flex items-center justify-between">
+          <div>
+            <Label className="text-base font-medium text-green-800">
+              Enrollment Type (Free/Paid) *
+            </Label>
+            <p className="text-sm text-green-600 mt-1">
+              <b>Status:</b>{" "}
+              {courseData.is_paid ? (
+                <span className="font-semibold text-green-700">Paid</span>
+              ) : (
+                <span className="font-semibold text-green-600">Free</span>
+              )}
+            </p>
+            <p className="text-xs text-green-500 mt-1">
+              This setting determines whether students need to pay to enroll
+            </p>
+          </div>
+          <Switch
+            checked={courseData.is_paid}
+            onCheckedChange={handlePaidToggle}
+            className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-400"
+          />
+        </div>
+
+        {courseData.is_paid && (
+          <div className="mt-3 pl-2 border-l-2 border-green-200">
+            <Label htmlFor="price" className="text-green-800">
+              Price (INR) * (Please note that 25% platform fees will be deducted)
+            </Label>
+            <Input
+              id="price"
+              // type="number"
+              type="text"
+              min="0"
+              value={courseData.price ?? ""}
+              onChange={(e) => handleNumberInput("price", e.target.value)}
+              placeholder="Enter course price"
+              required={courseData.is_paid}
+              className="mt-1 focus:border-green-400 focus:ring-green-200"
+            />
+            <p className="text-xs text-green-600 mt-1">
+              Please note that the default value of zero in the input field will
+              be automatically replaced as you start typing a new number
+            </p>
           </div>
         )}
       </div>

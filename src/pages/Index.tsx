@@ -272,7 +272,6 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden mt-4 pb-4 border-t pt-4 bg-white rounded-lg shadow-sm">
-            
               <div className="flex flex-col space-y-3">
                 <Link
                   to="/dashboard"
@@ -509,7 +508,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
 
       {/* Homepage Ads Carousel */}
       <section className="container mx-auto px-4">
-        <HomepageAdsCarousel   />
+        <HomepageAdsCarousel />
       </section>
 
       {/* Features Grid */}
@@ -710,7 +709,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
         <div className="mt-12 text-center">
           <div className="aspect-w-16 aspect-h-9 w-3/4  mx-auto">
             <YouTube
-              videoId="Jh0HcfGHSTA" // Just the ID part of the URL
+              videoId="NHHT_50_5Ak" // Just the ID part of the URL
               opts={{
                 width: "100%",
                 playerVars: {

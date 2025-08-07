@@ -629,8 +629,8 @@ return (
                     </a>
                   </p>
                   <p className="info-content">
-                    <a href="mailto: supporp@thefuturemed.com">
-                      supporp@thefuturemed.com
+                    <a href="mailto: support@thefuturemed.com">
+                      support@thefuturemed.com
                     </a>
                   </p>
                 </div>

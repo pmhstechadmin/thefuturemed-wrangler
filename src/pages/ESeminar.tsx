@@ -824,6 +824,7 @@ interface Seminar {
   time: string;
   host_id: string;
   host_country?: string | null;
+  is_published: boolean;
 }
 
 const ESeminar = () => {
@@ -896,6 +897,7 @@ const ESeminar = () => {
         .from("seminars")
         .select("*")
         .eq("date", dateString)
+        .eq("is_published", true)
         .order("time", { ascending: true });
 
       if (error) throw error;

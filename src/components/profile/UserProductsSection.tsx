@@ -752,7 +752,9 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
 
   const handleNavigateToProduct = (type: string, id?: string) => {
     const routes: Record<string, string> = {
-      seminars: "/e-seminar",
+      // seminars: "/e-seminar",
+      seminars: "/my-seminars",
+      "saved-seminars": "/saved-seminars",
       courses: "/e-learning",
       publications: "/publication",
       myprofile: "/my-job-profile",

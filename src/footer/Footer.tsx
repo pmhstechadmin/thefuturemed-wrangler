@@ -139,6 +139,22 @@ const Footer = () => {
                     Data Usage Policy
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/refund-policy"
+                    className="hover:text-white transition-colors"
+                  >
+                    Refund Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/pricing-policy"
+                    className="hover:text-white transition-colors"
+                  >
+                    Pricing Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
