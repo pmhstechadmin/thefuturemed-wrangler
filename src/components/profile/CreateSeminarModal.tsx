@@ -385,7 +385,8 @@ export const CreateSeminarModal = () => {
           description,
           date: formattedDate,
           time,
-          is_published: false,
+          is_published: true,
+        //   is_published: false,
           host_country: country,
         })
         .select()
