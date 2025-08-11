@@ -465,6 +465,7 @@ import logo from "@/image/thefuturemed_logo (1).jpg";
 
 import Footer from "@/footer/Footer";
 import Header from "@/footer/Header";
+import { profile } from "console";
 
 interface Course {
   id: string;
@@ -760,7 +761,11 @@ const checkEnrollmentStatus = async () => {
   }
 
   const creatorName = creatorProfile
-    ? `${creatorProfile.first_name} ${creatorProfile.last_name}`.trim() ||
+    ? `${creatorProfile.first_name} ${creatorProfile.last_name} `.trim() ||
+      "Unknown Creator"
+    : "Unknown Creator";
+  const creatorName1 = creatorProfile
+    ? ` ${creatorProfile.institution}`.trim() ||
       "Unknown Creator"
     : "Unknown Creator";
 
@@ -800,7 +805,8 @@ const checkEnrollmentStatus = async () => {
               <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center space-x-1">
                   <Users className="h-4 w-4" />
-                  <span>Created by {creatorName}</span>
+                  <span>Created by {creatorName}</span>  <p>from{" "}
+                  <span>{creatorName1}</span></p>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Star className="h-4 w-4 text-yellow-400 fill-current" />
@@ -1119,6 +1125,12 @@ const checkEnrollmentStatus = async () => {
                           }`.trim()
                         : "Unknown Creator"}
                     </h4>
+                    
+                    {creatorProfile?.institution && (
+                      <p className="text-sm text-gray-600">
+                       From {creatorProfile.institution}
+                      </p>
+                    )}
 
                     {creatorProfile?.category && (
                       <p className="text-sm text-gray-600">

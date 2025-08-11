@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
+import { Import } from 'lucide-react';
 
 interface Community {
   id: string;
@@ -95,7 +96,8 @@ export const useCommunityData = () => {
           return {
             ...community,
             member_count: memberCount,
-            max_members: 50
+            max_members: Number(import.meta.env.VITE_MAX_MEMBER)
+            // max_members: Infinity 
           };
         })
       );

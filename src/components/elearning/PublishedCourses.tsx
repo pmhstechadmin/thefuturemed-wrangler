@@ -31,10 +31,11 @@ interface Profile {
   id: string;
   first_name: string;
   last_name: string;
+  institution:string;
 }
-// const removeImagesFromHtml = (html: string) => {
-//   return html.replace(/<img[^>]*>/g, ""); // Removes all <img> tags
-// };
+const removeImagesFromHtml = (html: string) => {
+  return html.replace(/<img[^>]*>/g, ""); // Removes all <img> tags
+};
 const resizeImagesInHtml = (html: string): string => {
   return html.replace(/<img([^>]*)>/g, (match, group1) => {
     // Check if style already exists
@@ -84,9 +85,9 @@ export const PublishedCourses = () => {
       const creatorIds = [...new Set(coursesData?.map(course => course.creator_id) || [])];
       if (creatorIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name')
-          .in('id', creatorIds);
+          .from("profiles")
+          .select("id, first_name, last_name,institution")
+          .in("id", creatorIds);
 
         if (!profilesError && profilesData) {
           const profilesMap = profilesData.reduce((acc, profile) => {
@@ -140,6 +141,10 @@ export const PublishedCourses = () => {
     return profile 
       ? `${profile.first_name} ${profile.last_name}`.trim() || 'Unknown Creator'
       : 'Unknown Creator';
+  };
+  const getCreatorInstitution = (creatorId: string) => {
+    const profile = profiles[creatorId];
+    return profile?.institution || "Not specified";
   };
 
   if (isLoading) {
@@ -207,6 +212,7 @@ export const PublishedCourses = () => {
                 </CardTitle>
                 <p className="text-sm text-gray-600">
                   By {getCreatorName(course.creator_id)}
+                  <p>from {getCreatorInstitution(course.creator_id)}</p>
                 </p>
               </CardHeader>
               <CardContent>

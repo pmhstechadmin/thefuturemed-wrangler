@@ -849,6 +849,7 @@ const ProductPortal = () => {
   const handleAuthSuccess = () => {
     trackButtonClick("Authentication Success");
     console.log("Authentication successful");
+    window.location.reload();
   };
   
   // const handleAuthSuccess = () => {

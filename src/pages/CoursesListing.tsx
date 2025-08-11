@@ -50,6 +50,7 @@ interface Profile {
   last_name: string;
   medical_specialty: string;
   degree_level: string;
+  institution: string | null;
 }
 
 const departmentHierarchy = [
@@ -99,7 +100,9 @@ export const CoursesListing = () => {
       if (creatorIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
           .from("profiles")
-          .select("id, first_name, last_name, medical_specialty, degree_level")
+          .select(
+            "id, first_name, last_name, medical_specialty, degree_level,institution"
+          )
           .in("id", creatorIds);
 
         if (!profilesError && profilesData) {
@@ -195,6 +198,10 @@ export const CoursesListing = () => {
   const getCreatorSpecialty = (creatorId: string) => {
     const profile = profiles[creatorId];
     return profile?.medical_specialty || "General";
+  };
+  const getCreatorInstitution = (creatorId: string) => {
+    const profile = profiles[creatorId];
+    return profile?.institution || "Not specified";
   };
 
   if (isLoading) {
@@ -341,7 +348,8 @@ export const CoursesListing = () => {
                       {course.title}
                     </CardTitle>
                     <div className="text-sm text-gray-600 space-y-1">
-                      <p>By {getCreatorName(course.creator_id)}</p>
+                      <p>By {getCreatorName(course.creator_id)}</p>from
+                      <p>from {getCreatorInstitution(course.creator_id)}</p>
                       <p className="text-xs">
                         Specialty: {getCreatorSpecialty(course.creator_id)}
                       </p>

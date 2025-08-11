@@ -1804,11 +1804,11 @@ useEffect(() => {
       setIsRegistered(true);
       setRegistrationId(data.id);
       console.log("Registration ID:", data.id);
-      // setParticipantCount((prev) => {
-      //   const newCount = prev + 1;
-      //   console.log("Incremented participant count to:", newCount); // Log the new count
-      //   return newCount;
-      // });
+      setParticipantCount((prev) => {
+        const newCount = prev + 1;
+        console.log("Incremented participant count to:", newCount); // Log the new count
+        return newCount;
+      });
       setParticipantCount((prev) => Math.max(prev - 1));
 
       // Send confirmation email
@@ -1831,7 +1831,7 @@ You have successfully registered for the following seminar:<br><br>
 <strong>Host:</strong> ${seminar.host_name}<br><br>
 
 <strong>Preparation Checklist:</strong><br>
-- Please join 15 minutes early to set up<br>
+- Please Login 15 minutes early to set up<br>
 - Test your audio/video equipment beforehand<br>
 - Review the seminar description:<br>
 ${seminar.description}<br><br>

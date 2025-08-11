@@ -86,6 +86,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
   const handleAuthSuccess = () => {
     // Handle successful authentication - you can add any additional logic here
     console.log("Authentication successful");
+     window.location.reload();
   };
 
   return (
