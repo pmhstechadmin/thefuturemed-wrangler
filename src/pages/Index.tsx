@@ -710,7 +710,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
         <div className="mt-12 text-center">
           <div className="aspect-w-16 aspect-h-9 w-3/4  mx-auto">
             <YouTube
-              videoId="NHHT_50_5Ak" // Just the ID part of the URL
+              videoId={import.meta.env.VITE_YOUTUBE_lINK} // Just the ID part of the URL
               opts={{
                 width: "100%",
                 playerVars: {

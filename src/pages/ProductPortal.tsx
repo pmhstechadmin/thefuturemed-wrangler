@@ -998,13 +998,12 @@ const ProductPortal = () => {
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
-                  onClick={() =>{
-                            mixpanelInstance.track(
-                              "grid Dashboard Button Clicked",
-                              {
-                                timestamp: new Date().toISOString(),
-                              }
-                            ); setViewMode("grid")}}
+                  onClick={() => {
+                    mixpanelInstance.track("grid Dashboard Button Clicked", {
+                      timestamp: new Date().toISOString(),
+                    });
+                    setViewMode("grid");
+                  }}
                   className={`${
                     viewMode === "grid"
                       ? "bg-blue-600 text-white"
@@ -1151,12 +1150,14 @@ const ProductPortal = () => {
                         variant={viewMode === "grid" ? "default" : "ghost"}
                         size="sm"
                         onClick={() => {
-                            mixpanelInstance.track(
-                              "grid Dashboard Button Clicked",
-                              {
-                                timestamp: new Date().toISOString(),
-                              }
-                            );setViewMode("grid")}}
+                          mixpanelInstance.track(
+                            "grid Dashboard Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          setViewMode("grid");
+                        }}
                         className={`${
                           viewMode === "grid"
                             ? "bg-blue-600 text-white"
@@ -1168,14 +1169,15 @@ const ProductPortal = () => {
                       <Button
                         variant={viewMode === "list" ? "default" : "ghost"}
                         size="sm"
-                        
-                        onClick={() =>{
-                            mixpanelInstance.track(
-                              "list Dashboard Button Clicked",
-                              {
-                                timestamp: new Date().toISOString(),
-                              }
-                            ); setViewMode("list")}}
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            "list Dashboard Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          setViewMode("list");
+                        }}
                         className={`${
                           viewMode === "list"
                             ? "bg-blue-600 text-white"
@@ -1301,7 +1303,7 @@ const ProductPortal = () => {
                               }
                             );
                             window.open(
-                              "https://ai-assistant.medorbis.ai/",
+                              "https://ai-assistant.medorbis.ai/?ref=thefuturemed",
                               "_blank"
                             );
                           }}
@@ -1394,7 +1396,7 @@ const ProductPortal = () => {
             </button>
             <div className="aspect-w-16 aspect-h-9 w-full">
               <YouTube
-                videoId="mEGR8M_CQXo"
+                videoId={import.meta.env.VITE_YOUTUBE_AI_LINK}
                 opts={opts}
                 onReady={(event) => {
                   event.target.pauseVideo();
@@ -1414,7 +1416,10 @@ const ProductPortal = () => {
                       timestamp: new Date().toISOString(),
                     }
                   );
-                  window.open("https://ai-assistant.medorbis.ai/", "_blank");
+                  window.open(
+                    "https://ai-assistant.medorbis.ai/?ref=thefuturemed",
+                    "_blank"
+                  );
                 }}
               >
                 Try AI Assistant Now
