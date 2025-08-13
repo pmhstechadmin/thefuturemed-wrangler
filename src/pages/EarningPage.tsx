@@ -87,7 +87,7 @@ const EarningPage = () => {
           style={{
             backgroundImage: `
       linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-      url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')
+      url('https://plus.unsplash.com/premium_photo-1664477007175-20af9c080b0f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1470w')
     `,
           }}
         >
