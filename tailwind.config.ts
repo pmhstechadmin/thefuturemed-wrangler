@@ -19,6 +19,10 @@ export default {
 		},
 		extend: {
 			colors: {
+				
+        'medical-primary': '#85e3edff ', // Blue shade (change as you like)
+        'medical-secondary': '#20B2AA', // Teal shade
+        'medical-accent': '#FFD700', // Gold
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

@@ -91,6 +91,14 @@ const Footer = () => {
                     Contact Us
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="/monetization"
+                    className="hover:text-white transition-colors"
+                  >
+                    Monetization
+                  </a>
+                </li>
                 {/* <li>
                   <a href="#" className="hover:text-white transition-colors">
                     Documentation

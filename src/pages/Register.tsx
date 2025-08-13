@@ -85,17 +85,17 @@ const Register = () => {
     agreedToPrivacy: false,
     agreedToDataUsage: false,
   });
- const phoneForm = useForm({
-   defaultValues: {
-     phone: formData.phone || "", // Initialize with formData.phone if available
-   },
- });
+  const phoneForm = useForm({
+    defaultValues: {
+      phone: formData.phone || "", // Initialize with formData.phone if available
+    },
+  });
 
   const updateFormData = (field: keyof FormData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-      if (field === "phone") {
-        phoneForm.setValue("phone", value as string);
-      }
+    if (field === "phone") {
+      phoneForm.setValue("phone", value as string);
+    }
   };
   useEffect(() => {
     const sessionId = `auth_${uuidv4()}`;
@@ -162,7 +162,7 @@ const Register = () => {
       });
       return false;
     }
-    
+
     return true;
   };
 
@@ -209,7 +209,6 @@ const Register = () => {
     }
     return true;
   };
-  
 
   const validateStep3 = () => {
     if (!formData.agreedToTerms) {
@@ -245,6 +244,127 @@ const Register = () => {
     setStep((prev) => prev + 1);
   };
 
+  // const handleSubmit = async () => {
+  //   if (!validateStep3()) return;
+
+  //   setLoading(true);
+  //   console.log("Starting registration process...");
+
+  //   try {
+  //     if (!validateStep1() || !validateStep2() || !validateStep3()) {
+  //       toast({
+  //         title: "Validation Error",
+  //         description: "Please complete all required fields correctly",
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
+  //     // Create the user account in Supabase Auth
+  //     const { data: authData, error: authError } = await supabase.auth.signUp({
+  //       email: formData.email,
+  //       password: formData.password,
+  //       options: {
+  //         data: {
+  //           first_name: formData.firstName,
+  //           last_name: formData.lastName,
+  //         },
+  //       },
+  //     });
+
+  //     if (authError) {
+  //       console.error("Auth error:", authError);
+  //       toast({
+  //         title: "Registration Failed",
+  //         description: authError.message,
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
+
+  //     if (!authData.user) {
+  //       toast({
+  //         title: "Registration Failed",
+  //         description: "Failed to create user account.",
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
+  //     // Track successful signup
+  //     trackSignup(authData.user.id, {
+  //       first_name: formData.firstName,
+  //       last_name: formData.lastName,
+  //       email: formData.email,
+  //     });
+  //     console.log("User created successfully:", authData.user.id);
+
+  //     // Create the user profile
+  //     const { error: profileError } = await supabase.from("profiles").insert({
+  //       id: authData.user.id,
+  //       first_name: formData.firstName,
+  //       last_name: formData.lastName,
+  //       email: formData.email,
+  //       phone: formData.phone,
+  //       category: formData.category,
+  //       medical_specialty: formData.medicalSpecialty,
+  //       institution: formData.institution,
+  //       year_of_study:
+  //         formData.category === "student" ? formData.yearOfStudy : null,
+  //       degree_level:
+  //         formData.category === "professional" ? formData.degreeLevel : null,
+  //     });
+
+  //     if (profileError) {
+  //       console.error("Profile creation error:", profileError);
+  //       toast({
+  //         title: "Profile Creation Failed",
+  //         description:
+  //           "Account created but profile setup failed. Please contact support.",
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
+
+  //     // add
+  //     curl -L -X POST 'https://rxyfrjfgydldjdqelixe.supabase.co/functions/v1/systemio-registration' \
+  // -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4eWZyamZneWRsZGpkcWVsaXhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzNzQxNzUsImV4cCI6MjA2Mzk1MDE3NX0.AIsRdTcohJH6VHHhpsYpFJriMN0qJ_tqd6dxHtd7o_c' \
+  // -H 'Content-Type: application/json' \
+  // -d '{
+  //   "authEvent": "SIGNED_UP",
+  //   "user": {
+  //     "id": authData.user.id,
+  //     "email": "john.doe@example.com",
+  //     "user_metadata": {
+  //       "first_name": formData.firstName",
+  //       "last_name": formData.lastName,
+  //       "phonenumber": "+1234567890"
+  //     }
+  //   }
+  // }'
+
+  //     console.log("Profile created successfully");
+
+  //     toast({
+  //       title: "Registration Successful!",
+  //       description:
+  //         "Welcome to MedPortal. Please check your email to verify your account.",
+  //     });
+
+  //     // Redirect to login or products page
+  //     setTimeout(() => {
+  //       navigate("/");
+  //       // navigate("/products");
+  //     }, 2000);
+  //   } catch (error) {
+  //     console.error("Registration error:", error);
+  //     toast({
+  //       title: "Registration Failed",
+  //       description: "An unexpected error occurred. Please try again.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async () => {
     if (!validateStep3()) return;
 
@@ -260,6 +380,7 @@ const Register = () => {
         });
         return;
       }
+
       // Create the user account in Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -268,7 +389,9 @@ const Register = () => {
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
+            phone: formData.phone,
           },
+          emailRedirectTo: `${window.location.origin}/verify-email`, // SEO-friendly verification URL
         },
       });
 
@@ -290,13 +413,14 @@ const Register = () => {
         });
         return;
       }
+
       // Track successful signup
       trackSignup(authData.user.id, {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
       });
-      console.log("User created successfully:", authData.user.id);
+      console.log("User created successfully:", authData.session.access_token);
 
       // Create the user profile
       const { error: profileError } = await supabase.from("profiles").insert({
@@ -325,6 +449,40 @@ const Register = () => {
         return;
       }
 
+      // Call Supabase webhook function
+      try {
+        const webhookResponse = await fetch(
+          "https://rxyfrjfgydldjdqelixe.supabase.co/functions/v1/systemio-registration",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${authData.session?.access_token || ""}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              authEvent: "SIGNED_UP",
+              user: {
+                id: authData.user.id,
+                email: formData.email,
+                user_metadata: {
+                  first_name: formData.firstName,
+                  // last_name: formData.lastName,
+                  phonenumber: formData.phone,
+                },
+              },
+            }),
+          }
+        );
+
+        if (!webhookResponse.ok) {
+          throw new Error("Webhook call failed");
+        }
+        console.log("Webhook notification sent successfully");
+      } catch (webhookError) {
+        console.error("Webhook error:", webhookError);
+        // Non-critical error - don't fail the registration
+      }
+
       console.log("Profile created successfully");
 
       toast({
@@ -333,10 +491,9 @@ const Register = () => {
           "Welcome to MedPortal. Please check your email to verify your account.",
       });
 
-      // Redirect to login or products page
+      // Redirect to SEO-friendly success page
       setTimeout(() => {
-        navigate("/");
-        // navigate("/products");
+        navigate("/"); // SEO-friendly success URL
       }, 2000);
     } catch (error) {
       console.error("Registration error:", error);
@@ -349,7 +506,6 @@ const Register = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -374,7 +530,7 @@ const Register = () => {
           </div>
         </div>
       </header> */}
-      <Header/>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
@@ -518,7 +674,6 @@ const Register = () => {
                           <FormLabel className="flex items-center gap-2">
                             <Phone className="h-4 w-4" />
                             Phone Number
-                            
                           </FormLabel>
                           <FormControl>
                             <div className="w-full">
@@ -529,7 +684,7 @@ const Register = () => {
                                 buttonClass="!left-1"
                                 specialLabel=""
                                 value={formData.phone}
-                                onChange={(phone) =>{
+                                onChange={(phone) => {
                                   updateFormData("phone", phone);
                                   field.onChange(phone);
                                 }}
@@ -640,9 +795,7 @@ const Register = () => {
                         <SelectContent>
                           <SelectItem value="doctor">Doctor</SelectItem>
                           <SelectItem value="dentist">Dentist</SelectItem>
-                          <SelectItem value="specialist">
-                            Specialist
-                          </SelectItem>
+                          <SelectItem value="specialist">Specialist</SelectItem>
                           <SelectItem value="superspecialist">
                             Superspecialist
                           </SelectItem>

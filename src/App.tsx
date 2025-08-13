@@ -312,6 +312,7 @@ import Confirm from "./pages/Confirm";
 import { CreateSeminarModal } from "./components/profile/CreateSeminarModal";
 import RefundPolicy from "./pages/RefundPolicy";
 import PricingPolicy from "./pages/PricingPolicy";
+import EarningPage from "./pages/EarningPage";
 
 const queryClient = new QueryClient();
 
@@ -385,7 +386,8 @@ const App = () => {
             <Route path="/my-blogs" element={<MyBlog />} />
             <Route path="/about-us" element={<AboutPage />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
-            <Route path="/pricing-policy" element={<PricingPolicy/>} />
+            <Route path="/pricing-policy" element={<PricingPolicy />} />
+            <Route path="/monetization" element={<EarningPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
