@@ -313,6 +313,10 @@ import { CreateSeminarModal } from "./components/profile/CreateSeminarModal";
 import RefundPolicy from "./pages/RefundPolicy";
 import PricingPolicy from "./pages/PricingPolicy";
 import EarningPage from "./pages/EarningPage";
+import { HelmetProvider } from "react-helmet-async";
+import PaymentSuccess from "./components/elearning/PaymentSuccess";
+import { supabase } from "./integrations/supabase/client";
+import PaymentCancel from "./components/elearning/PaymentCanel";
 
 const queryClient = new QueryClient();
 
@@ -323,74 +327,121 @@ const App = () => {
         <Toaster />
         <Sonner />
         <SpeedInsights />
-        <BrowserRouter>
-          <TrackPageView />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/community" element={<Community />} />
-            <Route
-              path="/community/:communityId/chat"
-              element={<CommunityChat />}
-            />
-            <Route path="/e-seminar" element={<ESeminar />} />
-            <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
-            <Route path="/host-seminar" element={<HostSeminar />} />
-            <Route
-              path="/e-seminar/edit/:seminarId"
-              element={<EditHostSeminar />}
-            />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/dashboard" element={<ProductPortal />} />
-            <Route path="/e-learning" element={<ELearning />} />
-            <Route path="/courses" element={<CoursesListing />} />
-            <Route path="/course/:courseId" element={<CourseDetails />} />
-            <Route path="/edit-course/:courseId" element={<EditCoursePage />} />
-            <Route
-              path="/course/:courseId/learn"
-              element={<CourseAccessPage />}
-            />
-            <Route path="/my-seminars" element={<CreateSeminarModal />} />
-            <Route path="/jobs" element={<JobPortal />} />
-            <Route path="/confirm-email" element={<Confirm />} />
-            <Route path="/job-seekerform" element={<JobSeekerForm />} />
-            <Route path="/job-portal" element={<JobPortal />} />
-            <Route path="/publication" element={<Publication />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
-            <Route path="/update-password" element={<UpdatePassword />} />
-            <Route path="/my-job" element={<Myjob />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/my-job-profile" element={<MyJobProfile />} />
-            <Route
-              path="/mee"
-              element={
-                <VideoMeeting4
-                  apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
-                  meetingId="your-meeting-id"
-                  name="John Doe"
-                  micEnabled={true}
-                  webcamEnabled={true}
-                  containerId={null}
-                />
-              }
-            />
-            <Route path="/saved-job" element={<SaveJob />} />
-            <Route path="/saved-candidates" element={<SaveCandidate />} />
-            <Route path="/blog-list/:id" element={<BlogList />} />
-            <Route path="/post-blog" element={<PostBlog />} />
-            <Route path="/edit-blog/:id" element={<EditBlogs />} />
-            <Route path="/blog-portal" element={<BlogPortal />} />
-            <Route path="/my-blogs" element={<MyBlog />} />
-            <Route path="/about-us" element={<AboutPage />} />
-            <Route path="/refund-policy" element={<RefundPolicy />} />
-            <Route path="/pricing-policy" element={<PricingPolicy />} />
-            <Route path="/monetization" element={<EarningPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <HelmetProvider>
+          <BrowserRouter>
+            <TrackPageView />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/community" element={<Community />} />
+              <Route
+                path="/community/:communityId/chat"
+                element={<CommunityChat />}
+              />
+              <Route path="/e-seminar" element={<ESeminar />} />
+              <Route path="/seminar/:seminarId" element={<SeminarDetails />} />
+              <Route
+                path="/seminar/:slug/:seminarId"
+                element={<SeminarDetails />}
+              />
+              {/* <Route path="/seminar/:seminarId" element={<SeminarDetails />} /> */}
+              <Route path="/host-seminar" element={<HostSeminar />} />
+              <Route
+                path="/e-seminar/edit/:seminarId"
+                element={<EditHostSeminar />}
+              />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/dashboard" element={<ProductPortal />} />
+              <Route path="/e-learning" element={<ELearning />} />
+              <Route path="/courses" element={<CoursesListing />} />
+              <Route path="/course/:courseId" element={<CourseDetails />} />
+              <Route
+                path="/edit-course/:courseId"
+                element={<EditCoursePage />}
+              />
+              <Route
+                path="/course/:courseId/learn"
+                element={<CourseAccessPage />}
+              />
+              {/* <Route
+                path="/course/:slug/:courseId/learn"
+                element={<CourseAccessPage />}
+              /> */}
+              <Route
+                path="/course/:slug/:courseId"
+                element={<CourseDetails />}
+              />
+              <Route
+                path="/course/:slug/:courseId/learn"
+                element={<CourseAccessPage />}
+              />
+              <Route path="/my-seminars" element={<CreateSeminarModal />} />
+              <Route path="/jobs" element={<JobPortal />} />
+              <Route path="/confirm-email" element={<Confirm />} />
+              <Route path="/job-seekerform" element={<JobSeekerForm />} />
+              <Route path="/job-portal" element={<JobPortal />} />
+              <Route path="/publication" element={<Publication />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/data-usage-policy" element={<DataUsagePolicy />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
+              <Route path="/my-job" element={<Myjob />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/my-job-profile" element={<MyJobProfile />} />
+              <Route
+                path="/mee"
+                element={
+                  <VideoMeeting4
+                    apiKey="8c81aa57-9868-417a-91c2-85006735bb62"
+                    meetingId="your-meeting-id"
+                    name="John Doe"
+                    micEnabled={true}
+                    webcamEnabled={true}
+                    containerId={null}
+                  />
+                }
+              />
+              <Route path="/saved-job" element={<SaveJob />} />
+              <Route path="/saved-candidates" element={<SaveCandidate />} />
+              <Route path="/blog-list/:id" element={<BlogList />} />
+              <Route path="/blog-list/:slug/:id" element={<BlogList />} />
+              {/* <Route
+                path="/course/:slug/:courseId/learn"
+                element={
+                    <BlogList />
+                }
+              /> */}
+              <Route path="/post-blog" element={<PostBlog />} />
+              <Route path="/edit-blog/:id" element={<EditBlogs />} />
+              <Route path="/blog-portal" element={<BlogPortal />} />
+              <Route path="/my-blogs" element={<MyBlog />} />
+              <Route path="/about-us" element={<AboutPage />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/pricing-policy" element={<PricingPolicy />} />
+              <Route path="/monetization" element={<EarningPage />} />
+              {/* <Route path="/seminar/:slug/:id" element={<SeminarDetails />} />
+              <Route path="/course/:slug/:id" element={<CourseDetails />} /> */}
+              <Route path="/post-blog/:slug/:id" element={<PostBlog />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/payment-cancel" element={<PaymentCancel />} />
+              <Route
+                path="/course/:slug/:courseId"
+                element={<CourseDetails />}
+              />
+              <Route
+                path="/seminar/:slug/:seminarId"
+                element={<SeminarDetails />}
+              />
+
+              {/* <Route
+                path="/payment-success"
+                element={<PaymentSuccess supabase={supabase} />}
+              /> */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </HelmetProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

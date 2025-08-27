@@ -458,7 +458,7 @@ import {
   FileText,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { EnrollmentButton } from "@/components/elearning/EnrollmentButton";
+import  EnrollmentButton from "@/components/elearning/EnrollmentButton";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 
@@ -466,6 +466,8 @@ import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from "@/footer/Footer";
 import Header from "@/footer/Header";
 import { profile } from "console";
+import { SocialShareButtons } from "./zoom/SocialShareButtons";
+import { Helmet } from "react-helmet";
 
 interface Course {
   id: string;
@@ -515,7 +517,7 @@ interface Profile {
 }
 
 const CourseDetails = () => {
-  const { courseId } = useParams();
+  const { courseId, slug } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -524,7 +526,13 @@ const CourseDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [checkingEnrollment, setCheckingEnrollment] = useState(false);
-
+const createSlug = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9 -]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+};
   useEffect(() => {
     if (courseId) {
       fetchCourseDetails();
@@ -538,7 +546,7 @@ const CourseDetails = () => {
     const sessionId = searchParams.get("session_id");
 
     if (paymentStatus === "success" && sessionId) {
-      handlePaymentSuccess(sessionId);
+      // handlePaymentSuccess(sessionId);
     } else if (paymentStatus === "canceled") {
       toast({
         title: "Payment Canceled",
@@ -548,63 +556,63 @@ const CourseDetails = () => {
     }
   }, [searchParams]);
 
-  const handlePaymentSuccess = async (sessionId: string) => {
-    try {
-      setCheckingEnrollment(true);
+  // const handlePaymentSuccess = async (sessionId: string) => {
+  //   try {
+  //     setCheckingEnrollment(true);
 
-      toast({
-        title: "Payment Successful!",
-        description: "Verifying your enrollment...",
-      });
+  //     toast({
+  //       title: "Payment Successful!",
+  //       description: "Verifying your enrollment...",
+  //     });
 
-      // Verify payment with our backend
-      const { data, error } = await supabase.functions.invoke(
-        "verify-payment",
-        {
-          body: { sessionId },
-        }
-      );
+  //     // Verify payment with our backend
+  //     const { data, error } = await supabase.functions.invoke(
+  //       "verify-payment",
+  //       {
+  //         body: { sessionId },
+  //       }
+  //     );
 
-      if (error) {
-        console.error("Payment verification error:", error);
-        toast({
-          title: "Verification Failed",
-          description:
-            "Payment was successful but verification failed. Please contact support.",
-          variant: "destructive",
-        });
-        return;
-      }
+  //     if (error) {
+  //       console.error("Payment verification error:", error);
+  //       toast({
+  //         title: "Verification Failed",
+  //         description:
+  //           "Payment was successful but verification failed. Please contact support.",
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
 
-      if (data?.enrolled) {
-        setIsEnrolled(true);
-        toast({
-          title: "Enrollment Complete!",
-          description:
-            "Welcome to the course! A confirmation email has been sent to you.",
-        });
-        // Clear the payment params from URL
-        navigate(`/course/${courseId}`, { replace: true });
-      } else {
-        toast({
-          title: "Enrollment Pending",
-          description:
-            "Your payment is being processed. Please refresh in a moment.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Payment success handling error:", error);
-      toast({
-        title: "Verification Error",
-        description:
-          "There was an issue verifying your payment. Please contact support.",
-        variant: "destructive",
-      });
-    } finally {
-      setCheckingEnrollment(false);
-    }
-  };
+  //     if (data?.enrolled) {
+  //       setIsEnrolled(true);
+  //       toast({
+  //         title: "Enrollment Complete!",
+  //         description:
+  //           "Welcome to the course! A confirmation email has been sent to you.",
+  //       });
+  //       // Clear the payment params from URL
+  //       navigate(`/course/${courseId}`, { replace: true });
+  //     } else {
+  //       toast({
+  //         title: "Enrollment Pending",
+  //         description:
+  //           "Your payment is being processed. Please refresh in a moment.",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Payment success handling error:", error);
+  //     toast({
+  //       title: "Verification Error",
+  //       description:
+  //         "There was an issue verifying your payment. Please contact support.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setCheckingEnrollment(false);
+  //   }
+  // };
   const fetchCourseDetails = async () => {
     try {
       const { data: courseData, error: courseError } = await supabase
@@ -647,6 +655,13 @@ const CourseDetails = () => {
       if (!profileError) {
         setCreatorProfile(profileData);
       }
+
+       if (courseData && (!slug || slug !== createSlug(courseData.title))) {
+         navigate(`/course/${createSlug(courseData.title)}/${courseId}`, {
+           replace: true,
+         });
+         return;
+       }
     } catch (error) {
       console.error("Error fetching course details:", error);
     } finally {
@@ -721,7 +736,8 @@ const checkEnrollmentStatus = async () => {
       .eq("user_id", session.user.id)
       .eq("course_id", courseId)
       .or("payment_status.eq.paid,payment_status.eq.free")
-      .single();
+      // .single();
+      .maybeSingle()
 
     if (!error && data) {
       setIsEnrolled(true);
@@ -733,9 +749,36 @@ const checkEnrollmentStatus = async () => {
   }
 };
 
-  const handleAccessCourse = () => {
-    navigate(`/course/${courseId}/learn`);
-  };
+  // const handleAccessCourse = () => {
+  //   navigate(`/course/${courseId}/learn`);
+  // };
+//   const handleAccessCourse = () => {
+//   // Check if course exists and has a title
+//   if (!course?.title) {
+//     console.error("Course data is not available");
+//     return;
+//   }
+
+//   // Generate the proper slug
+//   const courseSlug = createSlug(course.title);
+
+//   // Navigate to the correct URL
+//   if (!slug || slug !== courseSlug) {
+//     navigate(`/course/${courseSlug}/${courseId}/learn`, {
+//       replace: true,
+//     });
+//   } else {
+//     navigate(`/course/${slug}/${courseId}/learn`, {
+//       replace: true,
+//     });
+//   }
+// };
+const handleAccessCourse = () => {
+  if (!course?.title) return;
+
+  const courseSlug = createSlug(course.title);
+  navigate(`/course/${courseSlug}/${courseId}/learn`);
+};
 
   if (isLoading) {
     return (
@@ -770,104 +813,137 @@ const checkEnrollmentStatus = async () => {
     : "Unknown Creator";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <Header />
+    <>
+      <Helmet>
+        <title>{course.title} | MedPortal Course</title>
+        <meta
+          name="description"
+          content={`${
+            course.description || "Medical course on MedPortal"
+          } - Duration: ${course.duration_months} months`}
+        />
+        <meta
+          name="keywords"
+          content={`medical course, ${course.title}, online medical education`}
+        />
+        <link
+          rel="canonical"
+          href={`${window.location.origin}/course/${slug}/${courseId}`}
+        />
+        <meta property="og:title" content={course.title} />
+        <meta
+          property="og:description"
+          content={course.description || "Medical course on MedPortal"}
+        />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/course/${slug}/${courseId}`}
+        />
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        <Header />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Course Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Badge
-                  className="text-sm bg-blue-100 text-800"
-                  variant={
-                    course.status === "published" ? "default" : "secondary"
-                  }
-                >
-                  {course.status}
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="text-sm bg-blue-100 text-800"
-                >
-                  Medical
-                </Badge>
-                {course.has_project && (
-                  <Badge variant="outline">Project Included</Badge>
-                )}
+        <main className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Course Content */}
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <div className="flex items-center space-x-2 mb-4">
+                  <Badge
+                    className="text-sm bg-blue-100 text-800"
+                    variant={
+                      course.status === "published" ? "default" : "secondary"
+                    }
+                  >
+                    {course.status}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="text-sm bg-blue-100 text-800"
+                  >
+                    Medical
+                  </Badge>
+                  {course.has_project && (
+                    <Badge variant="outline">Project Included</Badge>
+                  )}
+                </div>
+
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                  {course.title}
+                </h1>
+
+                <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
+                  <div className="flex items-center space-x-1">
+                    <Users className="h-4 w-4" />
+                    <span>Created by {creatorName}</span>{" "}
+                    <p>
+                      from <span>{creatorName1}</span>
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span>4.8 (156 reviews)</span>
+                  </div>
+                </div>
               </div>
 
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {course.title}
-              </h1>
-
-              <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
-                <div className="flex items-center space-x-1">
-                  <Users className="h-4 w-4" />
-                  <span>Created by {creatorName}</span>  <p>from{" "}
-                  <span>{creatorName1}</span></p>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span>4.8 (156 reviews)</span>
-                </div>
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Course Description</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {/* <p className="text-gray-700 leading-relaxed">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Description</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* <p className="text-gray-700 leading-relaxed">
                   {course.description ||
                     "No description available for this course."}
                 </p> */}
-                {course.description ? (
-                  <div
-                    className="prose max-w-none text-gray-800"
-                    dangerouslySetInnerHTML={{ __html: course.description }}
-                  />
-                ) : (
-                  <p className="text-gray-700">
-                    No description available for this course.
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-
-            {course.project_description && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5" />
-                    <span>Project Details</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">{course.project_description}</p>
+                  {course.description ? (
+                    <div
+                      className="prose max-w-none text-gray-800"
+                      dangerouslySetInnerHTML={{ __html: course.description }}
+                    />
+                  ) : (
+                    <p className="text-gray-700">
+                      No description available for this course.
+                    </p>
+                  )}
                 </CardContent>
               </Card>
-            )}
 
-            {course.resources_summary && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resources & Materials</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">{course.resources_summary}</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              {course.project_description && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <FileText className="h-5 w-5" />
+                      <span>Project Details</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700">
+                      {course.project_description}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
-          {/* Enrollment Sidebar */}
-          <div className="space-y-6">
-            <Card className={isEnrolled ? "border-green-200 bg-green-50" : ""}>
-              <CardContent className="p-6">
-                {/* {isEnrolled ? (
+              {course.resources_summary && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Resources & Materials</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700">{course.resources_summary}</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Enrollment Sidebar */}
+            <div className="space-y-6">
+              <Card
+                className={isEnrolled ? "border-green-200 bg-green-50" : ""}
+              >
+                <CardContent className="p-6">
+                  {/* {isEnrolled ? (
                   <div className="text-center mb-6">
                     <Badge className="mb-4 bg-green-100 text-green-800">
                       Enrolled
@@ -890,36 +966,36 @@ const checkEnrollmentStatus = async () => {
                   </div>
                 )} */}
 
-                {isEnrolled ? (
-                  <div className="text-center mb-6">
-                    <Badge className="mb-4 bg-green-100 text-green-800">
-                      Enrolled
-                    </Badge>
-                    <div className="text-2xl font-bold text-green-600 mb-2">
-                      Access Granted
+                  {isEnrolled ? (
+                    <div className="text-center mb-6">
+                      <Badge className="mb-4 bg-green-100 text-green-800">
+                        Enrolled
+                      </Badge>
+                      <div className="text-2xl font-bold text-green-600 mb-2">
+                        Access Granted
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        You have full access to this course
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      You have full access to this course
-                    </p>
-                  </div>
-                ) : (
-                  <div className="text-center mb-6">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">
-                      {course?.is_paid && course.price > 0
-                        ? `₹${(course.price || 0).toFixed(2)}`
-                        : "Free"}
-                      {/* {course?.is_paid ? `${course.price}` : "Free"} */}
-                      {/* {course?.is_paid ? "₹49.99" : "Free"} */}
+                  ) : (
+                    <div className="text-center mb-6">
+                      <div className="text-3xl font-bold text-blue-600 mb-2">
+                        {course?.is_paid && course.price > 0
+                          ? `₹${(course.price || 0).toFixed(2)}`
+                          : "Free"}
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        {course?.is_paid
+                          ? "One-time payment • Full access"
+                          : "No payment required • Full access"}
+                        {/* {course?.is_paid ? `${course.price}` : "Free"} */}
+                        {/* {course?.is_paid ? "₹49.99" : "Free"} */}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      {course?.is_paid
-                        ? "One-time payment • Full access"
-                        : "No payment required • Full access"}
-                    </p>
-                  </div>
-                )}
+                  )}
 
-                {/* {checkingEnrollment ? (
+                  {/* {checkingEnrollment ? (
                   <Button className="w-full mb-4" size="lg" disabled>
                     Checking enrollment...
                   </Button>
@@ -939,114 +1015,116 @@ const checkEnrollmentStatus = async () => {
                     onEnrollmentChange={checkEnrollmentStatus}
                   />
                 )} */}
-                {checkingEnrollment ? (
-                  <Button className="w-full mb-4" size="lg" disabled>
-                    Checking enrollment...
-                  </Button>
-                ) : isEnrolled ? (
-                  <Button
-                    className="w-full mb-4 bg-green-600 hover:bg-green-700"
-                    size="lg"
-                    onClick={handleAccessCourse}
-                  >
-                    <Play className="mr-2 h-4 w-4" />
-                    Access Course
-                  </Button>
-                ) : course?.is_paid ? (
-                  <EnrollmentButton
-                    courseId={courseId!}
-                    isEnrolled={isEnrolled}
-                    isPaid={course.is_paid}
-                    price={course.price}
-                    onEnrollmentChange={checkEnrollmentStatus}
-                  />
-                ) : (
-                  <Button
-                    className="w-full mb-4"
-                    size="lg"
-                    onClick={async () => {
-                      try {
-                        setCheckingEnrollment(true);
-                        const { data, error } = await supabase
-                          .from("course_enrollments")
-                          .insert([
-                            {
-                              user_id: (
-                                await supabase.auth.getSession()
-                              ).data.session?.user.id,
-                              course_id: courseId,
-                              payment_status: "free",
-                            },
-                          ]);
+                  {checkingEnrollment ? (
+                    <Button className="w-full mb-4" size="lg" disabled>
+                      Checking enrollment...
+                    </Button>
+                  ) : isEnrolled ? (
+                    <Button
+                      className="w-full mb-4 bg-green-600 hover:bg-green-700"
+                      size="lg"
+                      onClick={handleAccessCourse}
+                    >
+                      <Play className="mr-2 h-4 w-4" />
+                      Access Course
+                    </Button>
+                  ) : course?.is_paid ? (
+                    <EnrollmentButton
+                      productType="course"
+                      productName={course.title}
+                      productId={courseId!}
+                      isEnrolled={isEnrolled}
+                      isPaid={course.is_paid}
+                      price={course.price}
+                      onEnrollmentChange={checkEnrollmentStatus}
+                    />
+                  ) : (
+                    <Button
+                      className="w-full mb-4"
+                      size="lg"
+                      onClick={async () => {
+                        try {
+                          setCheckingEnrollment(true);
+                          const { data, error } = await supabase
+                            .from("course_enrollments")
+                            .insert([
+                              {
+                                user_id: (
+                                  await supabase.auth.getSession()
+                                ).data.session?.user.id,
+                                course_id: courseId,
+                                payment_status: "free",
+                              },
+                            ]);
 
-                        if (error) throw error;
+                          if (error) throw error;
 
-                        setIsEnrolled(true);
-                        toast({
-                          title: "Enrolled Successfully!",
-                          description:
-                            "You now have access to this free course.",
-                        });
-                      } catch (error) {
-                        toast({
-                          title: "Enrollment Failed",
-                          description:
-                            "There was an issue enrolling in this course.",
-                          variant: "destructive",
-                        });
-                      } finally {
-                        setCheckingEnrollment(false);
-                      }
-                    }}
-                  >
-                    Enroll for Free
-                  </Button>
-                )}
+                          setIsEnrolled(true);
+                          toast({
+                            title: "Enrolled Successfully!",
+                            description:
+                              "You now have access to this free course.",
+                          });
+                        } catch (error) {
+                          toast({
+                            title: "Enrollment Failed",
+                            description:
+                              "There was an issue enrolling in this course.",
+                            variant: "destructive",
+                          });
+                        } finally {
+                          setCheckingEnrollment(false);
+                        }
+                      }}
+                    >
+                      Enroll for Free
+                    </Button>
+                  )}
 
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <Clock className="h-4 w-4" />
-                      <span>Duration</span>
-                    </span>
-                    <span>{course.duration_months} months</span>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center space-x-2">
+                        <Clock className="h-4 w-4" />
+                        <span>Duration</span>
+                      </span>
+                      <span>{course.duration_months} months</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center space-x-2">
+                        <BookOpen className="h-4 w-4" />
+                        <span>Modules</span>
+                      </span>
+                      <span>{course.number_of_modules}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center space-x-2">
+                        <Play className="h-4 w-4" />
+                        <span>Online Hours</span>
+                      </span>
+                      <span>{course.online_hours}h</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center space-x-2">
+                        <Users className="h-4 w-4" />
+                        <span>Offline Hours</span>
+                      </span>
+                      <span>{course.offline_hours}h</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center space-x-2">
+                        <Award className="h-4 w-4" />
+                        <span>Certificate</span>
+                      </span>
+                      <span>Included</span>
+                    </div>
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <BookOpen className="h-4 w-4" />
-                      <span>Modules</span>
-                    </span>
-                    <span>{course.number_of_modules}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <Play className="h-4 w-4" />
-                      <span>Online Hours</span>
-                    </span>
-                    <span>{course.online_hours}h</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <Users className="h-4 w-4" />
-                      <span>Offline Hours</span>
-                    </span>
-                    <span>{course.offline_hours}h</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <Award className="h-4 w-4" />
-                      <span>Certificate</span>
-                    </span>
-                    <span>Included</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            {/* <Card>
+                </CardContent>
+              </Card>
+              {/* <Card>
               <CardHeader>
                 <CardTitle>Course Instructor</CardTitle>
               </CardHeader>
@@ -1071,7 +1149,7 @@ const checkEnrollmentStatus = async () => {
                 )}
               </CardContent>
             </Card> */}
-            {/* <Card>
+              {/* <Card>
               <CardHeader>
                 <CardTitle>Course Instructor</CardTitle>
               </CardHeader>
@@ -1100,58 +1178,71 @@ const checkEnrollmentStatus = async () => {
                 )}
               </CardContent>
             </Card> */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Course Instructor</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-start space-x-4">
-                  {creatorProfile?.profile_image_url ? (
-                    <img
-                      src={creatorProfile.profile_image_url}
-                      alt="Instructor"
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Users className="h-6 w-6 text-blue-600" />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Instructor</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-start space-x-4">
+                    {creatorProfile?.profile_image_url ? (
+                      <img
+                        src={creatorProfile.profile_image_url}
+                        alt="Instructor"
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Users className="h-6 w-6 text-blue-600" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h4 className="font-semibold">
+                        {creatorProfile?.first_name || creatorProfile?.last_name
+                          ? `${creatorProfile.first_name || ""} ${
+                              creatorProfile.last_name || ""
+                            }`.trim()
+                          : "Unknown Creator"}
+                      </h4>
+
+                      {creatorProfile?.institution && (
+                        <p className="text-sm text-gray-600">
+                          From {creatorProfile.institution}
+                        </p>
+                      )}
+
+                      {creatorProfile?.category && (
+                        <p className="text-sm text-gray-600">
+                          {creatorProfile.category}
+                        </p>
+                      )}
+
+                      {creatorProfile?.bio && (
+                        <p className="text-sm text-gray-700 mt-2">
+                          {creatorProfile.bio}
+                        </p>
+                      )}
                     </div>
-                  )}
-                  <div className="flex-1">
-                    <h4 className="font-semibold">
-                      {creatorProfile?.first_name || creatorProfile?.last_name
-                        ? `${creatorProfile.first_name || ""} ${
-                            creatorProfile.last_name || ""
-                          }`.trim()
-                        : "Unknown Creator"}
-                    </h4>
-                    
-                    {creatorProfile?.institution && (
-                      <p className="text-sm text-gray-600">
-                       From {creatorProfile.institution}
-                      </p>
-                    )}
-
-                    {creatorProfile?.category && (
-                      <p className="text-sm text-gray-600">
-                        {creatorProfile.category}
-                      </p>
-                    )}
-
-                    {creatorProfile?.bio && (
-                      <p className="text-sm text-gray-700 mt-2">
-                        {creatorProfile.bio}
-                      </p>
-                    )}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Share the Course</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SocialShareButtons
+                    url={window.location.href}
+                    title={course.title}
+                    description={course.description}
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 

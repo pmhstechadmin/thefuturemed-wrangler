@@ -481,6 +481,8 @@ import { Badge } from "@/components/ui/badge";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import "react-quill/dist/quill.snow.css";
 import Header from "@/footer/Header";
+import { SocialShareButtons } from "@/pages/zoom/SocialShareButtons";
+import { Helmet } from "react-helmet-async";
 
 const BlogList: React.FC = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -492,8 +494,14 @@ const BlogList: React.FC = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { id } = useParams();
-
+  const { id,slug } = useParams();
+const createSlug = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9 -]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+};
   const handleBackNavigation = () => navigate(-1);
 
   const handleSignOut = async () => {
@@ -533,6 +541,13 @@ const BlogList: React.FC = () => {
       } else {
         console.log("✅ Blog data fetchedddddddddd:", data);
         setBlog(data);
+      }
+      // Redirect if slug mismatch
+      if (data && (!slug || slug !== createSlug(data.title))) {
+        navigate(`/blog-list/${createSlug(data.title)}/${id}`, {
+          replace: true,
+        });
+        return;
       }
 
       setLoading(false);
@@ -600,9 +615,34 @@ const BlogList: React.FC = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Responsive Header */}
-      {/* <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
+    <>
+      <Helmet>
+        <title>{blog.title || "Blog Post"} | MedPortal</title>
+        <meta
+          name="description"
+          content={blog.description || "Medical blog post on MedPortal"}
+        />
+        <meta
+          name="keywords"
+          content={`medical, blog, ${blog.tags?.join(", ") || ""}`}
+        />
+        <link
+          rel="canonical"
+          href={`${window.location.origin}/blog/${slug}/${id}`}
+        />
+        <meta property="og:title" content={blog.title || "Blog Post"} />
+        <meta
+          property="og:description"
+          content={blog.description || "Medical blog post on MedPortal"}
+        />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/blog/${slug}/${id}`}
+        />
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        {/* Responsive Header */}
+        {/* <header className="bg-black border-b border-white/20 sticky top-0 z-50 shadow-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2 md:space-x-4">
             <Button
@@ -765,95 +805,113 @@ const BlogList: React.FC = () => {
             </div>
           </div>
         )}
-      </header> */}\
-      <Header/>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Blog Details (Full width on mobile, 2/3 on desktop) */}
-          <div className="lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-4">Blog Details</h2>
-            {!blog ? (
-              <div className="bg-white shadow rounded-lg p-6 text-center">
-                <p className="text-gray-500">Blog not found.</p>
-              </div>
-            ) : (
-              <div className="bg-white shadow rounded-lg p-4 md:p-6 space-y-4">
-                <h3 className="text-xl md:text-2xl font-bold">{blog.title}</h3>
-
-                <div className="ql-editor max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-                </div>
-
-                {/* Author & Status at bottom */}
-                <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
-                  <p>By {profiles[blog.user_id] || "Unknown Author"}</p>
-                  <p>
-                    Status: {blog.is_published ? "Published" : "Unpublished"}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Blog List Sidebar (Full width on mobile, 1/3 on desktop) */}
-          <div className="lg:col-span-1">
-            <h2 className="text-xl font-semibold mb-4">Other Blogs</h2>
-            <div className="space-y-4 pr-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-              {/* changed */}
-              {blogs.length === 0 ? (
+      </header> */}
+        
+        <Header />
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Blog Details (Full width on mobile, 2/3 on desktop) */}
+            <div className="lg:col-span-2">
+              <h2 className="text-xl font-semibold mb-4">Blog Details</h2>
+              {!blog ? (
                 <div className="bg-white shadow rounded-lg p-6 text-center">
-                  <p className="text-gray-500">No other blogs available</p>
+                  <p className="text-gray-500">Blog not found.</p>
                 </div>
               ) : (
-                blogs.map((blog) => (
-                  <Card
-                    key={blog.id}
-                    className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
-                    onClick={() => navigate(`/blog-list/${blog.id}`)}
-                  >
-                    <CardHeader>
-                      <div className="flex justify-between items-start mb-2">
-                        <Badge variant="default">Published</Badge>
-                      </div>
-                      <CardTitle className="text-base md:text-lg line-clamp-2">
-                        {blog.title}
-                      </CardTitle>
-                    </CardHeader>
+                <div className="bg-white shadow rounded-lg p-4 md:p-6 space-y-4">
+                  <h3 className="text-xl md:text-2xl font-bold">
+                    {blog.title}
+                  </h3>
 
-                    <CardContent className="flex flex-col flex-grow">
-                      {/* ✅ Scrollable preview content area */}
-                      <div className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0">
-                        <div
-                          dangerouslySetInnerHTML={{ __html: blog.content }}
-                        />
-                      </div>
+                  <div className=" max-w-none h-auto overflow-visible">
+                    <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+                  </div>
+                  {/* <div className="ql-editor max-w-none ">
+                  <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+                </div> */}
 
-                      {/* ✅ Footer content pushed to bottom */}
-                      <div className="mt-auto pt-2">
-                        <p className="text-xs text-gray-500">
-                          By {profiles[blog.user_id] || "Unknown Author"}
-                        </p>
-                        <Button
-                          className="w-full mt-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/blog-list/${blog.id}`);
-                          }}
-                        >
-                          View Blog
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
+                  {/* Author & Status at bottom */}
+                  <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
+                    <p>By {profiles[blog.user_id] || "Unknown Author"}</p>
+                    <p>
+                      Status: {blog.is_published ? "Published" : "Unpublished"}
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
+
+            {/* Blog List Sidebar (Full width on mobile, 1/3 on desktop) */}
+            <div className="lg:col-span-1">
+              <h2 className="text-xl font-semibold mb-4">Other Blogs</h2>
+              <div className="space-y-4 pr-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                {/* changed */}
+                {blogs.length === 0 ? (
+                  <div className="bg-white shadow rounded-lg p-6 text-center">
+                    <p className="text-gray-500">No other blogs available</p>
+                  </div>
+                ) : (
+                  blogs.map((blog) => (
+                    <Card
+                      key={blog.id}
+                      className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
+                      onClick={() => navigate(`/blog-list/${blog.id}`)}
+                    >
+                      <CardHeader>
+                        <div className="flex justify-between items-start mb-2">
+                          <Badge variant="default">Published</Badge>
+                        </div>
+                        <CardTitle className="text-base md:text-lg line-clamp-2">
+                          {blog.title}
+                        </CardTitle>
+                      </CardHeader>
+
+                      <CardContent className="flex flex-col flex-grow">
+                        {/* ✅ Scrollable preview content area */}
+                        <div className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0">
+                          <div
+                            dangerouslySetInnerHTML={{ __html: blog.content }}
+                          />
+                        </div>
+
+                        {/* ✅ Footer content pushed to bottom */}
+                        <div className="mt-auto pt-2">
+                          <p className="text-xs text-gray-500">
+                            By {profiles[blog.user_id] || "Unknown Author"}
+                          </p>
+                          <Button
+                            className="w-full mt-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/blog-list/${blog.id}`);
+                            }}
+                          >
+                            View Blog
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
+          <Card className="bg-white p-4 text-sm  my-6">
+            <CardHeader>
+              <CardTitle>Share the Blog</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SocialShareButtons
+                url={window.location.href}
+                title={blog.title}
+                description={blog.description}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

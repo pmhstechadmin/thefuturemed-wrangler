@@ -425,19 +425,19 @@ export const CreateCourseWizard = () => {
     copyright_agreement_accepted: false,
     resources_summary: "",
   });
-   const updateCourseData = (updates: Partial<CourseData>) => {
-     setCourseData((prev) => {
-       // If changing from paid to free, clear the price
-       if (updates.is_paid === false) {
-         return { ...prev, ...updates, price: undefined };
-       }
-       // If changing from free to paid, initialize price to 0 if not provided
-       if (updates.is_paid === true && updates.price === undefined) {
-         return { ...prev, ...updates, price: 0 };
-       }
-       return { ...prev, ...updates };
-     });
-   };
+  //  const updateCourseData = (updates: Partial<CourseData>) => {
+  //    setCourseData((prev) => {
+  //      // If changing from paid to free, clear the price
+  //      if (updates.is_paid === false) {
+  //        return { ...prev, ...updates, price: undefined };
+  //      }
+  //      // If changing from free to paid, initialize price to 0 if not provided
+  //      if (updates.is_paid === true && updates.price === undefined) {
+  //        return { ...prev, ...updates, price: 0 };
+  //      }
+  //      return { ...prev, ...updates };
+  //    });
+  //  };
 
    const validateBeforeNext = () => {
      // For paid courses, ensure price is valid
@@ -462,16 +462,16 @@ export const CreateCourseWizard = () => {
      }
    };
 
-  // const updateCourseData = (updates: Partial<CourseData>) => {
-  //   setCourseData(prev => {
-  //     // If is_paid is being set to false, remove the price field
-  //     if (updates.is_paid === false) {
-  //       const { price, ...rest } = updates;
-  //       return { ...prev, ...rest, price: undefined };
-  //     }
-  //     return { ...prev, ...updates };
-  //   });
-  // };
+  const updateCourseData = (updates: Partial<CourseData>) => {
+    setCourseData(prev => {
+      // If is_paid is being set to false, remove the price field
+      if (updates.is_paid === false) {
+        const { price, ...rest } = updates;
+        return { ...prev, ...rest, price: undefined };
+      }
+      return { ...prev, ...updates };
+    });
+  };
 
   // const nextStep = () => {
   //   if (currentStep < steps.length) {
@@ -521,7 +521,9 @@ export const CreateCourseWizard = () => {
                   )}
                   <div className="hidden md:block">
                     <div className="font-medium text-sm">{step.title}</div>
-                    <div className="text-xs text-gray-500">{step.description}</div>
+                    <div className="text-xs text-gray-500">
+                      {step.description}
+                    </div>
                   </div>
                 </div>
               ))}

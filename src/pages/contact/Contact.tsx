@@ -560,9 +560,11 @@ return (
                 <div className="contact-info-section">
                   <h3 className="info-title">India Office</h3>
                   <p className="info-content">
-                    6/8 Wheelers Road, D Costa Layout
+                    {/* 6/8 Wheelers Road, D Costa Layout
                     <br />
-                    Cox Town, Bangalore-560005
+                    Cox Town, Bangalore-560005 */}
+                    THEFUTUREMED Global LLC
+                    <br />8 The Green Suite B, Dover, Delaware 19901
                   </p>
                   <p className="info-content">
                     <a href="tel:+91988649994">+91 988-649-9994</a>

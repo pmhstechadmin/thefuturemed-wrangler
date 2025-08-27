@@ -141,7 +141,11 @@
 // export default mixpanel;
 
 import mixpanel from 'mixpanel-browser';
-
+declare module "mixpanel-browser" {
+  interface Config {
+    record_heatmap_data?: boolean;
+  }
+}
 const isProd = process.env.NODE_ENV === 'production';
 const mixpanel_token = import.meta.env.VITE_MIXPANEL_ID;
 const mixpanel_api = import.meta.env.VITE_MIXPANEL_API_ID;
@@ -152,7 +156,11 @@ mixpanel.init(mixpanel_token, {
   persistence: 'localStorage',
   ignore_dnt: true,
   api_host: mixpanel_api,
+  record_sessions_percent: 1,
+  record_heatmap_data: true
 });
+
+
 export const setMixpanelSessionId = (sessionId: string) => {
   mixpanel.register({
     session_id: sessionId,

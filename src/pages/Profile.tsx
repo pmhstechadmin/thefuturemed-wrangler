@@ -1303,6 +1303,7 @@
 
 // export default Profile;
 
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -1499,6 +1500,7 @@ const Profile = () => {
         .select("*")
         .eq("user_id", userId)
         .order("earned_at", { ascending: false });
+        
 
       if (earningsError) throw earningsError;
       setEarnings(earningsData || []);

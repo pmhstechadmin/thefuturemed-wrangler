@@ -487,9 +487,25 @@ export const EditCoursePage = () => {
   ];
   const progressPercentage = (currentStep / steps.length) * 100;
 
-  const updateCourseData = (updates: Partial<CourseData>) => {
-    setCourseData((prev) => ({ ...prev!, ...updates }));
-  };
+  // const updateCourseData = (updates: Partial<CourseData>) => {
+  //   // setCourseData((prev) => {  const { price, ...restUpdates } = updates;
+  //   // return { ...prev!, ...restUpdates }; });
+  //   // setCourseData((prev) => ({ ...prev!, ...updates }));
+  //   setCourseData((prev) => {
+  //     if (!prev) return updates as CourseData;
+  //     return { ...prev, ...updates };
+  //   });
+  // };
+   const updateCourseData = (updates: Partial<CourseData>) => {
+      setCourseData(prev => {
+        // If is_paid is being set to false, remove the price field
+        if (updates.is_paid === false) {
+          const { price, ...rest } = updates;
+          return { ...prev, ...rest, price: undefined };
+        }
+        return { ...prev, ...updates };
+      });
+    };
   const handleForwardNavigation = () => {
     try {
       navigate(1);
@@ -592,9 +608,9 @@ export const EditCoursePage = () => {
           privacy_policy_accepted: true,
           copyright_agreement_accepted: true,
           resources_summary: course.resources_summary || "",
-        is_paid: course.is_paid ,
-          
-
+          is_paid: course.is_paid,
+          price: course.price || 0,
+          // price: course.is_paid ? course.price : undefined,
         };
 
         setCourseData(transformedCourseData);
@@ -635,6 +651,9 @@ export const EditCoursePage = () => {
           number_of_modules: data.number_of_modules,
           resources_summary: data.resources_summary,
           updated_at: new Date().toISOString(),
+          // price: data.price ,
+          price: data.is_paid ? data.price : null,
+          is_paid: data.is_paid,
         })
         .eq("id", courseId);
 
@@ -742,9 +761,9 @@ export const EditCoursePage = () => {
 
   return (
     <div>
-    <Header/>
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* <Button
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* <Button
         variant="ghost"
         onClick={() => navigate("/e-learning")}
         className="mb-6"
@@ -753,89 +772,88 @@ export const EditCoursePage = () => {
         Back to My Courses
       </Button> */}
 
-      <h1 className="text-3xl font-bold mb-6">Edit Course</h1>
+        <h1 className="text-3xl font-bold mb-6">Edit Course</h1>
 
-      <div className="max-w-4xl mx-auto space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Edit Course</CardTitle>
-            <div className="space-y-4">
-              <Progress value={progressPercentage} className="w-full" />
-              <div className="flex justify-between">
-                {steps.map((step) => (
-                  <div
-                    key={step.id}
-                    className={`flex items-center space-x-2 ${
-                      step.id < currentStep
-                        ? "text-green-600"
-                        : step.id === currentStep
-                        ? "text-blue-600"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.id < currentStep ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
-                          step.id === currentStep
-                            ? "border-blue-600 bg-blue-600 text-white"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {step.id}
-                      </div>
-                    )}
-                    <div className="hidden md:block">
-                      <div className="font-medium text-sm">{step.title}</div>
-                      <div className="text-xs text-gray-500">
-                        {step.description}
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Edit Course</CardTitle>
+              <div className="space-y-4">
+                <Progress value={progressPercentage} className="w-full" />
+                <div className="flex justify-between">
+                  {steps.map((step) => (
+                    <div
+                      key={step.id}
+                      className={`flex items-center space-x-2 ${
+                        step.id < currentStep
+                          ? "text-green-600"
+                          : step.id === currentStep
+                          ? "text-blue-600"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {step.id < currentStep ? (
+                        <CheckCircle className="h-5 w-5" />
+                      ) : (
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
+                            step.id === currentStep
+                              ? "border-blue-600 bg-blue-600 text-white"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          {step.id}
+                        </div>
+                      )}
+                      <div className="hidden md:block">
+                        <div className="font-medium text-sm">{step.title}</div>
+                        <div className="text-xs text-gray-500">
+                          {step.description}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {currentStep === 1 && (
-              <BasicInfoStep
-                courseData={courseData}
-                updateCourseData={updateCourseData}
-                onNext={nextStep}
-                
-              />
-            )}
-            {currentStep === 2 && (
-              <ModulesStep
-                courseData={courseData}
-                updateCourseData={updateCourseData}
-                onNext={nextStep}
-                onPrev={prevStep}
-              />
-            )}
-            {currentStep === 3 && (
-              <LegalAgreementStep
-                courseData={courseData}
-                updateCourseData={updateCourseData}
-                onNext={nextStep}
-                onPrev={prevStep}
-              />
-            )}
-            {currentStep === 4 && (
-              <EditSubmitStep
-                courseData={{ ...courseData, id: courseId }}
-                updateCourseData={updateCourseData}
-                onPrev={prevStep}
-                onSubmit={() => handleSubmit(courseData!)}
-                isSubmitting={isSubmitting}
-              />
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              {currentStep === 1 && (
+                <BasicInfoStep
+                  courseData={courseData}
+                  updateCourseData={updateCourseData}
+                  onNext={nextStep}
+                />
+              )}
+              {currentStep === 2 && (
+                <ModulesStep
+                  courseData={courseData}
+                  updateCourseData={updateCourseData}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+              {currentStep === 3 && (
+                <LegalAgreementStep
+                  courseData={courseData}
+                  updateCourseData={updateCourseData}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+              {currentStep === 4 && (
+                <EditSubmitStep
+                  courseData={{ ...courseData, id: courseId }}
+                  updateCourseData={updateCourseData}
+                  onPrev={prevStep}
+                  onSubmit={() => handleSubmit(courseData!)}
+                  isSubmitting={isSubmitting}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
-    <Footer/>
+      <Footer />
     </div>
   );
 };

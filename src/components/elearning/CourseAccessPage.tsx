@@ -3366,6 +3366,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/footer/Header";
 import Footer from "@/footer/Footer";
+import { Helmet } from "react-helmet-async";
 
 interface ContentData {
   id: string;
@@ -3417,6 +3418,7 @@ interface Module {
   mcq_questions: MCQQuestion[];
 }
 
+
 const ContentItem = ({ content }: { content: ContentData }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -3466,7 +3468,17 @@ const ContentItem = ({ content }: { content: ContentData }) => {
             <div className="prose max-w-none">
               {content.content_text.split("\n").map((paragraph, idx) => (
                 <p key={idx} className="mb-3">
-                  {paragraph}
+                  {/* {paragraph} */}
+                  {paragraph ? (
+                    <div
+                      className="prose max-w-none text-gray-800"
+                      dangerouslySetInnerHTML={{ __html: paragraph }}
+                    />
+                  ) : (
+                    <p className="text-gray-700">
+                      No description available for this course.
+                    </p>
+                  )}
                 </p>
               ))}
             </div>
@@ -3481,15 +3493,15 @@ const ContentItem = ({ content }: { content: ContentData }) => {
               <FileText className="h-5 w-5 mr-2 text-red-600" />
               <h4 className="font-medium">{content.content_title}</h4>
             </div>
-            {/* {signedUrl && (
+            {signedUrl && (
               <a
                 href={signedUrl}
                 download
                 className="flex items-center text-blue-600 hover:underline text-sm"
               >
-                <Download className="h-4 w-4 mr-1" /> Download
+                {/* <Download className="h-4 w-4 mr-1" /> Download */}
               </a>
-            )} */}
+            )}
           </div>
           {loading ? (
             <p className="text-gray-500">Loading PDF...</p>
@@ -4038,8 +4050,8 @@ const fetchCourseData = async () => {
         .select("id")
         .eq("user_id", session.user.id)
         .eq("course_id", courseId)
-        // .eq("payment_status", "paid");
-        .or("payment_status.eq.paid,payment_status.eq.free");
+        .eq("payment_status", "paid");
+        // .or("payment_status.eq.paid,payment_status.eq.free");
 
       if (error) throw error;
 
@@ -4239,11 +4251,39 @@ const fetchCourseData = async () => {
     course.number_of_modules > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <Header />
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          {/* <Button
+    <>
+      <Helmet>
+        <title>{course?.title || "Course"} | Learning Portal</title>
+        <meta
+          name="description"
+          content={`Access the ${
+            course?.title || "course"
+          } learning materials and content`}
+        />
+        <meta
+          name="keywords"
+          content={`${course?.title}, medical education, online course, e-learning`}
+        />
+        <meta
+          property="og:title"
+          content={`${course?.title || "Course"} | Learning Portal`}
+        />
+        <meta
+          property="og:description"
+          content={`Access the ${course?.title || "course"} learning materials`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/course/${courseId}/learn`}
+        />
+        {/* Add more meta tags as needed */}
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        <Header />
+        <header className="bg-white shadow-sm border-b">
+          <div className="container mx-auto px-4 py-4">
+            {/* <Button
             variant="outline"
             onClick={() => navigate(-1)}
             className="mb-4"
@@ -4251,167 +4291,179 @@ const fetchCourseData = async () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button> */}
-          <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
-          {/* <p className="text-gray-600 mt-2">{course.description}</p> */}
-          {course.description ? (
-            <div
-              className="prose max-w-none text-gray-800"
-              dangerouslySetInnerHTML={{ __html: course.description }}
-            />
-          ) : (
-            <p className="text-gray-700">
-              No description available for this course.
-            </p>
-          )}
-        </div>
-      </header>
+            <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
+            {/* <p className="text-gray-600 mt-2">{course.description}</p> */}
+            {course.description ? (
+              <div
+                className="prose max-w-none text-gray-800"
+                dangerouslySetInnerHTML={{ __html: course.description }}
+              />
+            ) : (
+              <p className="text-gray-700">
+                No description available for this course.
+              </p>
+            )}
+          </div>
+        </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Progress Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Trophy className="h-5 w-5" />
-                <span>Course Progress</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>
-                      {completedModules} of {course.number_of_modules} modules
-                      completed
-                    </span>
-                    <span>{progressPercentage}%</span>
-                  </div>
-                  <Progress value={progressPercentage} className="h-2" />
-                </div>
-
-                {allModulesCompleted && (
-                  <div className="text-center">
-                    <Button
-                      onClick={finishCourse}
-                      size="lg"
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      🎓 Finish Course & Get Certificate
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Guide Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Guide</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <h3 className="font-semibold">Course Modules</h3>
-                <div className="space-y-3">
-                  {modules.map((module) => (
-                    <div
-                      key={module.id}
-                      className="border-b pb-3 last:border-0"
-                    >
-                      <div className="flex items-center">
-                        {module.completed ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600 mr-2" />
-                        ) : (
-                          <Circle className="h-4 w-4 text-gray-400 mr-2" />
-                        )}
-                        <span className="font-medium">
-                          Module {module.module_number}: {module.title}
-                        </span>
-                      </div>
-
-                      {module.content.length > 0 ? (
-                        <ul className="mt-2 ml-6 space-y-1">
-                          {module.content.map((content, idx) => (
-                            <li key={idx} className="text-gray-700">
-                              {content.content_title}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="mt-2 ml-6 text-gray-500 text-sm">
-                          No content available for this module.
-                        </p>
-                      )}
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Progress Overview */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Trophy className="h-5 w-5" />
+                  <span>Course Progress</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                      <span>
+                        {completedModules} of {course.number_of_modules} modules
+                        completed
+                      </span>
+                      <span>{progressPercentage}%</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                    <Progress value={progressPercentage} className="h-2" />
+                  </div>
 
-          {/* Modules List */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold"></h2>
-            {modules.map((module) => (
-              <Card
-                key={module.id}
-                className={`transition-all overflow-hidden ${
-                  module.completed
-                    ? "border-green-200 bg-green-50"
-                    : "hover:shadow-md"
-                }`}
-              >
-                <div
-                  className="p-6 cursor-pointer"
-                  onClick={() => toggleModule(module.id)}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleModuleCompletion(module.id, module.completed);
-                        }}
-                        className="mt-1 transition-colors"
+                  {allModulesCompleted && (
+                    <div className="text-center">
+                      <Button
+                        onClick={finishCourse}
+                        size="lg"
+                        className="bg-green-600 hover:bg-green-700"
                       >
-                        {module.completed ? (
-                          <CheckCircle2 className="h-6 w-6 text-green-600" />
-                        ) : (
-                          <Circle className="h-6 w-6 text-gray-400 hover:text-green-600" />
-                        )}
-                      </button>
+                        🎓 Finish Course & Get Certificate
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Badge variant="outline">
-                            Module {module.module_number}
-                          </Badge>
-                          {module.completed && (
-                            <Badge className="bg-green-100 text-green-800">
-                              Completed
+            {/* Guide Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Guide</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Course Modules</h3>
+                  <div className="space-y-3">
+                    {modules.map((module) => (
+                      <div
+                        key={module.id}
+                        className="border-b pb-3 last:border-0"
+                      >
+                        <div className="flex items-center">
+                          {module.completed ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-600 mr-2" />
+                          ) : (
+                            <Circle className="h-4 w-4 text-gray-400 mr-2" />
+                          )}
+                          <span className="font-medium">
+                            Module {module.module_number}: {module.title}
+                          </span>
+                        </div>
+
+                        {module.content.length > 0 ? (
+                          <ul className="mt-2 ml-6 space-y-1">
+                            {module.content.map((content, idx) => (
+                              <li key={idx} className="text-gray-700">
+                                {content.content_title}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="mt-2 ml-6 text-gray-500 text-sm">
+                            No content available for this module.
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Modules List */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold"></h2>
+              {modules.map((module) => (
+                <Card
+                  key={module.id}
+                  className={`transition-all overflow-hidden ${
+                    module.completed
+                      ? "border-green-200 bg-green-50"
+                      : "hover:shadow-md"
+                  }`}
+                >
+                  <div
+                    className="p-6 cursor-pointer"
+                    onClick={() => toggleModule(module.id)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleModuleCompletion(module.id, module.completed);
+                          }}
+                          className="mt-1 transition-colors"
+                        >
+                          {module.completed ? (
+                            <CheckCircle2 className="h-6 w-6 text-green-600" />
+                          ) : (
+                            <Circle className="h-6 w-6 text-gray-400 hover:text-green-600" />
+                          )}
+                        </button>
+
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <Badge variant="outline">
+                              Module {module.module_number}
                             </Badge>
+                            {module.completed && (
+                              <Badge className="bg-green-100 text-green-800">
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                          <h3 className="font-semibold text-lg mb-2">
+                            {module.title}
+                          </h3>
+                          {/* {module.description && (
+                          <p className="text-gray-600">{module.description}</p>
+                        )} */}
+                          {module.description ? (
+                            <div
+                              className="prose max-w-none text-gray-800"
+                              dangerouslySetInnerHTML={{
+                                __html: module.description,
+                              }}
+                            />
+                          ) : (
+                            <p className="text-gray-700">
+                              No description available for this course.
+                            </p>
                           )}
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">
-                          {module.title}
-                        </h3>
-                        {module.description && (
-                          <p className="text-gray-600">{module.description}</p>
+                      </div>
+                      <div className="text-gray-400">
+                        {activeModuleId === module.id ? (
+                          <ChevronUp className="h-5 w-5" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5" />
                         )}
                       </div>
                     </div>
-                    <div className="text-gray-400">
-                      {activeModuleId === module.id ? (
-                        <ChevronUp className="h-5 w-5" />
-                      ) : (
-                        <ChevronDown className="h-5 w-5" />
-                      )}
-                    </div>
                   </div>
-                </div>
 
-                {/* Module Content */}
-                {/* {activeModuleId === module.id && (
+                  {/* Module Content */}
+                  {/* {activeModuleId === module.id && (
                   <CardContent className="pt-0 border-t">
                     <div className="mt-4">
                       <h4 className="font-medium mb-4">Module Content</h4>
@@ -4431,47 +4483,48 @@ const fetchCourseData = async () => {
                   </CardContent>
                 )} */}
 
-                {activeModuleId === module.id && (
-                  <CardContent className="pt-0 border-t">
-                    <div className="mt-4">
-                      <h4 className="font-medium mb-4">Module Content</h4>
+                  {activeModuleId === module.id && (
+                    <CardContent className="pt-0 border-t">
+                      <div className="mt-4">
+                        <h4 className="font-medium mb-4">Module Content</h4>
 
-                      {module.content.length > 0 && (
-                        <div className="space-y-4 mb-8">
-                          {module.content.map((content, index) => (
-                            <ContentItem key={index} content={content} />
-                          ))}
-                        </div>
-                      )}
-
-                      {module.mcq_questions.length > 0 && (
-                        <MCQComponent
-                          questions={module.mcq_questions ||[]}
-                          moduleId={module.id}
-                          onComplete={() => {
-                            // Mark module as completed when all MCQs are answered
-                            if (!module.completed) {
-                              toggleModuleCompletion(module.id, false);
-                            }
-                          }}
-                        />
-                      )}
-
-                      {module.content.length === 0 &&
-                        module.mcq_questions.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <p>No content available for this module.</p>
+                        {module.content.length > 0 && (
+                          <div className="space-y-4 mb-8">
+                            {module.content.map((content, index) => (
+                              <ContentItem key={index} content={content} />
+                            ))}
                           </div>
                         )}
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-            ))}
+
+                        {module.mcq_questions.length > 0 && (
+                          <MCQComponent
+                            questions={module.mcq_questions || []}
+                            moduleId={module.id}
+                            onComplete={() => {
+                              // Mark module as completed when all MCQs are answered
+                              if (!module.completed) {
+                                toggleModuleCompletion(module.id, false);
+                              }
+                            }}
+                          />
+                        )}
+
+                        {module.content.length === 0 &&
+                          module.mcq_questions.length === 0 && (
+                            <div className="text-center py-6 text-gray-500">
+                              <p>No content available for this module.</p>
+                            </div>
+                          )}
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };

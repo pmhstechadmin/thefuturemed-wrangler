@@ -1833,6 +1833,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FaLeaf } from "react-icons/fa";
 import { mixpanelInstance } from "@/utils/mixpanel";
+import ReactQuill, { Quill } from "react-quill";
+import ImageResize from "quill-image-resize-module-react";
 
 interface ModulesStepProps {
   courseData: CourseData;
@@ -1840,7 +1842,39 @@ interface ModulesStepProps {
   onNext: () => void;
   onPrev: () => void;
 }
+Quill.register("modules/imageResize", ImageResize);
 
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  imageResize: {
+    parchment: Quill.import("parchment"),
+  },
+};
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+];
 export const ModulesStep = ({
   courseData,
   updateCourseData,
@@ -1852,9 +1886,8 @@ export const ModulesStep = ({
   const { toast } = useToast();
 
   useEffect(() => {
-  console.log("✅ Updated courseData:", courseData);
-}, [courseData]);
-
+    console.log("✅ Updated courseData:", courseData);
+  }, [courseData]);
 
   // Initialize modules when component mounts or when number_of_modules changes
   useEffect(() => {
@@ -1978,7 +2011,6 @@ export const ModulesStep = ({
       const folder = "course-content";
       const safeName = sanitizeFilename(file.name);
       const filePath = `${folder}/${Date.now()}-${safeName}`;
-      
 
       // Upload file
       const { error } = await supabase.storage
@@ -2178,7 +2210,21 @@ export const ModulesStep = ({
             </div>
             <div>
               <Label htmlFor="module_description">Module Description</Label>
-              <Textarea
+              <ReactQuill
+                id="module_description"
+                theme="snow"
+                value={currentModule.description || ""}
+                onChange={(value) =>
+                  updateModule(activeModule, {
+                    description: value,
+                  })
+                }
+                modules={modules}
+                formats={formats}
+                placeholder="Enter your rich text content here"
+                className="bg-white"
+              />
+              {/* <Textarea
                 id="module_description"
                 value={currentModule.description}
                 onChange={(e) =>
@@ -2186,7 +2232,7 @@ export const ModulesStep = ({
                 }
                 placeholder="Describe what this module covers"
                 rows={3}
-              />
+              /> */}
             </div>
 
             <Tabs defaultValue="content" className="w-full">
@@ -2206,14 +2252,14 @@ export const ModulesStep = ({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                                                              mixpanelInstance.track(
-                                                                " Add Text view Wizard  Button Clicked",
-                                                                {
-                                                                  timestamp: new Date().toISOString(),
-                                                                }
-                                                              );
-                        addContent(activeModule, "text");
-                                                            }}
+                      mixpanelInstance.track(
+                        " Add Text view Wizard  Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
+                      addContent(activeModule, "text");
+                    }}
                     // onClick={() => addContent(activeModule, "text")}
                   >
                     <FileText className="mr-2 h-4 w-4" />
@@ -2224,14 +2270,14 @@ export const ModulesStep = ({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                                                              mixpanelInstance.track(
-                                                                " Add Pdf view Wizard  Button Clicked",
-                                                                {
-                                                                  timestamp: new Date().toISOString(),
-                                                                }
-                                                              );
-                        addContent(activeModule, "pdf");
-                                                            }}
+                      mixpanelInstance.track(
+                        " Add Pdf view Wizard  Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
+                      addContent(activeModule, "pdf");
+                    }}
                     // onClick={() => addContent(activeModule, "pdf")}
                   >
                     <Upload className="mr-2 h-4 w-4" />
@@ -2242,15 +2288,14 @@ export const ModulesStep = ({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                                                              mixpanelInstance.track(
-                                                                " Add Video view Wizard  Button Clicked",
-                                                                {
-                                                                  timestamp: new Date().toISOString(),
-                                                                }
-                                                              );
-                        addContent(activeModule, "video");
-
-                                                            }}
+                      mixpanelInstance.track(
+                        " Add Video view Wizard  Button Clicked",
+                        {
+                          timestamp: new Date().toISOString(),
+                        }
+                      );
+                      addContent(activeModule, "video");
+                    }}
                     // onClick={() => addContent(activeModule, "video")}
                   >
                     <Video className="mr-2 h-4 w-4" />
@@ -2289,7 +2334,20 @@ export const ModulesStep = ({
                           {content.type === "text" && (
                             <div>
                               <Label>Text Content</Label>
-                              <Textarea
+                              <ReactQuill
+                                theme="snow"
+                                value={content.content || ""}
+                                onChange={(value) =>
+                                  updateContent(activeModule, contentIndex, {
+                                    content: value,
+                                  })
+                                }
+                                modules={modules}
+                                formats={formats}
+                                placeholder="Enter your rich text content here"
+                                className="bg-white"
+                              />
+                              {/* <Textarea
                                 value={content.content || ""}
                                 onChange={(e) =>
                                   updateContent(activeModule, contentIndex, {
@@ -2298,7 +2356,7 @@ export const ModulesStep = ({
                                 }
                                 placeholder="Enter your text content here"
                                 rows={4}
-                              />
+                              /> */}
                             </div>
                           )}
 
@@ -2309,7 +2367,9 @@ export const ModulesStep = ({
                               <input
                                 type="file"
                                 accept={
-                                  content.type === "pdf" ? ".pdf" : "video/*"
+                                  content.type === "pdf"
+                                    ? ".pdf,application/pdf"
+                                    : "video/*"
                                 }
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
@@ -2319,6 +2379,33 @@ export const ModulesStep = ({
                                       contentIndex,
                                       file
                                     );
+                                  if (
+                                    content.type === "pdf" &&
+                                    !file.type.includes("pdf")
+                                  ) {
+                                    toast({
+                                      title: "Invalid File Type",
+                                      description: "Please upload a PDF file",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
+                                  if (
+                                    content.type === "video" &&
+                                    !file.type.includes("video")
+                                  ) {
+                                    toast({
+                                      title: "Invalid File Type",
+                                      description: "Please upload a video file",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
+                                  handleFileUpload(
+                                    activeModule,
+                                    contentIndex,
+                                    file
+                                  );
                                 }}
                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                 disabled={uploading}
@@ -2396,7 +2483,6 @@ export const ModulesStep = ({
                   }
                 );
                 setActiveModule(activeModule + 1);
-                
               }}
               // onClick={() => setActiveModule(activeModule + 1)}
               disabled={

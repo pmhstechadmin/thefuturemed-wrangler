@@ -1,4 +1,3 @@
-
 // import { useState, useEffect } from "react";
 // import { Button } from "@/components/ui/button";
 // import { Calendar } from "@/components/ui/calendar";
@@ -779,6 +778,7 @@ import {
   ArrowLeft,
   CalendarCheck,
   Globe,
+  Award,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -825,7 +825,30 @@ interface Seminar {
   host_id: string;
   host_country?: string | null;
   is_published: boolean;
+  is_paid: boolean; // true for paid, false for free
+  price?: number;
+  currency?: string;
+  is_certificate?: boolean;
+  type?: string;
 }
+
+const resizeImagesInHtml = (html: string): string => {
+  return html.replace(/<img([^>]*)>/g, (match, group1) => {
+    // Check if style already exists
+    if (/style\s*=/.test(group1)) {
+      // Append width style to existing style attribute
+      return `<img${group1.replace(
+        /style\s*=\s*(['"])(.*?)\1/,
+        (s, quote, styleContent) => {
+          return `style=${quote}${styleContent};width:100px;${quote}`;
+        }
+      )}>`;
+    } else {
+      // Add new style attribute with width
+      return `<img${group1} style="width:100px;">`;
+    }
+  });
+};
 
 const ESeminar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -849,7 +872,30 @@ const ESeminar = () => {
       fetchSeminarsForDate(selectedDate);
     }
   }, [selectedDate]);
-
+  const formatSeminarType = (type: string) => {
+    switch (type) {
+      case "webminar":
+        return "Seminar"; // fix typo for display
+      case "workshop":
+        return "Workshop";
+      case "conference":
+        return "Conference";
+      default:
+        return type;
+    }
+  };
+  const getSeminarBadgeClass = (type: string) => {
+    switch (type) {
+      case "webminar":
+        return "bg-blue-100 text-blue-800"; // seminar
+      case "workshop":
+        return "bg-green-100 text-green-800"; // workshop
+      case "conference":
+        return "bg-[#FFFAF0] text-purple-800"; // conference
+      default:
+        return "bg-gray-100 text-gray-800"; // fallback
+    }
+  };
   const checkUser = async () => {
     try {
       const {
@@ -952,7 +998,6 @@ const ESeminar = () => {
   //     navigate(`/seminar/${seminar.id}`);
   //   }
   // };
-
 
   const handleRescheduleClick = (seminar: Seminar) => {
     if (!user || user.id !== seminar.host_id) {
@@ -1286,9 +1331,25 @@ const ESeminar = () => {
                   {seminars.map((seminar) => (
                     <Card
                       key={seminar.id}
-                      className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-300"
+                      className={`cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-300 ${getSeminarBadgeClass(
+                                seminar.type
+                              )}`}
                     >
-                      <CardContent className="p-4">
+                      <CardContent
+                        className="p-4 "
+                        // onClick={() => {
+                        //   // If you want to view the first seminar in the list:
+                        //   if (seminars.length > 0) {
+                        //     handleSeminarClick(seminar);
+                        //   } else {
+                        //     toast({
+                        //       title: "No Seminar Selected",
+                        //       description: "Please select a seminar to view.",
+                        //       variant: "destructive",
+                        //     });
+                        //   }
+                        // }}
+                      >
                         <div className="flex justify-between items-start mb-2">
                           <h3
                             className="font-semibold text-lg text-blue-700 hover:text-blue-800"
@@ -1313,9 +1374,19 @@ const ESeminar = () => {
                           </Badge>
                         </div>
                         <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center gap-2 text-gray-600 mb-2">
-                            <UserIcon className="h-4 w-4" />
-                            <span>Hosted by {seminar.host_name}</span>
+                          <div className="flex flex-col space-y-2">
+                            <Badge
+                              variant="secondary"
+                              className={`text-sm ${getSeminarBadgeClass(
+                                seminar.type
+                              )}`}
+                            >
+                              Type : {formatSeminarType(seminar.type)}
+                            </Badge>
+                            <div className="flex items-center gap-2 text-gray-600 mb-2">
+                              <UserIcon className="h-4 w-4" />
+                              <span>Hosted by {seminar.host_name}</span>
+                            </div>
                           </div>
                           <div>
                             <p>
@@ -1325,24 +1396,61 @@ const ESeminar = () => {
                         </div>
                         {seminar.description && (
                           <p className="text-gray-600 text-sm">
-                            {seminar.description}
+                            {/* {seminar.description} */}
+                            {seminar.description ? (
+                              <div
+                                className="prose max-w-none text-gray-800"
+                                dangerouslySetInnerHTML={{
+                                  __html: resizeImagesInHtml(
+                                    seminar.description
+                                  ),
+                                }}
+                                // dangerouslySetInnerHTML={{
+                                //   __html: removeImagesFromHtml(course.description),
+                                // }}
+                              />
+                            ) : (
+                              <p className="text-gray-700">
+                                No description available for this course.
+                              </p>
+                            )}
                           </p>
                         )}
-                        <div className="flex items-center gap-3">
-                          <Globe className="h-4 w-4 text-gray-600" />
-                          <div>
-                            <p className="text-gray-600">
-                              Host Country:{" "}
-                              <span className="text-blue-600 font-semibold">
-                                {seminar.host_country}
-                              </span>
-                            </p>
+
+                        <div className="flex justify-between items-start mb-2 my-6">
+                          <div className="flex items-center gap-3">
+                            <Globe className="h-4 w-4 text-gray-600" />
+                            <div>
+                              <p className="text-gray-600">
+                                Host Country:{" "}
+                                <span className="text-blue-600 font-semibold">
+                                  {seminar.host_country}
+                                </span>
+                              </p>
+                            </div>
                           </div>
                         </div>
+
                         <div className="flex justify-between mt-4">
                           <div className="text-xs text-blue-600">
                             Click topic to view details and register
                           </div>
+                          {/* {user?.id && (
+                            <div className="text-lg font-bold text-blue-600">
+                              {seminar.is_paid ? "Paid" : "Free"}
+                            </div>
+                          )} */}
+                          {/* {user?.id && user?.id !== seminar.host_id && (
+                            <div className="text-lg font-bold text-blue-600">
+                              {seminar.currency}
+                            </div>
+                          )} */}
+                          {user?.id && user?.id !== seminar.host_id && (
+                            <div className="text-lg font-bold text-blue-600">
+                              {seminar.is_paid ? "Paid" : "Free"}
+                            </div>
+                          )}
+
                           {user?.id === seminar.host_id && (
                             <div className="flex gap-2">
                               <Link to={`/e-seminar/edit/${seminar.id}`}>
@@ -1362,6 +1470,50 @@ const ESeminar = () => {
                               </Button>
                             </div>
                           )}
+                        </div>
+                        {user?.id && user?.id !== seminar.host_id && (
+                          <div className="flex items-center gap-3">
+                            <Award className="h-5 w-5 text-blue-600" />
+                            <div>
+                              <p className="font-medium">
+                                Certificate :
+                                <span className="text-gray-600">
+                                  {/* {seminar.is_certificate} */}
+                                  {seminar.is_certificate ? (
+                                    <span className="text-green-600 font-bold">
+                                      {" "}
+                                      Certificate Available
+                                    </span>
+                                  ) : (
+                                    <span className="text-red-600 font-bold">
+                                      {" "}
+                                      No Certificate
+                                    </span>
+                                  )}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        <div className="mt-8 text-center">
+                          <button
+                            onClick={() => {
+                              // If you want to view the first seminar in the list:
+                              if (seminars.length > 0) {
+                                handleSeminarClick(seminar);
+                              } else {
+                                toast({
+                                  title: "No Seminar Selected",
+                                  description:
+                                    "Please select a seminar to view.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 w-full rounded-lg transition duration-200"
+                          >
+                            View Details
+                          </button>
                         </div>
                       </CardContent>
                     </Card>

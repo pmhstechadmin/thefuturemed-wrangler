@@ -638,6 +638,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ImageResize from "quill-image-resize-module-react";
+import ReactQuill, { Quill } from "react-quill";
+import { Switch } from "@/components/ui/switch";
 
 // Fix: Update Speaker interface to match database schema
 interface Speaker {
@@ -647,7 +650,52 @@ interface Speaker {
   department: string;
   seminar_id?: string; // Added to match database schema
   created_at?: string; // Added to match database schema
+  // is_paid?: boolean; // Added to match database schema
+  // price?: number; // Added to match database schema
+  // currency?: string; // Added to match database schema
+  // is_certificate?: boolean; // Added to match database schema
 }
+Quill.register("modules/imageResize", ImageResize);
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  imageResize: {
+    parchment: Quill.import("parchment"),
+  },
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+];
+const seminarTypeMap = {
+  webminar: "webminar", // Display: "Webminar", Value: "webminar"
+  conference: "conference",
+  seminar: "seminar",
+} as const;
+
+type SeminarTypeKey = keyof typeof seminarTypeMap;
 
 const EditHostSeminar = () => {
   const { seminarId } = useParams<{ seminarId: string }>();
@@ -664,9 +712,40 @@ const EditHostSeminar = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
-const [country, setCountry] = useState("");
-const [timezone, setTimezone] = useState("Asia/Kolkata");
-const [timezones, setTimezones] = useState<string[]>([]);
+  const [country, setCountry] = useState("");
+  const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [timezones, setTimezones] = useState<string[]>([]);
+  // Add these state variables near the other useState declarations
+  const [isPaid, setIsPaid] = useState(false);
+  const [price, setPrice] = useState<number | undefined>(undefined);
+  const [currency, setCurrency] = useState("INR");
+  const [certificate, setCertificate] = useState(false);
+  const [seminarType, setSeminarType] = useState("");
+  // Add these handler functions
+  const handlePaidToggle = (paid: boolean) => {
+    setIsPaid(paid);
+    if (!paid) {
+      setPrice(undefined);
+    }
+  };
+
+  const handleNumberInput = (value: string) => {
+    if (value === "") {
+      setPrice(undefined);
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        setPrice(numValue >= 0 ? numValue : 0);
+      }
+    }
+  };
+
+  const handleCertificateToggle = (checked: boolean) => {
+    setCertificate(checked);
+  };
+
+  // You can remove the unused formatTimezoneLabel function or keep it if you plan to use it later
+
   useEffect(() => {
     const fetchSeminar = async () => {
       if (!seminarId) return;
@@ -697,11 +776,16 @@ const [timezones, setTimezones] = useState<string[]>([]);
         setDate(new Date(seminarData.date));
         setTime(seminarData.time);
         setCountry(seminarData.host_country || "");
+        setIsPaid(seminarData.is_paid || false);
+        setPrice(seminarData.price || undefined);
+        setCurrency(seminarData.currency || "INR");
+        setCertificate(seminarData.is_certificate || false);
         setSpeakers(
           speakersData && speakersData.length > 0
             ? speakersData
             : [{ name: "", qualification: "", department: "" }]
         );
+        setSeminarType(seminarData.type || "");
       } catch (error) {
         console.error("Error fetching seminar:", error);
         toast({
@@ -766,10 +850,11 @@ const [timezones, setTimezones] = useState<string[]>([]);
   const updateSpeaker = (
     index: number,
     field: keyof Speaker,
-    value: string
+    value: string | boolean | number | undefined
   ) => {
     const updatedSpeakers = [...speakers];
-    updatedSpeakers[index][field] = value;
+    (updatedSpeakers[index] as any)[field] = value;
+    // updatedSpeakers[index][field] = value;
     setSpeakers(updatedSpeakers);
   };
 
@@ -823,6 +908,13 @@ const [timezones, setTimezones] = useState<string[]>([]);
           description,
           date: format(date, "yyyy-MM-dd"),
           time,
+          host_country: country,
+          is_paid: isPaid,
+          type: seminarType,
+          // currency: currency,
+          currency: currency ? currency : null,
+          price: isPaid ? price : 0,
+          is_certificate: certificate,
         })
         .eq("id", seminarId);
 
@@ -842,6 +934,10 @@ const [timezones, setTimezones] = useState<string[]>([]);
         name: speaker.name,
         qualification: speaker.qualification,
         department: speaker.department,
+        // is_paid: speaker.is_paid || false, // Include other speaker fields
+        // price: speaker.price || 0,
+        // currency: speaker.currency || "INR",
+        // is_certificate: speaker.is_certificate || false,
       }));
 
       // Fix: Add type assertion to resolve TypeScript error
@@ -868,6 +964,11 @@ const [timezones, setTimezones] = useState<string[]>([]);
     } finally {
       setLoading(false);
     }
+  };
+  const handleSeminarTypeChange = (displayValue: string) => {
+    // Convert display value to database enum value
+    const enumValue = seminarTypeMap[displayValue as SeminarTypeKey];
+    setSeminarType(enumValue);
   };
 
   if (initialLoading) {
@@ -1039,12 +1140,19 @@ const [timezones, setTimezones] = useState<string[]>([]);
 
               <div>
                 <Label htmlFor="description">Description</Label>
-                <Textarea
+                {/* <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Provide a brief description of the seminar"
                   rows={3}
+                /> */}
+                <ReactQuill
+                  theme="snow"
+                  value={description}
+                  onChange={setDescription}
+                  modules={modules}
+                  formats={formats}
                 />
               </div>
 
@@ -1084,7 +1192,7 @@ const [timezones, setTimezones] = useState<string[]>([]);
                     required
                   />
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
+                {/* <div className="grid md:grid-cols-2 gap-4"> */}
                   <div>
                     <Label htmlFor="country">Country *</Label>
                     <Select value={country} onValueChange={setCountry} required>
@@ -1347,6 +1455,25 @@ const [timezones, setTimezones] = useState<string[]>([]);
                     </Select>
                   </div>
 
+                  <div>
+                                    <Label htmlFor="type">Type *</Label>
+                                    <Select
+                                      value={Object.keys(seminarTypeMap).find(key => 
+                                        seminarTypeMap[key as SeminarTypeKey] === seminarType
+                                      ) || ""}
+                                      onValueChange={handleSeminarTypeChange}
+                                      required
+                                    >
+                                      <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a type" />
+                                      </SelectTrigger>
+                                      <SelectContent className="max-h-60 overflow-y-auto">
+                                        <SelectItem value="webminar">Webminar</SelectItem>
+                                        <SelectItem value="conference">Conference</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+
                   {/* <div>
                   <Label htmlFor="timezone">Timezone *</Label>
                   <Select
@@ -1371,11 +1498,110 @@ const [timezones, setTimezones] = useState<string[]>([]);
                     </SelectContent>
                   </Select>
                 </div> */}
-                </div>
+                {/* </div> */}
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardContent className="space-y-4">
+              <div className="space-y-4 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base font-medium text-green-800">
+                      Enrollment Type (Free/Paid) *
+                    </Label>
+                    <p className="text-sm text-green-600 mt-1">
+                      <b>Status:</b>{" "}
+                      {isPaid ? (
+                        <span className="font-semibold text-green-700">
+                          Paid
+                        </span>
+                      ) : (
+                        <span className="font-semibold text-green-600">
+                          Free
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-xs text-green-500 mt-1">
+                      This setting determines whether students need to pay to
+                      enroll
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isPaid}
+                    onCheckedChange={handlePaidToggle}
+                    className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-400"
+                  />
+                </div>
 
+                {isPaid && (
+                  <div className="mt-3 pl-2 border-l-2 border-green-200">
+                    <Label htmlFor="price" className="text-green-800">
+                      Registration Price (INR) / Per Participant * (Please note
+                      that 25% platform fees will be deducted)
+                    </Label>
+                    <div className="flex items-center gap-3 mt-1">
+                      <Input
+                        id="price"
+                        type="number"
+                        min="0"
+                        value={price ?? ""}
+                        onChange={(e) => handleNumberInput(e.target.value)}
+                        placeholder="Enter seminar price"
+                        className="mt-1 focus:border-green-400 focus:ring-green-200"
+                      />
+                      <select
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="border rounded-lg px-3 py-2 focus:border-green-400 focus:ring-green-200 mt-2"
+                      >
+                        <option value="INR">INR</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="JPY">JPY</option>
+                        <option value="AUD">AUD</option>
+                        <option value="CAD">CAD</option>
+                      </select>
+                    </div>
+                    {/* <p className="text-xs text-green-600 mt-1">
+                      Please enter the price attendees will pay to join this
+                      seminar
+                    </p>  */}
+                  </div>
+                )}
+              </div>
+              <br />
+              <div className="flex items-center justify-between mt-4">
+                <div>
+                  <Label className="text-base font-medium text-green-800">
+                    Include Certificate* (Default Template Provided) View Sample Certificate
+                  </Label>
+                  <p className="text-sm text-green-600 mt-1">
+                    <b>Status:</b>{" "}
+                    {certificate ? (
+                      <span className="font-semibold text-green-700">Yes</span>
+                    ) : (
+                      <span className="font-semibold text-green-600">No</span>
+                    )}
+                  </p>
+                  <p className="text-xs text-green-500 mt-1">
+                    This setting determines whether students receive a
+                    certificate
+                  </p>
+                  <p className="text-xs text-green-500 mt-1">
+                    To provide customized certificate template, please email us at drshan@thefuturemed.com
+                  </p>
+                </div>
+
+                <Switch
+                  checked={certificate}
+                  onCheckedChange={handleCertificateToggle}
+                  className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-400"
+                />
+              </div>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">

@@ -93,10 +93,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Registration Successful | MedPortal</title>
+        <title>The Future Med - A Heaven for Healthcare Heros</title>
         <meta
           name="description"
-          content="Your registration with MedPortal was successful. Please verify your email to complete the process."
+          content="TheFutemed Portal is a dynamic platform designed to empower medical professionals and students by fostering connection, continuous learning, and career growth."
         />
         <link
           rel="canonical"

@@ -258,6 +258,24 @@ interface Seminar {
   speakers: Speaker[];
 }
 
+const resizeImagesInHtml = (html: string): string => {
+  return html.replace(/<img([^>]*)>/g, (match, group1) => {
+    // Check if style already exists
+    if (/style\s*=/.test(group1)) {
+      // Append width style to existing style attribute
+      return `<img${group1.replace(
+        /style\s*=\s*(['"])(.*?)\1/,
+        (s, quote, styleContent) => {
+          return `style=${quote}${styleContent};width:100px;${quote}`;
+        }
+      )}>`;
+    } else {
+      // Add new style attribute with width
+      return `<img${group1} style="width:100px;">`;
+    }
+  });
+};
+
 export const CreateSeminarModal = () => {
   const [hostName, setHostName] = useState("");
   const [topic, setTopic] = useState("");
@@ -734,7 +752,7 @@ Looking forward to your presentation!
                       </CardDescription>
                     </div>
                     <div className="flex gap-2">
-                         {/* <Link to={`/my-seminar/edit/${seminar.id}`}>
+                      {/* <Link to={`/my-seminar/edit/${seminar.id}`}>
                                                         <Button variant="outline">Edit</Button>
                                                       </Link> */}
                       <Button
@@ -780,7 +798,22 @@ Looking forward to your presentation!
                     </div>
                   </div>
                   <p className="mt-4 text-gray-700 line-clamp-2">
-                    {seminar.description}
+                    {/* {seminar.description} */}
+                    {seminar.description ? (
+                      <div
+                        className="prose max-w-none text-gray-800"
+                        dangerouslySetInnerHTML={{
+                          __html: resizeImagesInHtml(seminar.description),
+                        }}
+                        // dangerouslySetInnerHTML={{
+                        //   __html: removeImagesFromHtml(course.description),
+                        // }}
+                      />
+                    ) : (
+                      <p className="text-gray-700">
+                        No description available for this course.
+                      </p>
+                    )}
                   </p>
                   <div className="mt-4">
                     <Badge variant="outline" className="mr-2">

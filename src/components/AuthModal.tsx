@@ -758,6 +758,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import mixpanel, {
+  mixpanelInstance,
   setMixpanelSessionId,
   trackLoginFailure,
   trackLoginSuccess,
@@ -1087,9 +1088,9 @@ const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
                 variant="ghost"
                 className="w-full text-blue-600 hover:underline"
                 onClick={() => {
-                  mixpanel.track("Forgot Password Click", {
+                  mixpanelInstance.track("Forgot Password Click", {
                     email: email,
-                    session_id: mixpanel.get_property("session_id"),
+                    session_id: mixpanelInstance.get_property("session_id"),
                     timestamp: new Date().toISOString(),
                   });
                   setMode("forgot");

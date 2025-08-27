@@ -212,7 +212,7 @@ export const PublishedCourses = () => {
                 </CardTitle>
                 <p className="text-sm text-gray-600">
                   By {getCreatorName(course.creator_id)}
-                  <p>from {getCreatorInstitution(course.creator_id)}</p>
+                  <span className="block">from {getCreatorInstitution(course.creator_id)}</span>
                 </p>
               </CardHeader>
               <CardContent>
