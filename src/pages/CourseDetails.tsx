@@ -468,6 +468,7 @@ import Header from "@/footer/Header";
 import { profile } from "console";
 import { SocialShareButtons } from "./zoom/SocialShareButtons";
 import { Helmet } from "react-helmet";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface Course {
   id: string;
@@ -1037,6 +1038,7 @@ const handleAccessCourse = () => {
                       isPaid={course.is_paid}
                       price={course.price}
                       onEnrollmentChange={checkEnrollmentStatus}
+                      mixpanelInstance={mixpanelInstance}
                     />
                   ) : (
                     <Button
@@ -1081,7 +1083,7 @@ const handleAccessCourse = () => {
                     </Button>
                   )}
 
-                  <div className="space-y-3 text-sm">
+                  <div className="space-y-3 text-sm my-6">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
                         <Clock className="h-4 w-4" />

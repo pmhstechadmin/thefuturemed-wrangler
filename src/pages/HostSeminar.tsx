@@ -3728,7 +3728,7 @@ Looking forward to meet you at the seminar!
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-base font-medium text-green-800">
-                      Enrollment Type (Free/Paid) * (The mixmum price is $0.50 per Register.)
+                      Enrollment Type (Free/Paid) * (The minimum price is $0.50 / INR 50 per registration.)
                     </Label>
                     <p className="text-sm text-green-600 mt-1">
                       <b>Status:</b>{" "}

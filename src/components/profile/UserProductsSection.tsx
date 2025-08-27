@@ -1191,14 +1191,14 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
                   <BookOpen className="h-4 w-4 mr-2" />
                   Create New Course
                 </Button>
-                <Button
+                {/* <Button
                   onClick={() => handleNavigateToProduct("publications")}
                   variant="outline"
                   size="sm"
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   Submit Publication
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => handleNavigateToProduct("myprofile")}
                   variant="outline"
