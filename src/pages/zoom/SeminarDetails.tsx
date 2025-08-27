@@ -4356,16 +4356,20 @@ The Seminar Team`,
                             <div className="flex items-center gap-3">
                               <Award className="h-5 w-5 text-blue-600" />
                               <div>
-                                <p className="font-medium">Certificate</p>
+                                <p className="font-medium">Participation Certificate Available : </p>
                                 <p className="text-gray-600">
                                   {/* {seminar.is_certificate} */}
                                   {seminar.is_certificate ? (
                                     <span className="text-green-600 font-bold">
-                                      Certificate Available
+                                      Yes, Visit
+                                      <a href="https://certification.thefuturemed.com" target="_blank">
+                                        Certification Portal
+                                      </a>
+                                      .
                                     </span>
                                   ) : (
                                     <span className="text-red-600 font-bold">
-                                      No Certificate
+                                      No
                                     </span>
                                   )}
                                 </p>
@@ -5231,7 +5235,8 @@ The Seminar Team`,
                         registration. Read our Refund Policy.
                       </p>
                       <p className="text-blue-500 text-sm mt-2">
-                        Note : Your payment method should allow international payments..
+                        Note : Your payment method should allow international
+                        payments..
                       </p>
                     </div>
                   </CardContent>

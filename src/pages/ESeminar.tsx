@@ -1332,8 +1332,8 @@ const ESeminar = () => {
                     <Card
                       key={seminar.id}
                       className={`cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-300 ${getSeminarBadgeClass(
-                                seminar.type
-                              )}`}
+                        seminar.type
+                      )}`}
                     >
                       <CardContent
                         className="p-4 "
@@ -1476,18 +1476,34 @@ const ESeminar = () => {
                             <Award className="h-5 w-5 text-blue-600" />
                             <div>
                               <p className="font-medium">
-                                Certificate :
+                                {/* Certificate : */}
+                                Participation Certificate Available : {""}
                                 <span className="text-gray-600">
                                   {/* {seminar.is_certificate} */}
                                   {seminar.is_certificate ? (
+                                    //   <span className="text-green-600 font-bold">
+                                    //     {" "}
+                                    //     Certificate Available
+                                    //   </span>
+                                    // ) : (
+                                    //   <span className="text-red-600 font-bold">
+                                    //     {" "}
+                                    //     No Certificate
+                                    //   </span>
                                     <span className="text-green-600 font-bold">
-                                      {" "}
-                                      Certificate Available
+                                      Yes, Visit
+                                      <a
+                                        href="https://certification.thefuturemed.com"
+                                        target="_blank"
+                                        className="text-blue-600 underline ml-1"
+                                      >
+                                        Certification Portal
+                                      </a>
+                                      .
                                     </span>
                                   ) : (
                                     <span className="text-red-600 font-bold">
-                                      {" "}
-                                      No Certificate
+                                      No
                                     </span>
                                   )}
                                 </span>
