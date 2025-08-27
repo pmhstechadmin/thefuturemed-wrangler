@@ -4050,7 +4050,8 @@ const fetchCourseData = async () => {
         .select("id")
         .eq("user_id", session.user.id)
         .eq("course_id", courseId)
-        .eq("payment_status", "paid");
+        .in("payment_status", ["paid", "free"]);
+        // .eq("payment_status", "paid");
         // .or("payment_status.eq.paid,payment_status.eq.free");
 
       if (error) throw error;
