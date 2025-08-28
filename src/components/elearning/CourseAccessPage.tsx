@@ -3485,6 +3485,53 @@ const ContentItem = ({ content }: { content: ContentData }) => {
           )}
         </div>
       );
+    // case "pdf":
+    //   return (
+    //     <div className="mt-4 bg-gray-50 p-4 rounded-md">
+    //       <div className="flex items-center justify-between mb-2">
+    //         <div className="flex items-center">
+    //           <FileText className="h-5 w-5 mr-2 text-red-600" />
+    //           <h4 className="font-medium">{content.content_title}</h4>
+    //         </div>
+    //         {signedUrl && (
+    //           <a
+    //             href={signedUrl}
+    //             download
+    //             className="flex items-center text-blue-600 hover:underline text-sm"
+    //           >
+    //             {/* <Download className="h-4 w-4 mr-1" /> Download */}
+    //           </a>
+    //         )}
+    //       </div>
+    //       {loading ? (
+    //         <p className="text-gray-500">Loading PDF...</p>
+    //       ) : signedUrl ? (
+    //         <div className="mt-2">
+    //           {/* <iframe
+    //             src={signedUrl}
+    //             title="PDF Viewer"
+    //             className="w-full h-[300px] border rounded"
+    //           /> */}
+    //           <a
+    //             href={signedUrl}
+    //             target="_blank"
+    //             rel="noopener noreferrer"
+    //             className="text-blue-600 hover:underline flex items-center gap-1"
+    //           >
+    //             <FileText className="w-4 h-4" />
+    //             {content.content_title}
+    //           </a>
+    //           {content.file_size && (
+    //             <p className="text-xs text-gray-500 mt-1">
+    //               File size: {Math.round(content.file_size / 1024)} KB
+    //             </p>
+    //           )}
+    //         </div>
+    //       ) : (
+    //         <p className="text-gray-500">PDF file not available</p>
+    //       )}
+    //     </div>
+    //   );
     case "pdf":
       return (
         <div className="mt-4 bg-gray-50 p-4 rounded-md">
@@ -3493,34 +3540,21 @@ const ContentItem = ({ content }: { content: ContentData }) => {
               <FileText className="h-5 w-5 mr-2 text-red-600" />
               <h4 className="font-medium">{content.content_title}</h4>
             </div>
-            {signedUrl && (
-              <a
-                href={signedUrl}
-                download
-                className="flex items-center text-blue-600 hover:underline text-sm"
-              >
-                {/* <Download className="h-4 w-4 mr-1" /> Download */}
-              </a>
-            )}
+            {/* 🚫 Removed direct download link */}
           </div>
+
           {loading ? (
             <p className="text-gray-500">Loading PDF...</p>
           ) : signedUrl ? (
             <div className="mt-2">
-              {/* <iframe
-                src={signedUrl}
+              {/* PDF Viewer with no download/print controls */}
+              <iframe
+                src={`${signedUrl}#toolbar=0&navpanes=0&scrollbar=0`}
                 title="PDF Viewer"
-                className="w-full h-[300px] border rounded"
-              /> */}
-              <a
-                href={signedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline flex items-center gap-1"
-              >
-                <FileText className="w-4 h-4" />
-                {content.content_title}
-              </a>
+                className="w-full h-[600px] border rounded"
+                style={{ pointerEvents: "auto" }}
+              />
+
               {content.file_size && (
                 <p className="text-xs text-gray-500 mt-1">
                   File size: {Math.round(content.file_size / 1024)} KB
@@ -3532,6 +3566,7 @@ const ContentItem = ({ content }: { content: ContentData }) => {
           )}
         </div>
       );
+
     case "video":
       return (
         <div className="mt-4 bg-gray-50 p-4 rounded-md">
@@ -3558,6 +3593,7 @@ const ContentItem = ({ content }: { content: ContentData }) => {
                 <video
                   src={signedUrl}
                   controls
+                  controlsList="nodownload noremoteplayback"
                   className="w-full h-full object-contain"
                 />
               </div>

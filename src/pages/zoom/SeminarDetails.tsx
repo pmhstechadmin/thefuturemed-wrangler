@@ -3552,7 +3552,6 @@ const SeminarDetails = () => {
         // .select("status")
         .eq("user_id", session.user.id)
         .eq("seminar_id", seminarId)
-        .or("payment_status.eq.paid,payment_status.eq.free")
         // .single();
         .maybeSingle();
 
@@ -4356,13 +4355,18 @@ The Seminar Team`,
                             <div className="flex items-center gap-3">
                               <Award className="h-5 w-5 text-blue-600" />
                               <div>
-                                <p className="font-medium">Participation Certificate Available : </p>
+                                <p className="font-medium">
+                                  Participation Certificate Available :{" "}
+                                </p>
                                 <p className="text-gray-600">
                                   {/* {seminar.is_certificate} */}
                                   {seminar.is_certificate ? (
                                     <span className="text-green-600 font-bold">
                                       Yes, Visit
-                                      <a href="https://certification.thefuturemed.com" target="_blank">
+                                      <a
+                                        href="https://certification.thefuturemed.com"
+                                        target="_blank"
+                                      >
                                         Certification Portal
                                       </a>
                                       .
@@ -5231,8 +5235,8 @@ The Seminar Team`,
                         </div>
                       )} */}
                       <p className="text-gray-500 text-sm mt-2">
-                        Note : There is no refund policy for seminar
-                        registration. Read our Refund Policy.
+                        Note : There is no refund for paid seminar registration.
+                        Read our Refund Policy.
                       </p>
                       <p className="text-blue-500 text-sm mt-2">
                         Note : Your payment method should allow international
