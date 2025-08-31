@@ -593,7 +593,8 @@ const BlogList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [showPublishedOnly, setShowPublishedOnly] = useState(true);
+  const [showPublishedOnly, setShowPublishedOnly] = useState(false);
+  // const [showPublishedOnly, setShowPublishedOnly] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
