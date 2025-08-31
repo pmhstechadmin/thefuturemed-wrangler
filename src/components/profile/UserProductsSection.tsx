@@ -768,6 +768,8 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
       navigate(`/seminar/${id}`);
     } else if (type === "course-detail" && id) {
       navigate(`/course/${id}`);
+    } else if (type === "blogs-detail" && id) {
+      navigate(`/blog-list/${id}`);
     } else if (routes[type]) {
       navigate(routes[type]);
     }
@@ -1137,6 +1139,13 @@ export const UserProductsSection = ({ userId }: UserProductsSectionProps) => {
                             </span>
                             <div className="flex gap-1">
                               <Button
+                                // onClick={() => handleNavigateToProduct("blogs")}
+                                onClick={() =>
+                                  handleNavigateToProduct(
+                                    "blogs-detail",
+                                    blog.id
+                                  )
+                                }
                                 size="sm"
                                 variant="ghost"
                                 className="h-6 px-2"
