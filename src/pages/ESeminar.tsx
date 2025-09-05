@@ -814,6 +814,7 @@ import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from "@/footer/Footer";
 import Header from "@/footer/Header";
 import { mixpanelInstance } from "@/utils/mixpanel";
+import { RatingDisplay } from "@/components/common/StarRatingDisplay";
 
 interface Seminar {
   id: string;
@@ -977,7 +978,7 @@ const ESeminar = () => {
   };
 
   const handleSeminarClick = (seminar: Seminar) => {
-    navigate(`/seminar/${seminar.id}`);
+    navigate(`/seminar/:slug/${seminar.id}`);
   };
 
   // const handleSeminarClick = (seminar: Seminar) => {
@@ -1366,6 +1367,7 @@ const ESeminar = () => {
                           >
                             {seminar.topic}
                           </h3>
+                          
                           <Badge
                             variant="secondary"
                             className="text-sm bg-blue-100 text-800"
@@ -1471,46 +1473,47 @@ const ESeminar = () => {
                             </div>
                           )}
                         </div>
-                        {user?.id && user?.id !== seminar.host_id && (
-                          <div className="flex items-center gap-3">
-                            <Award className="h-5 w-5 text-blue-600" />
-                            <div>
-                              <p className="font-medium">
-                                {/* Certificate : */}
-                                Participation Certificate Available : {""}
-                                <span className="text-gray-600">
-                                  {/* {seminar.is_certificate} */}
-                                  {seminar.is_certificate ? (
-                                    //   <span className="text-green-600 font-bold">
-                                    //     {" "}
-                                    //     Certificate Available
-                                    //   </span>
-                                    // ) : (
-                                    //   <span className="text-red-600 font-bold">
-                                    //     {" "}
-                                    //     No Certificate
-                                    //   </span>
-                                    <span className="text-green-600 font-bold">
-                                      Yes, Visit
-                                      <a
-                                        href="https://certification.thefuturemed.com"
-                                        target="_blank"
-                                        className="text-blue-600 underline ml-1"
-                                      >
-                                        Certification Portal
-                                      </a>
-                                      .
-                                    </span>
-                                  ) : (
-                                    <span className="text-red-600 font-bold">
-                                      No
-                                    </span>
-                                  )}
-                                </span>
-                              </p>
-                            </div>
+                        {/* {user?.id && user?.id !== seminar.host_id && ( */}
+                        <div className="flex items-center gap-3">
+                          <Award className="h-5 w-5 text-blue-600" />
+                          <div>
+                            <p className="font-medium">
+                              {/* Certificate : */}
+                              Participation Certificate Available : {""}
+                              <span className="text-gray-600">
+                                {/* {seminar.is_certificate} */}
+                                {seminar.is_certificate ? (
+                                  //   <span className="text-green-600 font-bold">
+                                  //     {" "}
+                                  //     Certificate Available
+                                  //   </span>
+                                  // ) : (
+                                  //   <span className="text-red-600 font-bold">
+                                  //     {" "}
+                                  //     No Certificate
+                                  //   </span>
+                                  <span className="text-green-600 font-bold">
+                                    Yes, Visit
+                                    <a
+                                      href="https://certificate.thefuturemed.com/"
+                                      // href="https://certification.thefuturemed.com"
+                                      target="_blank"
+                                      className="text-blue-600 underline ml-1"
+                                    >
+                                      Certification Portal
+                                    </a>
+                                    .
+                                  </span>
+                                ) : (
+                                  <span className="text-red-600 font-bold">
+                                    No
+                                  </span>
+                                )}
+                              </span>
+                            </p>
                           </div>
-                        )}
+                        </div>
+                        {/* )} */}
                         <div className="mt-8 text-center">
                           <button
                             onClick={() => {

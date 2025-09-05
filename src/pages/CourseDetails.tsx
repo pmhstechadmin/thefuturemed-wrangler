@@ -469,6 +469,8 @@ import { profile } from "console";
 import { SocialShareButtons } from "./zoom/SocialShareButtons";
 import { Helmet } from "react-helmet";
 import { mixpanelInstance } from "@/utils/mixpanel";
+import { RatingDisplay } from "@/components/common/StarRatingDisplay";
+import StarRating from "@/components/common/StarRatingPopUp";
 
 interface Course {
   id: string;
@@ -882,8 +884,15 @@ const handleAccessCourse = () => {
                     </p>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                    <span>4.8 (156 reviews)</span>
+                    {/* <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span>4.8 (156 reviews)</span> */}
+                    {/* <RatingDisplay
+                      itemId={course.id}
+                      itemType="course"
+                      color="#4caf50"
+                      size={18}
+                      showText={true}
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -940,6 +949,21 @@ const handleAccessCourse = () => {
 
             {/* Enrollment Sidebar */}
             <div className="space-y-6">
+                <Card className="border-green-600 bg-green-300">
+                  <CardContent className="p-6 text-center">
+                    
+                    <div className="text-center mb-6">
+                     <RatingDisplay
+      itemId={course.id}
+                      itemType="course"
+                      color="#4caf50"
+                      size={18}
+                      showText={true}
+                      />
+                    </div>
+                  
+                  </CardContent>
+                </Card>
               <Card
                 className={isEnrolled ? "border-green-200 bg-green-50" : ""}
               >
@@ -975,6 +999,17 @@ const handleAccessCourse = () => {
                       <div className="text-2xl font-bold text-green-600 mb-2">
                         Access Granted
                       </div>
+                      {/* <StarRating 
+              itemId={course.id} 
+              itemType="course"
+              size={28}
+              onRatingSubmit={(rating, responseData) => {
+                console.log('Rating submitted:', rating);
+                console.log('Response from server:', responseData);
+              }}
+              onRatingLoaded={(ratingData) => {
+                console.log('Rating data loaded:', ratingData);
+              }}/> */}
                       <p className="text-sm text-gray-600">
                         You have full access to this course
                       </p>
@@ -1067,13 +1102,26 @@ const handleAccessCourse = () => {
                             description:
                               "You now have access to this free course.",
                           });
-                        } catch (error) {
-                          toast({
-                            title: "Enrollment Failed",
-                            description:
-                              "There was an issue enrolling in this course.",
-                            variant: "destructive",
-                          });
+                        }catch (error) {
+                          if (
+                              error.code === "42501" ||
+                              error.code === "23502"
+                            ) {
+                              // RLS error - user not authorized
+                              toast({
+                                title: "Access Denied",
+                                description: "Please sign in before enrolling.",
+                                variant: "destructive",
+                              });
+                              return;
+                            } else {
+                              toast({
+                                title: "Enrollment Failed",
+                                description:
+                                  "There was an issue enrolling in this course.",
+                                variant: "destructive",
+                              });
+                            }
                         } finally {
                           setCheckingEnrollment(false);
                         }

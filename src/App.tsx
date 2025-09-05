@@ -317,6 +317,7 @@ import { HelmetProvider } from "react-helmet-async";
 import PaymentSuccess from "./components/elearning/PaymentSuccess";
 import { supabase } from "./integrations/supabase/client";
 import PaymentCancel from "./components/elearning/PaymentCanel";
+import ModulesAccordion from "./components/elearning/ModulesAccordion";
 
 const queryClient = new QueryClient();
 
@@ -404,7 +405,7 @@ const App = () => {
               />
               <Route path="/saved-job" element={<SaveJob />} />
               <Route path="/saved-candidates" element={<SaveCandidate />} />
-              <Route path="/blog-list/:id" element={<BlogList />} />
+              {/* <Route path="/blog-list/:id" element={<BlogList />} /> */}
               <Route path="/blog-list/:slug/:id" element={<BlogList />} />
               {/* <Route
                 path="/course/:slug/:courseId/learn"
@@ -420,6 +421,7 @@ const App = () => {
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/pricing-policy" element={<PricingPolicy />} />
               <Route path="/monetization" element={<EarningPage />} />
+              <Route path="/modules-accordion" element={<ModulesAccordion />} />
               {/* <Route path="/seminar/:slug/:id" element={<SeminarDetails />} />
               <Route path="/course/:slug/:id" element={<CourseDetails />} /> */}
               <Route path="/post-blog/:slug/:id" element={<PostBlog />} />

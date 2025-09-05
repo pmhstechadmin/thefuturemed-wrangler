@@ -1535,6 +1535,7 @@ import Header from "@/footer/Header";
 import Pagination from "react-bootstrap/Pagination";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import { RatingDisplay } from "../common/StarRatingDisplay";
 
 // Loader CSS
 const loaderStyles = `
@@ -1930,45 +1931,63 @@ const BlogPortal: React.FC = () => {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentBlogs.map((blog) => (
-                <Card
-                  key={blog.id}
-                  className="flex flex-col justify-between h-full hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/blog-list/${blog.id}`)}
-                >
-                  <CardHeader className="p-4">
-                    <Badge variant="default">Published</Badge>
-                    <CardTitle className="text-lg line-clamp-2 mt-2">
-                      {blog.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex flex-col justify-between p-4 h-[420px]">
-                    <div className="overflow-hidden max-h-[220px]">
-                      <div
-                        className="ql-editor max-w-none prose prose-sm overflow-hidden"
-                        style={{ padding: 0 }}
-                        dangerouslySetInnerHTML={{ __html: blog.content }}
-                      />
-                    </div>
-                    <div className="mt-auto">
-                      <p className="text-xs text-gray-500 italic mb-2 text-end">
-                        By {blog.author_name}
-                      </p>
-                      <Button
-                        className="w-full text-sm py-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/blog-list/${blog.id}`);
-                        }}
-                      >
-                        View Blog
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {currentBlogs.map((blog) => {
+    const excerpt =
+      blog.content.replace(/<[^>]+>/g, "").slice(0, 120) +
+      (blog.content.length > 120 ? "..." : "");
+
+    return (
+      <Card
+        key={blog.id}
+        className="flex flex-col h-full rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
+        onClick={() => navigate(`/blog-list/:slug/${blog.id}`)}
+      >
+        {/* Header with soft accent background */}
+        <CardHeader className="space-y-3 p-5 rounded-t-2xl bg-gradient-to-r from-indigo-50 to-purple-50">
+          <div className="flex items-center justify-between">
+            <Badge
+              variant="secondary"
+              className="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-md"
+            >
+              Published
+            </Badge>
+            <RatingDisplay
+              itemId={blog.id}
+              itemType="blog"
+              color="#16a34a"
+              size={18}
+              showText={true}
+            />
+          </div>
+
+          <CardTitle className="text-lg md:text-xl font-bold leading-snug line-clamp-2 text-gray-900 hover:text-indigo-700 transition-colors">
+            {blog.title}
+          </CardTitle>
+
+          <p className="text-sm text-gray-600 italic">By {blog.author_name}</p>
+        </CardHeader>
+
+        {/* Excerpt + CTA */}
+        <CardContent className="flex flex-col justify-between p-5">
+          <p className="text-gray-700 text-sm leading-relaxed line-clamp-3 mb-4">
+            {excerpt}
+          </p>
+
+          <Button
+            className="w-full text-sm py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/blog-list/:slug/${blog.id}`);
+            }}
+          >
+            View Blog
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  })}
+</div>
             {totalPages > 1 && (
               <div className="flex justify-center mt-6">
                 <Pagination>

@@ -1341,6 +1341,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 
 import Footer from "@/footer/Footer";
+import { mixpanelInstance } from "@/utils/mixpanel";
 
 interface Profile {
   id: string;
@@ -1552,7 +1553,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -1676,31 +1676,52 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {profile?.medical_specialty && (
-                    <Badge
-                      variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200 text-xs sm:text-sm"
-                    >
-                      {profile.medical_specialty}
-                    </Badge>
-                  )}
-                  {profile?.category && (
-                    <Badge
-                      variant="outline"
-                      className="bg-green-50 text-green-700 border-green-200 text-xs sm:text-sm"
-                    >
-                      {profile.category}
-                    </Badge>
-                  )}
-                  {profile?.institution && (
-                    <Badge
-                      variant="outline"
-                      className="bg-purple-50 text-purple-700 border-purple-200 text-xs sm:text-sm"
-                    >
-                      {profile.institution}
-                    </Badge>
-                  )}
+                <div className="flex flex-wrap items-center justify-between gap-2 mt-4">
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {profile?.medical_specialty && (
+                      <Badge
+                        variant="outline"
+                        className="bg-blue-50 text-blue-700 border-blue-200 text-xs sm:text-sm"
+                      >
+                        {profile.medical_specialty}
+                      </Badge>
+                    )}
+                    {profile?.category && (
+                      <Badge
+                        variant="outline"
+                        className="bg-green-50 text-green-700 border-green-200 text-xs sm:text-sm"
+                      >
+                        {profile.category}
+                      </Badge>
+                    )}
+                    {profile?.institution && (
+                      <Badge
+                        variant="outline"
+                        className="bg-purple-50 text-purple-700 border-purple-200 text-xs sm:text-sm"
+                      >
+                        {profile.institution}
+                      </Badge>
+                    )}
+                  </div>
+                  <div>
+                    <Button>
+                      <a
+                        href="https://certificate.thefuturemed.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            "Certificate Page Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                        }}
+                      >
+                        Certificate Page
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

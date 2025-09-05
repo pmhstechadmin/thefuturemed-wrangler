@@ -3361,17 +3361,25 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/footer/Header";
 import Footer from "@/footer/Footer";
 import { Helmet } from "react-helmet-async";
+import { motion, AnimatePresence } from "framer-motion";
+import ModulesAccordion from "./ModulesAccordion";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import ImageResize from "quill-image-resize-module-react";
+import StarRating from "../common/StarRatingPopUp";
 
 interface ContentData {
   id: string;
   module_id: string;
-  content_type: string;
+    content_type: "text" | "pdf" | "video";
+  // content_type: string;
   content_title: string;
   content_text?: string | null;
   content_url?: string | null;
@@ -3386,7 +3394,7 @@ interface Module {
   module_number: number;
   completed: boolean;
   content: ContentData[];
-  mcq_questions: MCQQuestion[]; 
+  mcq_questions: MCQQuestion[];
 }
 
 interface Course {
@@ -3403,21 +3411,76 @@ interface MCQQuestion {
   option_b: string;
   option_c: string;
   option_d: string;
-  correct_answer: string; // This is a string like "a", "b", "c", or "d"
+  correct_answer: "A" | "B" | "D" | "C"; // This is a string like "a", "b", "c", or "d"
+  // correct_answer: string; // This is a string like "a", "b", "c", or "d"
   explanation: string | null;
   created_at: string;
 }
 
-interface Module {
-  id: string;
-  title: string;
-  description: string | null;
-  module_number: number;
-  completed: boolean;
-  content: ContentData[];
-  mcq_questions: MCQQuestion[];
-}
+// interface Module {
+//   id: string;
+//   title: string;
+//   description: string | null;
+//   module_number: number;
+//   completed: boolean;
+//   content: ContentData[];
+//   mcq_questions: MCQQuestion[];
+// }
 
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ color: [] }, { background: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  imageResize: {
+    parchment: Quill.import("parchment"),
+  },
+  keyboard: {
+    bindings: {
+      // Custom Enter key behavior
+      handleEnter: {
+        key: "Enter",
+        handler: function (range, context) {
+          const quill = this.quill;
+
+          // Execute default behavior first
+          quill.insertText(range.index, "\n", "user");
+          quill.setSelection(range.index + 1, 0);
+
+          // Clear alignment on the new line
+          setTimeout(() => {
+            quill.formatLine(range.index + 1, 1, { align: false });
+          }, 0);
+
+          return false; // prevent default Enter behavior since we handled it
+        },
+      },
+    },
+  },
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+];
 
 const ContentItem = ({ content }: { content: ContentData }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -3840,8 +3903,6 @@ export const CourseAccessPage = () => {
   //         progressData?.map((p) => [p.module_id, p.completed]) || []
   //       );
 
-        
-
   //       // Fetch content for each module
   //       const modulesWithContent = await Promise.all(
   //         modulesData.map(async (module) => {
@@ -3889,191 +3950,193 @@ export const CourseAccessPage = () => {
   //   }
   // };
 
-//   const fetchCourseData = async () => {
-//   try {
-//     // Fetch course details
-//     const { data: courseData, error: courseError } = await supabase
-//       .from("courses")
-//       .select("*")
-//       .eq("id", courseId)
-//       .single();
+  //   const fetchCourseData = async () => {
+  //   try {
+  //     // Fetch course details
+  //     const { data: courseData, error: courseError } = await supabase
+  //       .from("courses")
+  //       .select("*")
+  //       .eq("id", courseId)
+  //       .single();
 
-//     if (courseError) throw courseError;
-//     setCourse(courseData);
+  //     if (courseError) throw courseError;
+  //     setCourse(courseData);
 
-//     // Fetch modules
-//     const { data: modulesData, error: modulesError } = await supabase
-//       .from("course_modules")
-//       .select("*")
-//       .eq("course_id", courseId)
-//       .order("module_number");
+  //     // Fetch modules
+  //     const { data: modulesData, error: modulesError } = await supabase
+  //       .from("course_modules")
+  //       .select("*")
+  //       .eq("course_id", courseId)
+  //       .order("module_number");
 
-//     if (modulesError) throw modulesError;
+  //     if (modulesError) throw modulesError;
 
-//     // Get user progress
-//     const {
-//       data: { session },
-//     } = await supabase.auth.getSession();
+  //     // Get user progress
+  //     const {
+  //       data: { session },
+  //     } = await supabase.auth.getSession();
 
-//     if (session && modulesData) {
-//       // Fetch user progress
-//       const { data: progressData } = await supabase
-//         .from("user_module_progress")
-//         .select("module_id, completed")
-//         .eq("user_id", session.user.id)
-//         .eq("course_id", courseId);
+  //     if (session && modulesData) {
+  //       // Fetch user progress
+  //       const { data: progressData } = await supabase
+  //         .from("user_module_progress")
+  //         .select("module_id, completed")
+  //         .eq("user_id", session.user.id)
+  //         .eq("course_id", courseId);
 
-//       const progressMap = new Map(
-//         progressData?.map((p) => [p.module_id, p.completed]) || []
-//       );
+  //       const progressMap = new Map(
+  //         progressData?.map((p) => [p.module_id, p.completed]) || []
+  //       );
 
-//       // Fetch content for each module
-//       const modulesWithContent = await Promise.all(
-//         modulesData.map(async (module) => {
-//           // Fetch content from module_content table
-//           const { data: contentData, error: contentError } = await supabase
-//             .from("module_content")
-//             .select("*")
-//             .eq("module_id", module.id)
-//             .order("created_at");
+  //       // Fetch content for each module
+  //       const modulesWithContent = await Promise.all(
+  //         modulesData.map(async (module) => {
+  //           // Fetch content from module_content table
+  //           const { data: contentData, error: contentError } = await supabase
+  //             .from("module_content")
+  //             .select("*")
+  //             .eq("module_id", module.id)
+  //             .order("created_at");
 
-//           if (contentError) {
-//             console.error(
-//               `Error fetching content for module ${module.id}:`,
-//               contentError
-//             );
-//           }
+  //           if (contentError) {
+  //             console.error(
+  //               `Error fetching content for module ${module.id}:`,
+  //               contentError
+  //             );
+  //           }
 
-//           // Fetch MCQ questions for the module
-//           const { data: mcqData, error: mcqError } = await supabase
-//             .from("mcq_questions")
-//             .select("*")
-//             .eq("module_id", module.id);
+  //           // Fetch MCQ questions for the module
+  //           const { data: mcqData, error: mcqError } = await supabase
+  //             .from("mcq_questions")
+  //             .select("*")
+  //             .eq("module_id", module.id);
 
-//           if (mcqError) {
-//             console.error(
-//               `Error fetching MCQ questions for module ${module.id}:`,
-//               mcqError
-//             );
-//           }
+  //           if (mcqError) {
+  //             console.error(
+  //               `Error fetching MCQ questions for module ${module.id}:`,
+  //               mcqError
+  //             );
+  //           }
 
-//           return {
-//             ...module,
-//             completed: progressMap.get(module.id) || false,
-//             content: contentData || [],
-//             mcq_questions: mcqData || [],
-//           };
-//         })
-//       );
+  //           return {
+  //             ...module,
+  //             completed: progressMap.get(module.id) || false,
+  //             content: contentData || [],
+  //             mcq_questions: mcqData || [],
+  //           };
+  //         })
+  //       );
 
-//       setModules(modulesWithContent);
-//       setCompletedModules(
-//         modulesWithContent.filter((m) => m.completed).length
-//       );
-//     }
-//   } catch (error) {
-//     console.error("Error fetching course data:", error);
-//     toast({
-//       title: "Error",
-//       description: "Failed to load course data",
-//       variant: "destructive",
-//     });
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
+  //       setModules(modulesWithContent);
+  //       setCompletedModules(
+  //         modulesWithContent.filter((m) => m.completed).length
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching course data:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to load course data",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-const fetchCourseData = async () => {
-  try {
-    // Fetch course details
-    const { data: courseData, error: courseError } = await supabase
-      .from("courses")
-      .select("*")
-      .eq("id", courseId)
-      .single();
+  const fetchCourseData = async () => {
+    try {
+      // Fetch course details
+      const { data: courseData, error: courseError } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("id", courseId)
+        .single();
 
-    if (courseError) throw courseError;
-    setCourse(courseData);
+      if (courseError) throw courseError;
+      setCourse(courseData);
 
-    // Fetch modules
-    const { data: modulesData, error: modulesError } = await supabase
-      .from("course_modules")
-      .select("*")
-      .eq("course_id", courseId)
-      .order("module_number");
+      // Fetch modules
+      const { data: modulesData, error: modulesError } = await supabase
+        .from("course_modules")
+        .select("*")
+        .eq("course_id", courseId)
+        .order("module_number");
 
-    if (modulesError) throw modulesError;
+      if (modulesError) throw modulesError;
 
-    // Get user progress
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      // Get user progress
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (session && modulesData) {
-      // Fetch user progress
-      const { data: progressData } = await supabase
-        .from("user_module_progress")
-        .select("module_id, completed")
-        .eq("user_id", session.user.id)
-        .eq("course_id", courseId);
+      if (session && modulesData) {
+        // Fetch user progress
+        const { data: progressData } = await supabase
+          .from("user_module_progress")
+          .select("module_id, completed")
+          .eq("user_id", session.user.id)
+          .eq("course_id", courseId);
 
-      const progressMap = new Map(
-        progressData?.map((p) => [p.module_id, p.completed]) || []
-      );
+        const progressMap = new Map(
+          progressData?.map((p) => [p.module_id, p.completed]) || []
+        );
 
-      // Fetch content for each module
-      const modulesWithContent = await Promise.all(
-        modulesData.map(async (module) => {
-          // Fetch content from module_content table
-          const { data: contentData, error: contentError } = await supabase
-            .from("module_content")
-            .select("*")
-            .eq("module_id", module.id)
-            .order("created_at");
+        // Fetch content for each module
+        const modulesWithContent = await Promise.all(
+          modulesData.map(async (module) => {
+            // Fetch content from module_content table
+            const { data: contentData, error: contentError } = await supabase
+              .from("module_content")
+              .select("*")
+              .eq("module_id", module.id)
+              .order("created_at");
 
-          if (contentError) {
-            console.error(
-              `Error fetching content for module ${module.id}:`,
-              contentError
-            );
-          }
+            if (contentError) {
+              console.error(
+                `Error fetching content for module ${module.id}:`,
+                contentError
+              );
+            }
 
-          // Fetch MCQ questions for the module
-          const { data: mcqData, error: mcqError } = await supabase
-            .from("mcq_questions")
-            .select("*")
-            .eq("module_id", module.id);
+            // Fetch MCQ questions for the module
+            const { data: mcqData, error: mcqError } = await supabase
+              .from("mcq_questions")
+              .select("*")
+              .eq("module_id", module.id);
 
-          if (mcqError) {
-            console.error(
-              `Error fetching MCQ questions for module ${module.id}:`,
-              mcqError
-            );
-          }
+            if (mcqError) {
+              console.error(
+                `Error fetching MCQ questions for module ${module.id}:`,
+                mcqError
+              );
+            }
 
-          return {
-            ...module,
-            completed: progressMap.get(module.id) || false,
-            content: contentData || [],
-            mcq_questions: mcqData || [],
-          };
-        })
-      );
+            return {
+              ...module,
+              completed: progressMap.get(module.id) || false,
+              content: contentData || [],
+              mcq_questions: mcqData || [],
+            };
+          })
+        );
 
-      setModules(modulesWithContent);
-      setCompletedModules(modulesWithContent.filter((m) => m.completed).length);
+        setModules(modulesWithContent);
+        setCompletedModules(
+          modulesWithContent.filter((m) => m.completed).length
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching course data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load course data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Error fetching course data:", error);
-    toast({
-      title: "Error",
-      description: "Failed to load course data",
-      variant: "destructive",
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
   const checkEnrollment = async () => {
     try {
       const {
@@ -4087,8 +4150,8 @@ const fetchCourseData = async () => {
         .eq("user_id", session.user.id)
         .eq("course_id", courseId)
         .in("payment_status", ["paid", "free"]);
-        // .eq("payment_status", "paid");
-        // .or("payment_status.eq.paid,payment_status.eq.free");
+      // .eq("payment_status", "paid");
+      // .or("payment_status.eq.paid,payment_status.eq.free");
 
       if (error) throw error;
 
@@ -4314,252 +4377,169 @@ const fetchCourseData = async () => {
           property="og:url"
           content={`${window.location.origin}/course/${courseId}/learn`}
         />
-        {/* Add more meta tags as needed */}
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-        <Header />
-        <header className="bg-white shadow-sm border-b">
-          <div className="container mx-auto px-4 py-4">
-            {/* <Button
-            variant="outline"
-            onClick={() => navigate(-1)}
-            className="mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button> */}
-            <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
-            {/* <p className="text-gray-600 mt-2">{course.description}</p> */}
-            {course.description ? (
-              <div
-                className="prose max-w-none text-gray-800"
-                dangerouslySetInnerHTML={{ __html: course.description }}
-              />
-            ) : (
-              <p className="text-gray-700">
-                No description available for this course.
-              </p>
-            )}
-          </div>
-        </header>
 
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-6">
-            {/* Progress Overview */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Trophy className="h-5 w-5" />
-                  <span>Course Progress</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex flex-col">
+        <Header />
+
+        <main className="flex-1 container mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Side */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Course Hero */}
+            <motion.section
+              className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl shadow-md p-8"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h1 className="text-3xl md:text-4xl font-bold">
+                {course?.title}
+              </h1>
+              {course?.description && (
+                <div
+                  className="mt-4 text-blue-100 prose prose-invert max-w-none text-justify"
+                  dangerouslySetInnerHTML={{ __html: course.description }}
+                />
+              )}
+            </motion.section>
+
+            {/* Modules Accordion */}
+            <ModulesAccordion
+              modules={modules}
+              activeModuleId={activeModuleId}
+              setActiveModuleId={setActiveModuleId}
+              toggleModuleCompletion={toggleModuleCompletion}
+            />
+          </div>
+
+          {/* Right Side */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto space-y-6 pr-2 custom-scrollbar">
+              {/* star */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-blue-700">
+                    <Star className="h-5 w-5" />
+                    Star Rating
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                 <StarRating
+              itemId={course.id} 
+              itemType="course"
+              size={28}
+              onRatingSubmit={(rating, responseData) => {
+                console.log('Rating submitted:', rating);
+                console.log('Response from server:', responseData);
+              }}
+              onRatingLoaded={(ratingData) => {
+                console.log('Rating data loaded:', ratingData);
+              }}/>
+                </CardContent>
+              </Card>
+              {/* Progress Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-blue-700">
+                    <Trophy className="h-5 w-5" />
+                    Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm text-gray-600">
                       <span>
-                        {completedModules} of {course.number_of_modules} modules
-                        completed
+                        {completedModules} / {course?.number_of_modules} modules
                       </span>
                       <span>{progressPercentage}%</span>
                     </div>
-                    <Progress value={progressPercentage} className="h-2" />
+                    <Progress
+                      value={progressPercentage}
+                      className="h-3 rounded-full"
+                    />
                   </div>
+                </CardContent>
+              </Card>
 
-                  {allModulesCompleted && (
-                    <div className="text-center">
-                      <Button
-                        onClick={finishCourse}
-                        size="lg"
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        🎓 Finish Course & Get Certificate
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Guide Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Guide</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <h3 className="font-semibold">Course Modules</h3>
+              {/* Modules Navigation */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Modules</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-3">
-                    {modules.map((module) => (
-                      <div
+                    {modules.map((module: any) => (
+                      <a
                         key={module.id}
-                        className="border-b pb-3 last:border-0"
+                        href={`#module-${module.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveModuleId(module.id);
+                          const el = document.getElementById(
+                            `module-${module.id}`
+                          );
+                          if (el)
+                            el.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            });
+                        }}
+                        className={`block p-3 rounded-xl border transition flex items-center gap-3 ${
+                          activeModuleId === module.id
+                            ? "bg-blue-100 border-blue-400"
+                            : "bg-gray-50 hover:bg-gray-100"
+                        }`}
                       >
-                        <div className="flex items-center">
-                          {module.completed ? (
-                            <CheckCircle2 className="h-4 w-4 text-green-600 mr-2" />
-                          ) : (
-                            <Circle className="h-4 w-4 text-gray-400 mr-2" />
-                          )}
-                          <span className="font-medium">
+                        {module.completed ? (
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />
+                        ) : (
+                          <Circle className="h-5 w-5 text-gray-400" />
+                        )}
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
                             Module {module.module_number}: {module.title}
-                          </span>
-                        </div>
-
-                        {module.content.length > 0 ? (
-                          <ul className="mt-2 ml-6 space-y-1">
-                            {module.content.map((content, idx) => (
-                              <li key={idx} className="text-gray-700">
-                                {content.content_title}
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="mt-2 ml-6 text-gray-500 text-sm">
-                            No content available for this module.
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Modules List */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold"></h2>
-              {modules.map((module) => (
-                <Card
-                  key={module.id}
-                  className={`transition-all overflow-hidden ${
-                    module.completed
-                      ? "border-green-200 bg-green-50"
-                      : "hover:shadow-md"
-                  }`}
-                >
-                  <div
-                    className="p-6 cursor-pointer"
-                    onClick={() => toggleModule(module.id)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleModuleCompletion(module.id, module.completed);
-                          }}
-                          className="mt-1 transition-colors"
-                        >
-                          {module.completed ? (
-                            <CheckCircle2 className="h-6 w-6 text-green-600" />
-                          ) : (
-                            <Circle className="h-6 w-6 text-gray-400 hover:text-green-600" />
-                          )}
-                        </button>
-
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <Badge variant="outline">
-                              Module {module.module_number}
-                            </Badge>
-                            {module.completed && (
-                              <Badge className="bg-green-100 text-green-800">
-                                Completed
-                              </Badge>
-                            )}
                           </div>
-                          <h3 className="font-semibold text-lg mb-2">
-                            {module.title}
-                          </h3>
-                          {/* {module.description && (
-                          <p className="text-gray-600">{module.description}</p>
-                        )} */}
-                          {module.description ? (
-                            <div
-                              className="prose max-w-none text-gray-800"
-                              dangerouslySetInnerHTML={{
-                                __html: module.description,
-                              }}
-                            />
-                          ) : (
-                            <p className="text-gray-700">
-                              No description available for this course.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-gray-400">
-                        {activeModuleId === module.id ? (
-                          <ChevronUp className="h-5 w-5" />
-                        ) : (
-                          <ChevronDown className="h-5 w-5" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Module Content */}
-                  {/* {activeModuleId === module.id && (
-                  <CardContent className="pt-0 border-t">
-                    <div className="mt-4">
-                      <h4 className="font-medium mb-4">Module Content</h4>
-
-                      {module.content.length > 0 ? (
-                        <div className="space-y-4">
-                          {module.content.map((content, index) => (
-                            <ContentItem key={index} content={content} />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center py-6 text-gray-500">
-                          <p>No content available for this module.</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                )} */}
-
-                  {activeModuleId === module.id && (
-                    <CardContent className="pt-0 border-t">
-                      <div className="mt-4">
-                        <h4 className="font-medium mb-4">Module Content</h4>
-
-                        {module.content.length > 0 && (
-                          <div className="space-y-4 mb-8">
-                            {module.content.map((content, index) => (
-                              <ContentItem key={index} content={content} />
-                            ))}
-                          </div>
-                        )}
-
-                        {module.mcq_questions.length > 0 && (
-                          <MCQComponent
-                            questions={module.mcq_questions || []}
-                            moduleId={module.id}
-                            onComplete={() => {
-                              // Mark module as completed when all MCQs are answered
-                              if (!module.completed) {
-                                toggleModuleCompletion(module.id, false);
-                              }
-                            }}
-                          />
-                        )}
-
-                        {module.content.length === 0 &&
-                          module.mcq_questions.length === 0 && (
-                            <div className="text-center py-6 text-gray-500">
-                              <p>No content available for this module.</p>
+                          {module.content?.length > 0 && (
+                            <div className="text-xs text-gray-500 mt-0.5">
+                              {module.content.length} item
+                              {module.content.length > 1 ? "s" : ""}
                             </div>
                           )}
-                      </div>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Certificate Button */}
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.35 }}
+              >
+                <Button
+                  onClick={finishCourse}
+                  className={`w-full py-4 rounded-2xl text-lg font-semibold shadow-lg transition transform ${
+                    allModulesCompleted
+                      ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                      : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+                  }`}
+                >
+                  {allModulesCompleted
+                    ? "🎉 Generate Certificate"
+                    : "Complete & Generate Certificate"}
+                </Button>
+
+                {!allModulesCompleted && (
+                  <p className="mt-3 text-sm text-gray-600 text-center">
+                    Complete all modules to generate your certificate.
+                  </p>
+                )}
+              </motion.div>
             </div>
           </div>
         </main>
+
         <Footer />
       </div>
     </>

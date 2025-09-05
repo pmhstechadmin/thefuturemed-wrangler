@@ -100,6 +100,7 @@
     "sonner": "^1.5.0",
     "stripe": "^18.3.0",
     "striptags": "^3.2.0",
+    "styled-components": "^6.1.19",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.168.0",

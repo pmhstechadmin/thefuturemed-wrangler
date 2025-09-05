@@ -483,6 +483,8 @@ import "react-quill/dist/quill.snow.css";
 import Header from "@/footer/Header";
 import { SocialShareButtons } from "@/pages/zoom/SocialShareButtons";
 import { Helmet } from "react-helmet-async";
+import StarRating from "../common/StarRatingPopUp";
+import { RatingDisplay } from "../common/StarRatingDisplay";
 
 const BlogList: React.FC = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -494,14 +496,14 @@ const BlogList: React.FC = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { id,slug } = useParams();
-const createSlug = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9 -]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-};
+  const { id, slug } = useParams();
+  const createSlug = (str: string) => {
+    return str
+      .toLowerCase()
+      .replace(/[^a-z0-9 -]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  };
   const handleBackNavigation = () => navigate(-1);
 
   const handleSignOut = async () => {
@@ -806,7 +808,7 @@ const createSlug = (str: string) => {
           </div>
         )}
       </header> */}
-        
+
         <Header />
         {/* Main Content */}
         <div className="container mx-auto px-4 py-6">
@@ -819,20 +821,75 @@ const createSlug = (str: string) => {
                   <p className="text-gray-500">Blog not found.</p>
                 </div>
               ) : (
-                <div className="bg-white shadow rounded-lg p-4 md:p-6 space-y-4">
-                  <h3 className="text-xl md:text-2xl font-bold">
-                    {blog.title}
-                  </h3>
+                // <div className=" shadow-lg rounded-lg p-6 relative space-y-6">
+                //   {/* Star Rating in top-right corner */}
+                //   <div className="bg-blue-100 ">
+                //     <div className="absolute top-4 right-4">
+                //     <StarRating
+                //       itemId={blog.id}
+                //       itemType="blog"
+                //       size={28}
+                //       onRatingSubmit={(rating, responseData) => {
+                //         console.log("Rating submitted:", rating);
+                //         console.log("Response from server:", responseData);
+                //       }}
+                //       onRatingLoaded={(ratingData) => {
+                //         console.log("Rating data loaded:", ratingData);
+                //       }}
+                //     />
+                //    </div>
 
-                  <div className=" max-w-none h-auto overflow-visible">
+                //     {/* Blog Title */}
+                //     <h3 className="text-2xl font-bold text-blue-900 pr-20">
+                //     {blog.title}
+                //     </h3>
+                //   </div>
+
+                //   {/* Blog Content */}
+                //   <div className="prose prose-lg max-w-none text-gray-800">
+                //     <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+                //   </div>
+
+                //   {/* Author & Status */}
+                //   <div className="flex justify-between items-center text-sm text-blue-800 pt-4 border-t border-blue-200">
+                //     <p>By {profiles[blog.user_id] || "Unknown Author"}</p>
+                //     <p>
+                //       Status: {blog.is_published ? "Published" : "Unpublished"}
+                //     </p>
+                //   </div>
+                // </div>
+                <div className="shadow-lg rounded-lg p-6 relative space-y-6">
+                  {/* Blog Header with Star Rating */}
+                  <div className="bg-blue-100 p-4 rounded-lg relative">
+                    {/* Star Rating in top-right corner */}
+                    <div className="absolute top-4 right-4 ">
+                      <StarRating
+                        itemId={blog.id}
+                        itemType="blog"
+                        size={28}
+                        onRatingSubmit={(rating, responseData) => {
+                          console.log("Rating submitted:", rating);
+                          console.log("Response from server:", responseData);
+                        }}
+                        onRatingLoaded={(ratingData) => {
+                          console.log("Rating data loaded:", ratingData);
+                        }}
+                      />
+                    </div>
+
+                    {/* Blog Title */}
+                    <h3 className="text-2xl font-bold text-blue-900 pr-28">
+                      {blog.title}
+                    </h3>
+                  </div>
+
+                  {/* Blog Content */}
+                  <div className="prose prose-lg max-w-none text-gray-800">
                     <div dangerouslySetInnerHTML={{ __html: blog.content }} />
                   </div>
-                  {/* <div className="ql-editor max-w-none ">
-                  <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-                </div> */}
 
-                  {/* Author & Status at bottom */}
-                  <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
+                  {/* Author & Status */}
+                  <div className="flex justify-between items-center text-sm text-blue-800 pt-4 border-t border-blue-200">
                     <p>By {profiles[blog.user_id] || "Unknown Author"}</p>
                     <p>
                       Status: {blog.is_published ? "Published" : "Unpublished"}
@@ -844,56 +901,65 @@ const createSlug = (str: string) => {
 
             {/* Blog List Sidebar (Full width on mobile, 1/3 on desktop) */}
             <div className="lg:col-span-1">
-              <h2 className="text-xl font-semibold mb-4">Other Blogs</h2>
-              <div className="space-y-4 pr-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-                {/* changed */}
-                {blogs.length === 0 ? (
-                  <div className="bg-white shadow rounded-lg p-6 text-center">
-                    <p className="text-gray-500">No other blogs available</p>
-                  </div>
-                ) : (
-                  blogs.map((blog) => (
-                    <Card
-                      key={blog.id}
-                      className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
-                      onClick={() => navigate(`/blog-list/${blog.id}`)}
-                    >
-                      <CardHeader>
-                        <div className="flex justify-between items-start mb-2">
-                          <Badge variant="default">Published</Badge>
-                        </div>
-                        <CardTitle className="text-base md:text-lg line-clamp-2">
-                          {blog.title}
-                        </CardTitle>
-                      </CardHeader>
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Other Blogs</h2>
+                <div className="space-y-4 pr-1 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                  {/* changed */}
+                  {blogs.length === 0 ? (
+                    <div className="bg-white shadow rounded-lg p-6 text-center">
+                      <p className="text-gray-500">No other blogs available</p>
+                    </div>
+                  ) : (
+                    blogs.map((blog) => (
+                      <Card
+                        key={blog.id}
+                        className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
+                        onClick={() => navigate(`/blog-list/:slug/${blog.id}`)}
+                      >
+                        <CardHeader>
+                          <div className="flex justify-between items-start mb-2">
+                            <Badge variant="default">Published</Badge>
+                            <RatingDisplay
+                              itemId={blog.id}
+                              itemType="blog"
+                              color="#4caf50"
+                              size={18}
+                              showText={true}
+                            />
+                          </div>
+                          <CardTitle className="text-base md:text-lg line-clamp-2">
+                            {blog.title}
+                          </CardTitle>
+                        </CardHeader>
 
-                      <CardContent className="flex flex-col flex-grow">
-                        {/* ✅ Scrollable preview content area */}
-                        <div className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0">
-                          <div
-                            dangerouslySetInnerHTML={{ __html: blog.content }}
-                          />
-                        </div>
+                        <CardContent className="flex flex-col flex-grow">
+                          {/* ✅ Scrollable preview content area */}
+                          <div className="ql-editor max-w-none text-sm overflow-hidden max-h-[150px] px-0">
+                            <div
+                              dangerouslySetInnerHTML={{ __html: blog.content }}
+                            />
+                          </div>
 
-                        {/* ✅ Footer content pushed to bottom */}
-                        <div className="mt-auto pt-2">
-                          <p className="text-xs text-gray-500">
-                            By {profiles[blog.user_id] || "Unknown Author"}
-                          </p>
-                          <Button
-                            className="w-full mt-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/blog-list/${blog.id}`);
-                            }}
-                          >
-                            View Blog
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
+                          {/* ✅ Footer content pushed to bottom */}
+                          <div className="mt-auto pt-2">
+                            <p className="text-xs text-gray-500">
+                              By {profiles[blog.user_id] || "Unknown Author"}
+                            </p>
+                            <Button
+                              className="w-full mt-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/blog-list/:slug/${blog.id}`);
+                              }}
+                            >
+                              View Blog
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>

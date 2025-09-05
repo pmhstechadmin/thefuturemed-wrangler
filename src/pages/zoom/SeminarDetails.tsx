@@ -3324,6 +3324,8 @@ import { mixpanelInstance } from "@/utils/mixpanel";
 import { SocialShareButtons } from "./SocialShareButtons";
 import { Helmet } from "react-helmet-async";
 import EnrollmentButton from "@/components/elearning/EnrollmentButton";
+import StarRating from "@/components/common/StarRatingPopUp";
+import { RatingDisplay } from "@/components/common/StarRatingDisplay";
 
 interface Seminar {
   id: string;
@@ -4139,6 +4141,7 @@ The Seminar Team`,
       setRegistering(false);
     }
   };
+
   const handleCancelRegistration = async () => {
     if (!registrationId) return;
 
@@ -4351,35 +4354,37 @@ The Seminar Team`,
                               </p>
                             </div>
                           </div>
-                          {user?.id && user?.id !== seminar.host_id && (
-                            <div className="flex items-center gap-3">
-                              <Award className="h-5 w-5 text-blue-600" />
-                              <div>
-                                <p className="font-medium">
-                                  Participation Certificate Available :{" "}
-                                </p>
-                                <p className="text-gray-600">
-                                  {/* {seminar.is_certificate} */}
-                                  {seminar.is_certificate ? (
-                                    <span className="text-green-600 font-bold">
-                                      Yes, Visit
-                                      <a
-                                        href="https://certification.thefuturemed.com"
-                                        target="_blank"
-                                      >
-                                        Certification Portal
-                                      </a>
-                                      .
-                                    </span>
-                                  ) : (
-                                    <span className="text-red-600 font-bold">
-                                      No
-                                    </span>
-                                  )}
-                                </p>
-                              </div>
+                          {/* {user?.id && user?.id !== seminar.host_id && ( */}
+                          <div className="flex items-center gap-3">
+                            <Award className="h-5 w-5 text-blue-600" />
+                            <div>
+                              <p className="font-medium">
+                                Participation Certificate Available :{" "}
+                              </p>
+                              <p className="text-gray-600">
+                                {/* {seminar.is_certificate} */}
+                                {seminar.is_certificate ? (
+                                  <span className="text-green-600 font-bold">
+                                    Yes, Visit
+                                    <a
+                                      href="https://certificate.thefuturemed.com/"
+                                      // href="https://certification.thefuturemed.com"
+                                      target="_blank"
+                                      className="text-blue-600 underline ml-1"
+                                    >
+                                      Certification Portal
+                                    </a>
+                                    .
+                                  </span>
+                                ) : (
+                                  <span className="text-red-600 font-bold">
+                                    No
+                                  </span>
+                                )}
+                              </p>
                             </div>
-                          )}
+                          </div>
+                          {/* )} */}
                         </div>
                       </div>
                       {isHost && (
@@ -4542,19 +4547,25 @@ The Seminar Team`,
                       </table>
 
                       {/* Confirm button only works if checkboxes selected */}
-                      <button
-                        className={`mt-4 px-3 py-1 rounded text-white ${
-                          selectedProfiles.length > 0
-                            ? "bg-blue-500 hover:bg-blue-600"
-                            : "bg-gray-400 cursor-not-allowed"
-                        }`}
-                        disabled={selectedProfiles.length === 0}
-                        onClick={() =>
-                          handleConfirmCertificate(selectedProfiles)
-                        }
-                      >
-                        Confirm Certificate
-                      </button>
+                      {seminar.is_certificate ? (
+                        <Button
+                          className={`mt-4 px-3 py-1 rounded text-white ${
+                            selectedProfiles.length > 0
+                              ? "bg-blue-500 hover:bg-blue-600"
+                              : "bg-gray-400 cursor-not-allowed"
+                          }`}
+                          disabled={selectedProfiles.length === 0}
+                          onClick={() =>
+                            handleConfirmCertificate(selectedProfiles)
+                          }
+                        >
+                          Confirm Certificate
+                        </Button>
+                      ) : (
+                        <div className="mt-4 text-red-500 font-medium">
+                          Certificate not available
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -5015,16 +5026,49 @@ The Seminar Team`,
               </Card>
             </div>
             <div className="space-y-6">
-              {user?.id && user?.id !== seminar.host_id && (
+              <Card className="border-green-600 bg-green-300">
+                <CardContent className="p-6 text-center">
+                  {user?.id && user?.id !== seminar.host_id && isEnrolled ? (
+                    <div>
+                      <h2>Star Rating</h2>
+                      <StarRating
+                        itemId={seminar.id}
+                        itemType="seminar"
+                        size={28}
+                        onRatingSubmit={(rating, responseData) => {
+                          console.log("Rating submitted:", rating);
+                          console.log("Response from server:", responseData);
+                        }}
+                        onRatingLoaded={(ratingData) => {
+                          console.log("Rating data loaded:", ratingData);
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center mb-6">
+                      <RatingDisplay
+                        itemId={seminar.id}
+                        itemType="seminar"
+                        color="#4caf50"
+                        size={18}
+                        showText={true}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+              {/* {!user?.id ()} */}
+              {!user?.id && user?.id !== seminar.host_id ? (
                 <Card
                   className={isEnrolled ? "border-green-200 bg-green-50" : ""}
                 >
                   <CardContent className="p-6">
                     {isEnrolled ? (
                       <div className="text-center mb-6">
-                        <Badge className="mb-4 bg-green-100 text-green-800">
+                        {/* <Badge className="mb-4 bg-green-100 text-green-800">
                           Registered
-                        </Badge>
+                        </Badge> */}
+
                         <div className="text-2xl font-bold text-green-600 mb-2">
                           Access Granted
                         </div>
@@ -5114,12 +5158,269 @@ The Seminar Team`,
                                 "You now have access to this free course.",
                             });
                           } catch (error) {
+                            if (
+                              error.code === "42501" ||
+                              error.code === "23502"
+                            ) {
+                              // RLS error - user not authorized
+                              toast({
+                                title: "Access Denied",
+                                description: "Please sign in before enrolling.",
+                                variant: "destructive",
+                              });
+                              return;
+                            } else {
+                              toast({
+                                title: "Enrollment Failed",
+                                description:
+                                  "There was an issue enrolling in this course.",
+                                variant: "destructive",
+                              });
+                            }
+                          } finally {
+                            setCheckingEnrollment(false);
+                          }
+                        }}
+                      >
+                        Enroll for Free
+                      </Button>
+                      //   <div className="text-center">
+                      //   <Button
+                      //     onClick={() => {
+                      //       mixpanelInstance.track(
+                      //         "Seminar Register / Cancel Button Clicked",
+                      //         {
+                      //           timestamp: new Date().toISOString(),
+                      //         }
+                      //       );
+                      //       if (isRegistered) {
+                      //         handleCancelRegistration();
+                      //       } else {
+                      //         handleRegister();
+                      //       }
+                      //     }}
+                      //     disabled={registering || canceling}
+                      //     className="w-full mb-4 bg-blue-600 hover:bg-blue-700"
+                      //     size="lg"
+                      //   >
+                      //     {registering
+                      //       ? "Registering..."
+                      //       : canceling
+                      //       ? "Cancelling..."
+                      //       : isRegistered
+                      //       ? "Cancel Registration"
+                      //       : seminar?.is_paid
+                      //       ? "Register & Pay"
+                      //       : "Register for Free"}
+                      //   </Button>
+                      // </div>
+                    )}
+
+                    {/* {!isHost && (
+                    <div className="text-center">
+                      <Button
+                        onClick={() => {
+                          mixpanelInstance.track(
+                            "Seminar Register / Cancel Button Clicked",
+                            {
+                              timestamp: new Date().toISOString(),
+                            }
+                          );
+                          if (isRegistered) {
+                            handleCancelRegistration();
+                          } else {
+                            handleRegister();
+                          }
+                        }}
+                        disabled={registering || canceling}
+                        className="w-full mb-4 bg-blue-600 hover:bg-blue-700"
+                        size="lg"
+                      >
+                        {registering
+                          ? "Registering..."
+                          : canceling
+                          ? "Cancelling..."
+                          : isRegistered
+                          ? "Cancel Registration"
+                          : seminar?.is_paid
+                          ? "Register & Pay"
+                          : "Register for Free"}
+                      </Button>
+                    </div>
+                  )} */}
+
+                    <div className="space-y-3 text-sm">
+                      {/* <div className="flex items-center justify-between">
+                        <span className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4" />
+                          <span>Duration</span>
+                        </span>
+                        <span>1 hour</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center space-x-2">
+                          <Users className="h-4 w-4" />
+                          <span>Participants</span>
+                        </span>
+                        <span>{participantCount}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center space-x-2">
+                          <CalendarDays className="h-4 w-4" />
+                          <span>Date</span>
+                        </span>
+                        <span>{seminar ? formatDate(seminar.date) : ""}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4" />
+                          <span>Time</span>
+                        </span>
+                        <span>{seminar ? formatTime(seminar.time) : ""}</span>
+                      </div> */}
+
+                      {/* {seminar?.is_paid && (
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center space-x-2">
+                            <Award className="h-4 w-4" />
+                            <span>Certificate</span>
+                          </span>
+                          <span>Included</span>
+                        </div>
+                      )} */}
+                      <p className="text-gray-500 text-sm mt-2">
+                        Note : There is no refund for paid seminar registration.
+                        Read our Refund Policy.
+                      </p>
+                      <p className="text-blue-500 text-sm mt-2">
+                        Note : Your payment method should allow international
+                        payments..
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card
+                  className={isEnrolled ? "border-green-200 bg-green-50" : ""}
+                >
+                  <CardContent className="p-6">
+                    {isEnrolled ? (
+                      <div className="text-center mb-6">
+                        {/* <Badge className="mb-4 bg-green-100 text-green-800">
+                          Registered
+                        </Badge> */}
+
+                        <div className="text-2xl font-bold text-green-600 mb-2">
+                          Access Granted
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          You are registered for this seminar
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="text-center mb-6">
+                        <div className="text-3xl font-bold text-blue-600 mb-2">
+                          {seminar?.is_paid &&
+                          seminar?.price &&
+                          seminar.price > 0
+                            ? `₹${seminar.price.toFixed(2)}`
+                            : "Free"}
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          {seminar?.is_paid
+                            ? "One-time payment • Seminar access"
+                            : "No payment required • Seminar access"}
+                        </p>
+                      </div>
+                    )}
+                    {checkingEnrollment ? (
+                      <Button className="w-full mb-4" size="lg" disabled>
+                        Checking enrollment...
+                      </Button>
+                    ) : isEnrolled ? (
+                      // <Button
+                      //   className="w-full mb-4 bg-green-600 hover:bg-green-700"
+                      //   size="lg"
+                      //   onClick={handleAccessCourse}
+                      // >
+                      //   <Play className="mr-2 h-4 w-4" />
+                      //   Access Seminar
+                      // </Button>
+                      <div className="text-center mb-4">
+                        <p className="text-green-600 font-semibold">
+                          ✅ You are enrolled!
+                        </p>
+                      </div>
+                    ) : seminar?.is_paid ? (
+                      <EnrollmentButton
+                        productType="seminar"
+                        productName={seminar.topic}
+                        productId={seminarId!}
+                        isEnrolled={isEnrolled}
+                        isPaid={seminar.is_paid}
+                        price={seminar.price}
+                        onEnrollmentChange={checkEnrollmentStatus}
+                        mixpanelInstance={mixpanelInstance}
+                      />
+                    ) : (
+                      <Button
+                        className="w-full mb-4"
+                        size="lg"
+                        onClick={async () => {
+                          try {
+                            setCheckingEnrollment(true);
+                            const { data, error } = await supabase
+                              .from("seminar_registrations")
+                              // .from("seminar")
+                              .insert([
+                                {
+                                  user_id: (
+                                    await supabase.auth.getSession()
+                                  ).data.session?.user.id,
+                                  seminar_id: seminarId,
+                                  payment_status: "free",
+                                },
+                              ]);
+
+                            if (error) throw error;
+
+                            setIsEnrolled(true);
+                            mixpanelInstance.track(
+                              "Seminar Enrolled - Free Button Clicked",
+                              {
+                                payment_status: "free",
+                                timestamp: new Date().toISOString(),
+                              }
+                            );
+
                             toast({
-                              title: "Enrollment Failed",
+                              title: "Enrolled Successfully!",
                               description:
-                                "There was an issue enrolling in this course.",
-                              variant: "destructive",
+                                "You now have access to this free course.",
                             });
+                          } catch (error) {
+                            if (
+                              error.code === "42501" ||
+                              error.code === "23502"
+                            ) {
+                              // RLS error - user not authorized
+                              toast({
+                                title: "Access Denied",
+                                description: "Please sign in before enrolling.",
+                                variant: "destructive",
+                              });
+                              return;
+                            } else {
+                              toast({
+                                title: "Enrollment Failed",
+                                description:
+                                  "There was an issue enrolling in this course.",
+                                variant: "destructive",
+                              });
+                            }
                           } finally {
                             setCheckingEnrollment(false);
                           }

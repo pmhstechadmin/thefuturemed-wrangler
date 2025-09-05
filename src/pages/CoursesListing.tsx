@@ -27,7 +27,6 @@ import logo from "@/image/thefuturemed_logo (1).jpg";
 import Footer from "@/footer/Footer";
 import Header from "@/footer/Header";
 
-
 interface Course {
   id: string;
   title: string;
@@ -371,7 +370,7 @@ export const CoursesListing = () => {
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Users className="h-4 w-4" />
-                        <span>156 students</span>
+                        <span>5 students</span>
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Award className="h-4 w-4" />
