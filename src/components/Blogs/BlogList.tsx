@@ -914,7 +914,15 @@ const BlogList: React.FC = () => {
                       <Card
                         key={blog.id}
                         className="hover:shadow-lg transition-shadow cursor-pointer h-[420px] flex flex-col"
-                        onClick={() => navigate(`/blog-list/:slug/${blog.id}`)}
+                        onClick={() => {
+                          const slug = blog.title
+                            .toLowerCase() // Convert to lowercase
+                            .trim() // Remove extra spaces
+                            .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+                            .replace(/\s+/g, "-");
+                          navigate(`/blog-list/${slug}/${blog.id}`);
+                          // navigate(`/blog-list/:slug/${blog.id}`)
+                        }}
                       >
                         <CardHeader>
                           <div className="flex justify-between items-start mb-2">
@@ -949,7 +957,13 @@ const BlogList: React.FC = () => {
                               className="w-full mt-2"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/blog-list/:slug/${blog.id}`);
+                                const slug = blog.title
+                                  .toLowerCase() // Convert to lowercase
+                                  .trim() // Remove extra spaces
+                                  .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+                                  .replace(/\s+/g, "-");
+                                navigate(`/blog-list/${slug}/${blog.id}`);
+                                // navigate(`/blog-list/:slug/${blog.id}`);
                               }}
                             >
                               View Blog

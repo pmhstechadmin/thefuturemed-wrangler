@@ -780,6 +780,7 @@ const handleAccessCourse = () => {
   if (!course?.title) return;
 
   const courseSlug = createSlug(course.title);
+  
   navigate(`/course/${courseSlug}/${courseId}/learn`);
 };
 

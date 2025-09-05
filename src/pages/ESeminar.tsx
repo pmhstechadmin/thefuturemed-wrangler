@@ -978,7 +978,13 @@ const ESeminar = () => {
   };
 
   const handleSeminarClick = (seminar: Seminar) => {
-    navigate(`/seminar/:slug/${seminar.id}`);
+    const slug = seminar.topic
+      .toLowerCase() // Convert to lowercase
+      .trim() // Remove extra spaces
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+      .replace(/\s+/g, "-"); 
+    navigate(`/seminar/${slug}/${seminar.id}`);
+    // navigate(`/seminar/:slug/${seminar.id}`);
   };
 
   // const handleSeminarClick = (seminar: Seminar) => {

@@ -130,6 +130,15 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                 </div>
               )} */}
             </div>
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
+              >
+                {link.label}
+              </Link>
+            ))}
 
             {/* Right Section - Navigation Items */}
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -158,7 +167,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                         </li>
                         <li>
                           {seminar?.meeting_id && (
-                            <div >
+                            <div>
                               <span className="dropdown-item-text text-muted">
                                 {isHost ? "User Hosting" : "User Participation"}
                                 {/* {isHost ? "Hosting" : "Joined"} */}
@@ -168,7 +177,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                         </li>
                       </ul>
                     </div>
-                    {navLinks.map((link) => (
+                    {/* {navLinks.map((link) => (
                       <Link
                         key={link.path}
                         to={link.path}
@@ -176,7 +185,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                       >
                         {link.label}
                       </Link>
-                    ))}
+                    ))} */}
                     <Button
                       variant="outline"
                       className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 md:px-4 md:py-2"

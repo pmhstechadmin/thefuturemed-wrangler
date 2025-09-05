@@ -992,6 +992,17 @@ const ProductPortal = () => {
                 </Link>
               </div>
             </div>
+            <div className="hidden xl:flex items-center gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-white/10 rounded-lg p-1">
@@ -1052,7 +1063,7 @@ const ProductPortal = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="hidden xl:flex items-center gap-2">
+                  {/* <div className="hidden xl:flex items-center gap-2">
                     {navLinks.map((link) => (
                       <Link
                         key={link.path}
@@ -1062,7 +1073,7 @@ const ProductPortal = () => {
                         {link.label}
                       </Link>
                     ))}
-                  </div>
+                  </div> */}
                   <Button
                     variant="outline"
                     className="text-white border-white/30 hover:bg-white/10 bg-white/5 backdrop-blur-sm p-2 sm:px-4 sm:py-2"

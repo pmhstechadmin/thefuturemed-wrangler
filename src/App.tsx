@@ -405,7 +405,7 @@ const App = () => {
               />
               <Route path="/saved-job" element={<SaveJob />} />
               <Route path="/saved-candidates" element={<SaveCandidate />} />
-              {/* <Route path="/blog-list/:id" element={<BlogList />} /> */}
+              <Route path="/blog-list/:id" element={<BlogList />} />
               <Route path="/blog-list/:slug/:id" element={<BlogList />} />
               {/* <Route
                 path="/course/:slug/:courseId/learn"

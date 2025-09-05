@@ -1941,7 +1941,16 @@ const BlogPortal: React.FC = () => {
       <Card
         key={blog.id}
         className="flex flex-col h-full rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer bg-white"
-        onClick={() => navigate(`/blog-list/:slug/${blog.id}`)}
+        onClick={() => {
+          const slug = blog.title
+            .toLowerCase() // Convert to lowercase
+            .trim() // Remove extra spaces
+            .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+            .replace(/\s+/g, "-");
+          navigate(`/blog-list/${slug}/${blog.id}`);
+          // navigate(`/blog-list/${blog.title}/${blog.id}`)
+        }}
+        // onClick={() => navigate(`/blog-list/:slug/${blog.id}`)}
       >
         {/* Header with soft accent background */}
         <CardHeader className="space-y-3 p-5 rounded-t-2xl bg-gradient-to-r from-indigo-50 to-purple-50">
@@ -1978,7 +1987,13 @@ const BlogPortal: React.FC = () => {
             className="w-full text-sm py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/blog-list/:slug/${blog.id}`);
+               const slug = blog.title
+                 .toLowerCase() // Convert to lowercase
+                 .trim() // Remove extra spaces
+                 .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+                 .replace(/\s+/g, "-"); 
+              navigate(`/blog-list/${slug}/${blog.id}`);
+              // navigate(`/blog-list/:slug/${blog.id}`);
             }}
           >
             View Blog

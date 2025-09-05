@@ -123,6 +123,18 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
               </Link>
             </div>
 
+            <div className="hidden xl:flex items-center gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-white/80 hover:text-white transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
             {/* Right Section - Navigation Items */}
             <div className="flex items-center gap-2 md:gap-4">
               {user ? (
@@ -158,7 +170,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                     </div>
 
                     {/* Navigation Links */}
-                    <div className="hidden xl:flex items-center gap-2">
+                    {/* <div className="hidden xl:flex items-center gap-2">
                       {navLinks.map((link) => (
                         <Link
                           key={link.path}
@@ -168,7 +180,7 @@ const [authMode, setAuthMode] = useState<"signin" >("signin");
                           {link.label}
                         </Link>
                       ))}
-                    </div>
+                    </div> */}
 
                     {/* User Dropdown */}
                     <DropdownMenu>

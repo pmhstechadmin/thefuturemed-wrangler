@@ -919,7 +919,15 @@ const BlogList: React.FC = () => {
               <Card
                 key={blog.id}
                 className="flex flex-col justify-between h-[380px] hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => navigate(`/blog-list/${blog.id}`)}
+                onClick={() =>{
+                  const slug = blog.title
+                    .toLowerCase() // Convert to lowercase
+                    .trim() // Remove extra spaces
+                    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+                    .replace(/\s+/g, "-");
+                  navigate(`/blog-list/${slug}/${blog.id}`);
+                  //  navigate(`/blog-list/${blog.id}`)
+                  }}
               >
                 <CardHeader className="p-4">
                   <div className="flex justify-between items-start mb-2">

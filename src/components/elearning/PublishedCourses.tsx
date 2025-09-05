@@ -128,9 +128,25 @@ export const PublishedCourses = () => {
     setFilteredCourses(filtered);
   };
 
-  const handleCourseClick = (courseId: string) => {
-    navigate(`/course/${courseId}`);
-  };
+  // const handleCourseClick = (courseId: string) => {
+  //    const slug = course.title
+  //      .toLowerCase() // Convert to lowercase
+  //      .trim() // Remove extra spaces
+  //      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+  //      .replace(/\s+/g, "-");
+  //    navigate(`/course/${slug}/${courseId}`);
+  //   // navigate(`/course/${courseId}`);
+  // };
+  const handleCourseClick = (courseId: string, courseTitle: string) => {
+  const slug = courseTitle
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+
+  navigate(`/course/${slug}/${courseId}`);
+};
+
 
   const getCreatorName = (creatorId: string) => {
     const profile = profiles[creatorId];
@@ -189,7 +205,7 @@ export const PublishedCourses = () => {
               className={`hover:shadow-xl transition-all duration-300 cursor-pointer border-0 overflow-hidden group ${
                 index % 2 === 0 ? "bg-blue-50" : "bg-white"
               }`}
-              onClick={() => handleCourseClick(course.id)}
+              onClick={() => handleCourseClick(course.id, course.title)}
             >
               {/* Header with alternating colors */}
               <div
@@ -349,7 +365,8 @@ export const PublishedCourses = () => {
                           index % 2 === 0 ? "text-blue-700" : "text-gray-700"
                         }
                       >
-                        ${course.price.toFixed(2)}
+                        ₹{course.price.toFixed(2)}
+                        {/* ${course.price.toFixed(2)} */}
                       </span>
                     ) : (
                       <span className="text-green-600">Free</span>
@@ -370,7 +387,7 @@ export const PublishedCourses = () => {
                       timestamp: new Date().toISOString(),
                     });
                     e.stopPropagation();
-                    handleCourseClick(course.id);
+                    handleCourseClick(course.id, course.title);
                   }}
                 >
                   View Course
