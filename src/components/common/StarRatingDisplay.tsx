@@ -17,7 +17,7 @@ const StarsWrapper = styled.div`
 `;
 
 const StarBackground = styled.div<{ size: number }>`
-  color: #8b0d0dff;
+  color: #34f92aff;
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;
   letter-spacing: 2px;
@@ -33,7 +33,8 @@ const StarForeground = styled.div<{
   left: 0;
   width: ${(props) => props.width}%;
   overflow: hidden;
-  color: ${(props) => props.color || "#34f92aff"};
+  color: ${(props) => props.color || "#044301ff"};
+  //   color: ${(props) => props.color || "#34f92aff"};
   //   color: ${(props) => props.color || "#0741ffff"};
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;

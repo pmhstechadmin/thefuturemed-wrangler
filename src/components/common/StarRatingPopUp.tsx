@@ -34,7 +34,8 @@ const StarsWrapper = styled.div`
 `;
 
 const StarBackground = styled.div<{ size: number }>`
-  color: #a6aeecff;
+  color: #5ba857ff;
+  //   color: #a6aeecff;
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;
   letter-spacing: 2px;
@@ -67,7 +68,8 @@ const InteractiveStar = styled.div<{
   left: 0;
   width: ${(props) => props.filled * 100}%;
   overflow: hidden;
-  color: #5ba857ff;
+//   color: #5ba857ff;
+  color: #044301ff;
   //   color: #0717ffff;
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;
@@ -166,9 +168,10 @@ const StarRating: React.FC<StarRatingProps> = ({
 
   // Fetch rating data once userId is known
   useEffect(() => {
-    if (userId) {
-      fetchRatingData();
-    }
+    // if (userId) {
+    //   fetchRatingData();
+    // }
+    fetchRatingData();
   }, [itemId, itemType, userId]);
 
   const fetchRatingData = async () => {
@@ -211,6 +214,13 @@ const StarRating: React.FC<StarRatingProps> = ({
   };
 
   const handleStarClick = async (rating: number) => {
+    if (!userId) {
+      setStatusMessage({
+        text: "Please Sign In!",
+        error: false,
+      });
+      return;
+    }
     if (!interactive || !userId) return;
 
     setIsSubmitting(true);
