@@ -217,7 +217,8 @@ const StarRating: React.FC<StarRatingProps> = ({
     setStatusMessage(null);
 
     try {
-      const requestBody: any = { rating, user_id: userId };
+
+      const requestBody: any = { rating };
       if (itemType === "course") requestBody.course_id = itemId;
       if (itemType === "seminar") requestBody.seminar_id = itemId;
       if (itemType === "blog") requestBody.blog_id = itemId;
@@ -241,7 +242,7 @@ const StarRating: React.FC<StarRatingProps> = ({
           data.message || data.error || "Failed to submit rating."
         );
 
-        
+
       setStatusMessage({
         text: data.message || "Rating submitted successfully!",
         error: false,
