@@ -46,7 +46,7 @@ serve(async (req) => {
 
     // Send confirmation email
     const emailResponse = await resend.emails.send({
-      from: "MedPortal <noreply@medportal.com>",
+      from: "TheFuturemed <support@thefuturemed.com>",
       to: [profile.email],
       subject: `Course Enrollment Confirmation - ${course.title}`,
       html: `

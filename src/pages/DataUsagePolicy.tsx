@@ -1,7 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, ArrowLeft, Database, Lock, Users, UserIcon, LogOut, Home } from "lucide-react";
+import {
+  Shield,
+  ArrowLeft,
+  Database,
+  Lock,
+  Users,
+  UserIcon,
+  LogOut,
+  Home,
+} from "lucide-react";
 import logo from "@/image/thefuturemed_logo (1).jpg";
 import { useEffect, useState } from "react";
 import {
@@ -43,8 +52,7 @@ const DataUsagePolicy = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
 
-      <Header/>
-      
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -290,10 +298,10 @@ const DataUsagePolicy = () => {
                     your data rights:
                   </p>
                   <p>
-                    <strong>Email:</strong> data-privacy@medportal.com
+                    <strong>Email:</strong> support@thefuturemed.com
                   </p>
                   <p>
-                    <strong>Data Protection Officer:</strong> dpo@medportal.com
+                    <strong>Data Protection Officer:</strong> dpo@.com
                   </p>
                   <p>
                     <strong>Response Time:</strong> We aim to respond to
@@ -306,7 +314,7 @@ const DataUsagePolicy = () => {
         </div>
       </main>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 };

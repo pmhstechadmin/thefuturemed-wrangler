@@ -158,7 +158,7 @@ const PrivacyPolicy = () => {
                 <div className="space-y-3 text-gray-700">
                   <p>
                     For privacy-related questions or requests, contact us at:
-                    privacy@medportal.com
+                    support@thefuturemed.com
                   </p>
                 </div>
               </section>

@@ -248,7 +248,7 @@ const TermsOfService = () => {
                 <div className="space-y-3 text-gray-700">
                   <p>
                     For questions about these terms, contact us at:
-                    legal@medportal.com
+                    support@thefuturemed.com
                   </p>
                 </div>
               </section>
