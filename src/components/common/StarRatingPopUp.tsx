@@ -51,7 +51,7 @@ const StarForeground = styled.div<{
   width: ${(props) => props.width}%;
   overflow: hidden;
   color: ${(props) => props.color || "#34f92aff"};
-//   color: ${(props) => props.color || "#070fffff"};
+  //   color: ${(props) => props.color || "#070fffff"};
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;
   letter-spacing: 2px;
@@ -176,7 +176,7 @@ const StarRating: React.FC<StarRatingProps> = ({
     setStatusMessage(null);
 
     try {
-      const requestBody: any = { user_id: userId };
+      const requestBody: any = {};
       if (itemType === "course") requestBody.course_id = itemId;
       if (itemType === "seminar") requestBody.seminar_id = itemId;
       if (itemType === "blog") requestBody.blog_id = itemId;
@@ -217,8 +217,7 @@ const StarRating: React.FC<StarRatingProps> = ({
     setStatusMessage(null);
 
     try {
-
-      const requestBody: any = { rating };
+      const requestBody: any = { rating, user_id: userId };
       if (itemType === "course") requestBody.course_id = itemId;
       if (itemType === "seminar") requestBody.seminar_id = itemId;
       if (itemType === "blog") requestBody.blog_id = itemId;
@@ -241,7 +240,6 @@ const StarRating: React.FC<StarRatingProps> = ({
         throw new Error(
           data.message || data.error || "Failed to submit rating."
         );
-
 
       setStatusMessage({
         text: data.message || "Rating submitted successfully!",
