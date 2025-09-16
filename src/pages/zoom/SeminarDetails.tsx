@@ -5058,7 +5058,7 @@ The Seminar Team`,
                 </CardContent>
               </Card>
               {/* {!user?.id ()} */}
-              {!user?.id && user?.id !== seminar.host_id ? (
+              {!user?.id &&  user?.id !== seminar.host_id ? (
                 <Card
                   className={isEnrolled ? "border-green-200 bg-green-50" : ""}
                 >
@@ -5302,7 +5302,7 @@ The Seminar Team`,
                     </div>
                   </CardContent>
                 </Card>
-              ) : (
+              ):(
                 <Card
                   className={isEnrolled ? "border-green-200 bg-green-50" : ""}
                 >
