@@ -3,7 +3,7 @@
   
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
+    "not_found_handling": "single-page-application"
   },
   
   "routes": [
@@ -19,8 +19,5 @@
       "pattern": "*",
       "custom_domain": true
     }
-  ],
-  
-  "serve_single_page_app": true
+  ]
 }
-
