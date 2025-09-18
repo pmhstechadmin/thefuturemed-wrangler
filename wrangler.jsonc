@@ -19,7 +19,7 @@
       "custom_domain": true
     },
     {
-      "pattern": "*",
+      "pattern": "www.thefuturemed.com/*",
       "custom_domain": true
     }
   ]
