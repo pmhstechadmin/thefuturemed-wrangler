@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.5",
     "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^3.9.0",
     "@popperjs/core": "^2.11.8",
@@ -86,6 +87,7 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.53.0",
     "react-icons": "^5.5.0",
+    "react-pdf": "^10.1.0",
     "react-phone-input-2": "^2.15.1",
     "react-player": "^3.0.0",
     "react-quill": "^2.0.0",
@@ -106,6 +108,7 @@
     "three": "^0.168.0",
     "uuid": "^11.1.0",
     "vaul": "^0.9.3",
+    "video-react": "^0.16.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
