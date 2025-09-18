@@ -11,15 +11,11 @@
   
   "routes": [
     {
-      "pattern": "sitemap.xml",
-      "custom_domain": true
-    },
-    {
-      "pattern": "sitemap_index.xml",
-      "custom_domain": true
-    },
-    {
       "pattern": "www.thefuturemed.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "thefuturemed.com",
       "custom_domain": true
     }
   ]
