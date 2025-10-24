@@ -11,11 +11,7 @@
   
   "routes": [
     {
-      "pattern": "www.thefuturemed.com",
-      "custom_domain": true
-    },
-    {
-      "pattern": "thefuturemed.com",
+      "pattern": "www2.thefuturemed.com",
       "custom_domain": true
     }
   ]
